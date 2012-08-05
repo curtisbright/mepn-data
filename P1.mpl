@@ -45,3 +45,20 @@ P1 := proc(b, depth)
 	end do;
 	return sort(K), sort(L);
 end proc:
+
+exploreforbid := proc(K, m, b)
+	local i, j;
+	for i from 0 to b-1 do
+		for j from 1 to nops(m) do
+			if K[j][-(nops(m[j])+1)] = i then
+				
+			end if;
+		end do;
+	end do;
+end proc:
+
+P2 := proc(K, b)
+	local Kc;
+	Kc := map(convert, K, base, b);
+	exploreforbid(Kc, [seq([], i=1..nops(Kc))], b);
+end proc:
