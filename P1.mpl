@@ -106,4 +106,33 @@ P2 := proc(K, b)
 	exploreforbid(Kc, [seq([], i=1..nops(Kc))], b, "");
 end proc:
 
+P3 := proc(K, b)
+	local families := [];
+	local middles := [];
+	local temp;
+	local i, j, k;
+	for i from 1 to b-1 do
+		for j from 0 to b-1 do
+			if igcd(b, j)>1 then
+				next;
+			end if;
+			if subwordin(unconvert([j, i], b), K, b) then
+				next;
+			end if;
+
+			families := [op(families), unconvert([j, i], b)];
+			temp := [];
+			for k from 0 to b-1 do
+				if not(subwordin(unconvert([j, k, i], b), K, b)) then
+					temp := [op(temp), k];
+				end if;
+			end do;
+			middles := [op(middles), temp];
+		end do;
+	end do;
+	print(families);
+	print(middles);
+end proc:
+P3(K,10);
+
 K := [2, 3, 5, 7, 11, 19, 41, 61, 89, 409, 449, 499, 881, 991, 6469, 6949, 9001, 9049, 9649, 9949, 60649, 666649, 946669, 60000049, 66000049, 66600049]:
