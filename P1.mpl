@@ -116,14 +116,14 @@ explorestart := proc(starts, middles, ends, K, b)
 		for j in middles[i] do
 			temp := [];
 			for k from 0 to b-1 do
-				if not(subwordin(unconvert([op(convert(ends[i], base, b)), k, j, op(convert(starts[i], base, b))], b), K, b)) then
+				if not(subwordin(unconvert([op(ends[i]), k, j, op(starts[i])], b), K, b)) then
 					temp := [op(temp), k];
 				end if;
 			end do;
 			if nops(temp) = 0 then
 				next;
 			end if;
-			newstarts := [op(newstarts), unconvert([j, op(convert(starts[i], base, b))], b)];
+			newstarts := [op(newstarts), [j, op(starts[i])]];
 			newmiddles := [op(newmiddles), temp];
 			newends := [op(newends), ends[i]];
 		end do;
@@ -141,7 +141,7 @@ exploreend := proc(starts, middles, ends, K, b)
 		for j in middles[i] do
 			temp := [];
 			for k from 0 to b-1 do
-				if not(subwordin(unconvert([op(convert(ends[i], base, b)), j, k, op(convert(starts[i], base, b))], b), K, b)) then
+				if not(subwordin(unconvert([op(ends[i]), j, k, op(starts[i])], b), K, b)) then
 					temp := [op(temp), k];
 				end if;
 			end do;
@@ -150,18 +150,26 @@ exploreend := proc(starts, middles, ends, K, b)
 			end if;
 			newstarts := [op(newstarts), starts[i]];
 			newmiddles := [op(newmiddles), temp];
-			newends := [op(newends), unconvert([op(convert(ends[i], base, b)), j], b)];
+			newends := [op(newends), [op(ends[i]), j]];
 		end do;
 	end do;
 	return newstarts, newmiddles, newends;
 end proc:
 
-P3 := proc(K, b)
+P3 := proc(K, b, d)
 	local starts := [];
 	local middles := [];
 	local ends := [];
 	local temp;
 	local i, j, k;
+
+	local newstarts := [];
+	local newmiddles := [];
+	local newends := [];
+	local p;
+	local inc;
+	local total;
+
 	for i from 1 to b-1 do
 		for j from 0 to b-1 do
 			if igcd(b, j)>1 then
@@ -171,8 +179,8 @@ P3 := proc(K, b)
 				next;
 			end if;
 
-			starts := [op(starts), i];
-			ends := [op(ends), j];
+			starts := [op(starts), [i]];
+			ends := [op(ends), [j]];
 			temp := [];
 			for k from 0 to b-1 do
 				if not(subwordin(unconvert([j, k, i], b), K, b)) then
@@ -182,17 +190,65 @@ P3 := proc(K, b)
 			middles := [op(middles), temp];
 		end do;
 	end do;
-	starts, middles, ends := explorestart(starts, middles, ends, K, b);
-	starts, middles, ends := exploreend(starts, middles, ends, K, b);
+	for k from 1 to d do
+
+		newstarts, newmiddles, newends := [], [], [];
+		for i from 1 to nops(starts) do
+			inc := true;
+			for p from 1 to b^2 do
+				if isprime(p) then
+					if b mod p = 0 then
+						if ends[1] mod p = 0 then
+							inc := false;
+						end if;
+					elif (b-1) mod p = 0 then
+						total := 0;
+						for j in [op(starts[i]), op(ends[i])] do
+							total := total + j;
+						end do;
+						total := total mod p;
+						for j in middles[i] mod p do
+							total := total + j;
+						end do;
+						if total = 0 then
+							inc := false;
+						end if;
+					else
+					end if;
+				end if;
+			end do;
+			if inc then
+				newstarts := [op(newstarts), starts[i]];
+				newmiddles := [op(newmiddles), middles[i]];
+				newends := [op(newends), ends[i]];
+			end if;
+		end do;
+		starts, middles, ends := newstarts, newmiddles, newends;
+
+		if k = d then
+			next;
+		end if;
+
+		starts, middles, ends := explorestart(starts, middles, ends, K, b);
+		starts, middles, ends := exploreend(starts, middles, ends, K, b);
+	end do;
+
+	return starts, middles, ends;
 end proc:
 
 familyformat := proc(starts, middles, ends)
-	local i;
+	local i, j;
 	for i from 1 to nops(starts) do
-		printf("%a%a*%a\n", starts[i], middles[i], ends[i]);
+		for j in ListTools[Reverse](starts[i]) do
+			printf("%a", j);
+		end do;
+		printf("%a*", middles[i]);
+		for j in ListTools[Reverse](ends[i]) do
+			printf("%a", j);
+		end do;
+		printf("\n");
 	end do;
 end proc:
-
-familyformat(P3(K,10));
+familyformat(P3(K, 10, 1));
 
 K := [2, 3, 5, 7, 11, 19, 41, 61, 89, 409, 449, 499, 881, 991, 6469, 6949, 9001, 9049, 9649, 9949, 60649, 666649, 946669, 60000049, 66000049, 66600049]:
