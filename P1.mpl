@@ -161,7 +161,7 @@ P3 := proc(K, b, d)
 	local middles := [];
 	local ends := [];
 	local temp;
-	local i, j, k;
+	local i, j, k, kk;
 
 	local newstarts := [];
 	local newmiddles := [];
@@ -190,7 +190,7 @@ P3 := proc(K, b, d)
 			middles := [op(middles), temp];
 		end do;
 	end do;
-	for k from 1 to d do
+	for kk from 1 to d do
 
 		newstarts, newmiddles, newends := [], [], [];
 		for i from 1 to nops(starts) do
@@ -214,6 +214,22 @@ P3 := proc(K, b, d)
 							inc := false;
 						end if;
 					else
+						total := 0;
+						for j in middles[i] do
+							for k in middles[i] do
+								total := total + ((j-k) mod p);
+							end do;
+						end do;
+						for j in middles[i] do
+							total := total + ((j*(1/(b-1) mod p)+unconvert(starts[i], b)) mod p);
+						end do;
+						for j in middles[i] do
+							total := total + ((j*b^(nops(ends[i]))*(1/(b-1) mod p)-unconvert(ends[i], b)) mod p);
+						end do;
+						if total = 0 then
+							inc := false;
+							#print(starts[i],middles[i],ends[i],p);
+						end if;
 					end if;
 				end if;
 			end do;
@@ -225,7 +241,7 @@ P3 := proc(K, b, d)
 		end do;
 		starts, middles, ends := newstarts, newmiddles, newends;
 
-		if k = d then
+		if kk = d then
 			next;
 		end if;
 
@@ -249,6 +265,6 @@ familyformat := proc(starts, middles, ends)
 		printf("\n");
 	end do;
 end proc:
-familyformat(P3(K, 10, 1));
+familyformat(P3(K, 10, 2));
 
 K := [2, 3, 5, 7, 11, 19, 41, 61, 89, 409, 449, 499, 881, 991, 6469, 6949, 9001, 9049, 9649, 9949, 60649, 666649, 946669, 60000049, 66000049, 66600049]:
