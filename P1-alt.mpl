@@ -46,66 +46,6 @@ P1 := proc(b, depth)
 	return sort(K), sort(L);
 end proc:
 
-exploreforbid := proc(K, m, b, s)
-	local i, j, loops, noloop, noloopset, newm, news, finish;
-	loops := "";
-	news := "";
-	noloopset := {};
-	for i from 0 to b-1 do
-		noloop := false;
-		for j from 1 to nops(m) do
-			if K[j][-(nops(m[j])+1)] = i then
-				noloop := true;
-			end if;
-		end do;
-		if noloop = false then
-			loops := cat(loops, i);
-		else
-			noloopset := noloopset union {i};
-		end if;
-	end do;
-	if evalb(loops<>"") then
-		if evalb(s<>"") then
-			news := s || "(" || loops || ")*";
-		else
-			if evalb(0 in noloopset) then
-				news := s || "(" || loops || ")*";
-			else
-				if evalb(loops[2..]="") then
-					news := "";
-				else
-					news := s || "(" || (loops[2..]) || ")(" || loops || ")*";
-				end if;
-			end if;
-		end if;
-	else
-		news := s;
-	end if;
-	for i in noloopset do
-		newm := m;
-		finish := false;
-		for j from 1 to nops(m) do
-			if K[j][-(nops(m[j])+1)] = i then
-				newm[j] := [i, op(newm[j])];
-			end if;
-			if nops(newm[j]) = nops(K[j]) then
-				finish := true;
-			end if;
-		end do;
-		if finish = true then
-			print(news);
-		else
-			exploreforbid(K, newm, b, cat(news, i));
-		end if;
-	end do;
-end proc:
-
-P2 := proc(K, b)
-	local Kc;
-	Kc := map(convert, K, base, b);
-	exploreforbid(Kc, [seq([], i=1..nops(Kc))], b, "");
-end proc:
-
 explorestart := proc(starts, middles, ends, K, b)
 	local newstarts := [];
 	local newmiddles := [];

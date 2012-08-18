@@ -46,10 +46,12 @@ P1 := proc(b, depth)
 	return sort(K), sort(L);
 end proc:
 
-explorestart := proc(starts, middles, ends, K, b)
+explorestart := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local newstarts := [];
+	local newstartrepeats := [];
 	local newmiddles := [];
 	local newends := [];
+	local newendrepeats := [];
 	local newK := K;
 	local temp;
 	local i, j, k;
@@ -70,17 +72,21 @@ explorestart := proc(starts, middles, ends, K, b)
 				next;
 			end if;
 			newstarts := [op(newstarts), [j, op(starts[i])]];
+			newstartrepeats := [op(newstartrepeats), [[]]];
 			newmiddles := [op(newmiddles), temp];
 			newends := [op(newends), ends[i]];
+			newendrepeats := [op(newendrepeats), [[]]];
 		end do;
 	end do;
-	return newstarts, newmiddles, newends, newK;
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
 end proc:
 
-exploreend := proc(starts, middles, ends, K, b)
+exploreend := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local newstarts := [];
+	local newstartrepeats := [];
 	local newmiddles := [];
 	local newends := [];
+	local newendrepeats := [];
 	local newK := K;
 	local temp;
 	local i, j, k;
@@ -101,24 +107,30 @@ exploreend := proc(starts, middles, ends, K, b)
 				next;
 			end if;
 			newstarts := [op(newstarts), starts[i]];
+			newstartrepeats := [op(newstartrepeats), [[]]];
 			newmiddles := [op(newmiddles), temp];
 			newends := [op(newends), [op(ends[i]), j]];
+			newendrepeats := [op(newendrepeats), [[]]];
 		end do;
 	end do;
-	return newstarts, newmiddles, newends, newK;
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
 end proc:
 
 P3 := proc(K, b, d)
 	local starts := [];
+	local startrepeats := [];
 	local middles := [];
+	local endrepeats := [];
 	local ends := [];
 	local newK := K;
 	local temp;
 	local i, j, k, l;
 
 	local newstarts := [];
+	local newstartrepeats := [];
 	local newmiddles := [];
 	local newends := [];
+	local newendrepeats := [];
 	local p;
 	local inc;
 	local total;
@@ -133,7 +145,9 @@ P3 := proc(K, b, d)
 			end if;
 
 			starts := [op(starts), [i]];
+			startrepeats := [op(startrepeats), [[]]];
 			ends := [op(ends), [j]];
+			endrepeats := [op(endrepeats), [[]]];
 			temp := [];
 			for k from 0 to b-1 do
 				if not(subwordin(unconvert([j, k, i], b), newK, b)) then
@@ -148,9 +162,11 @@ P3 := proc(K, b, d)
 			middles := [op(middles), temp];
 		end do;
 	end do;
+	#startrepeats := [startrepeats];
+	#endrepeats := [endrepeats];
 	for l from 1 to d do
 
-		newstarts, newmiddles, newends := [], [], [];
+		newstarts, newstartrepeats, newmiddles, newends, newendrepeats := [], [], [], [], [];
 		for i from 1 to nops(starts) do
 			inc := unconvert([op(ends[i]), op(starts[i])], b);
 			for j in middles[i] do
@@ -158,29 +174,45 @@ P3 := proc(K, b, d)
 			end do;
 			if inc = 1 then
 				newstarts := [op(newstarts), starts[i]];
+				newstartrepeats := [op(newstartrepeats), [[]]];
 				newmiddles := [op(newmiddles), middles[i]];
 				newends := [op(newends), ends[i]];
+				newendrepeats := [op(newendrepeats), [[]]];
 			else
 				printf("Divisible by %a: ", inc);
-				familyformat([starts[i]], [middles[i]], [ends[i]]);
+				familyformat([starts[i]], [startrepeats[i]], [middles[i]], [ends[i]], [endrepeats[i]]);
 			end if;
 		end do;
-		starts, middles, ends := newstarts, newmiddles, newends;
+		starts, startrepeats, middles, ends, endrepeats := newstarts, newstartrepeats, newmiddles, newends, newendrepeats;
+
 		if l = d then
 			next;
 		end if;
 
-		starts, middles, ends, newK := explorestart(starts, middles, ends, newK, b);
-		starts, middles, ends, newK := exploreend(starts, middles, ends, newK, b);
+		starts, startrepeats, middles, ends, endrepeats, newK := explorestart(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		starts, startrepeats, middles, ends, endrepeats, newK := exploreend(starts, startrepeats, middles, ends, endrepeats, newK, b);
 	end do;
 
-	return starts, middles, ends, newK;
+	return starts, startrepeats, middles, ends, endrepeats, newK;
 end proc:
 
-familyformat := proc(starts, middles, ends)
-	local i, j;
+familyformat := proc(starts, startrepeats, middles, ends, endrepeats)
+	local i, j, k, c;
 	for i from 1 to nops(starts) do
+		c := nops(starts[i])+1;
 		for j in ListTools[Reverse](starts[i]) do
+			c := c-1;
+			if nops(startrepeats[i][c]) > 0 then
+				printf("[");
+				for k in startrepeats[i][c] do
+					if k < 10 then
+						printf("%a", k);
+					else
+						printf("%c", k+55);
+					end if;
+				end do;
+				printf("]*");
+			end if;
 			if j < 10 then
 				printf("%a", j);
 			else
@@ -197,11 +229,24 @@ familyformat := proc(starts, middles, ends)
 			end if;
 		end do;
 		printf("]*");
+		c := nops(starts[i])+1;
 		for j in ListTools[Reverse](ends[i]) do
+			c := c-1;
 			if j < 10 then
 				printf("%a", j);
 			else
 				printf("%c", j+55);
+			end if;
+			if nops(endrepeats[i][c]) > 0 then
+				printf("[");
+				for k in endrepeats[i][c] do
+					if k < 10 then
+						printf("%a", k);
+					else
+						printf("%c", k+55);
+					end if;
+				end do;
+				printf("]*");
 			end if;
 		end do;
 		printf("\n");
@@ -210,12 +255,13 @@ end proc:
 
 search := proc(b, d1, d2)
 	local K, L;
-	local starts, middles, ends;
+	local starts, middles, ends, startrepeats, endrepeats;
 	local i, j;
 	K, L := P1(b, d1);
 	#printf("Prime kernel: %a\n", K);
-	starts, middles, ends, K := P3(K, b, d2);
-	familyformat(starts, middles, ends);
+	starts, startrepeats, middles, ends, endrepeats, K := P3(K, b, d2);
+	#print(starts, startrepeats, middles, ends, endrepeats);
+	familyformat(starts, startrepeats, middles, ends, endrepeats);
 	#printf("Prime kernel: %a\n", K);
 	K := map(convert, K, base, b);
 	printf("Prime kernel: [");
