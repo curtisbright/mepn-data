@@ -46,66 +46,6 @@ P1 := proc(b, depth)
 	return sort(K), sort(L);
 end proc:
 
-exploreforbid := proc(K, m, b, s)
-	local i, j, loops, noloop, noloopset, newm, news, finish;
-	loops := "";
-	news := "";
-	noloopset := {};
-	for i from 0 to b-1 do
-		noloop := false;
-		for j from 1 to nops(m) do
-			if K[j][-(nops(m[j])+1)] = i then
-				noloop := true;
-			end if;
-		end do;
-		if noloop = false then
-			loops := cat(loops, i);
-		else
-			noloopset := noloopset union {i};
-		end if;
-	end do;
-	if evalb(loops<>"") then
-		if evalb(s<>"") then
-			news := s || "(" || loops || ")*";
-		else
-			if evalb(0 in noloopset) then
-				news := s || "(" || loops || ")*";
-			else
-				if evalb(loops[2..]="") then
-					news := "";
-				else
-					news := s || "(" || (loops[2..]) || ")(" || loops || ")*";
-				end if;
-			end if;
-		end if;
-	else
-		news := s;
-	end if;
-	for i in noloopset do
-		newm := m;
-		finish := false;
-		for j from 1 to nops(m) do
-			if K[j][-(nops(m[j])+1)] = i then
-				newm[j] := [i, op(newm[j])];
-			end if;
-			if nops(newm[j]) = nops(K[j]) then
-				finish := true;
-			end if;
-		end do;
-		if finish = true then
-			print(news);
-		else
-			exploreforbid(K, newm, b, cat(news, i));
-		end if;
-	end do;
-end proc:
-
-P2 := proc(K, b)
-	local Kc;
-	Kc := map(convert, K, base, b);
-	exploreforbid(Kc, [seq([], i=1..nops(Kc))], b, "");
-end proc:
-
 explorestart := proc(starts, middles, ends, K, b)
 	local newstarts := [];
 	local newmiddles := [];
@@ -212,53 +152,20 @@ P3 := proc(K, b, d)
 
 		newstarts, newmiddles, newends := [], [], [];
 		for i from 1 to nops(starts) do
-			inc := true;
-			for p from 1 to b^2 do
-				if isprime(p) then
-					if b mod p = 0 then
-						if ends[1] mod p = 0 then
-							inc := false;
-						end if;
-					elif (b-1) mod p = 0 then
-						total := 0;
-						for j in [op(starts[i]), op(ends[i])] do
-							total := total + j;
-						end do;
-						total := total mod p;
-						for j in middles[i] mod p do
-							total := total + j;
-						end do;
-						if total = 0 then
-							inc := false;
-						end if;
-					else
-						total := 0;
-						for j in middles[i] do
-							for k in middles[i] do
-								total := total + ((j-k) mod p);
-							end do;
-						end do;
-						for j in middles[i] do
-							total := total + ((j*(1/(b-1) mod p)+unconvert(starts[i], b)) mod p);
-						end do;
-						for j in middles[i] do
-							total := total + ((j*b^(nops(ends[i]))*(1/(b-1) mod p)-unconvert(ends[i], b)) mod p);
-						end do;
-						if total = 0 then
-							inc := false;
-							#print(starts[i],middles[i],ends[i],p);
-						end if;
-					end if;
-				end if;
+			inc := unconvert([op(ends[i]), op(starts[i])], b);
+			for j in middles[i] do
+				inc := igcd(inc, unconvert([op(ends[i]), j, op(starts[i])], b));
 			end do;
-			if inc then
+			if inc = 1 then
 				newstarts := [op(newstarts), starts[i]];
 				newmiddles := [op(newmiddles), middles[i]];
 				newends := [op(newends), ends[i]];
+			else
+				printf("Divisible by %a: ", inc);
+				familyformat([starts[i]], [middles[i]], [ends[i]]);
 			end if;
 		end do;
 		starts, middles, ends := newstarts, newmiddles, newends;
-
 		if l = d then
 			next;
 		end if;
