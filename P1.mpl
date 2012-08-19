@@ -72,10 +72,10 @@ explorestart := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 				next;
 			end if;
 			newstarts := [op(newstarts), [j, op(starts[i])]];
-			newstartrepeats := [op(newstartrepeats), [[]]];
+			newstartrepeats := [op(newstartrepeats), [[], op(startrepeats[i])]];
 			newmiddles := [op(newmiddles), temp];
 			newends := [op(newends), ends[i]];
-			newendrepeats := [op(newendrepeats), [[]]];
+			newendrepeats := [op(newendrepeats), endrepeats[i]];
 		end do;
 	end do;
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
@@ -107,10 +107,10 @@ exploreend := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 				next;
 			end if;
 			newstarts := [op(newstarts), starts[i]];
-			newstartrepeats := [op(newstartrepeats), [[]]];
+			newstartrepeats := [op(newstartrepeats), startrepeats[i]];
 			newmiddles := [op(newmiddles), temp];
 			newends := [op(newends), [op(ends[i]), j]];
-			newendrepeats := [op(newendrepeats), [[]]];
+			newendrepeats := [op(newendrepeats), [op(endrepeats[i]), []]];
 		end do;
 	end do;
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
@@ -174,10 +174,10 @@ P3 := proc(K, b, d)
 			end do;
 			if inc = 1 then
 				newstarts := [op(newstarts), starts[i]];
-				newstartrepeats := [op(newstartrepeats), [[]]];
+				newstartrepeats := [op(newstartrepeats), startrepeats[i]];
 				newmiddles := [op(newmiddles), middles[i]];
 				newends := [op(newends), ends[i]];
-				newendrepeats := [op(newendrepeats), [[]]];
+				newendrepeats := [op(newendrepeats), endrepeats[i]];
 			else
 				printf("Divisible by %a: ", inc);
 				familyformat([starts[i]], [startrepeats[i]], [middles[i]], [ends[i]], [endrepeats[i]]);
