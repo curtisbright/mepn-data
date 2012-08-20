@@ -219,6 +219,13 @@ P3 := proc(K, b, d)
 			for j in middles[i] do
 				inc := igcd(inc, unconvert([op(ends[i]), j, op(starts[i])], b));
 			end do;
+			for j from 1 to nops(startrepeats[i]) do
+				for k in startrepeats[i][j] do
+					#familyformat([starts[i]], [startrepeats[i]], [middles[i]], [ends[i]], [endrepeats[i]]);
+					#print([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]]);
+					inc := igcd(inc, unconvert([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]], b));
+				end do;
+			end do;
 			if inc = 1 then
 				newstarts := [op(newstarts), starts[i]];
 				newstartrepeats := [op(newstartrepeats), startrepeats[i]];
