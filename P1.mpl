@@ -68,9 +68,9 @@ explorestart := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 					end if;
 				end if;
 			end do;
-			if nops(temp) = 0 then
-				next;
-			end if;
+			#if nops(temp) = 0 then
+			#	next;
+			#end if;
 			newstarts := [op(newstarts), [j, op(starts[i])]];
 			newstartrepeats := [op(newstartrepeats), [[], op(startrepeats[i])]];
 			newmiddles := [op(newmiddles), temp];
@@ -103,9 +103,9 @@ exploreend := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 					end if;
 				end if;
 			end do;
-			if nops(temp) = 0 then
-				next;
-			end if;
+			#if nops(temp) = 0 then
+			#	next;
+			#end if;
 			newstarts := [op(newstarts), starts[i]];
 			newstartrepeats := [op(newstartrepeats), startrepeats[i]];
 			newmiddles := [op(newmiddles), temp];
@@ -184,6 +184,7 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 			newendrepeats := [op(newendrepeats), endrepeats[i]];
 		end if;
 	end do;
+	#newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK := simplifyrepeats(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK, b);
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
 end proc:
 
@@ -263,6 +264,39 @@ removedups := proc(starts, startrepeats, middles, ends, endrepeats)
 		end if;
 	end do;
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats;
+end proc:
+
+simplifyrepeats := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
+	local newstarts := [];
+	local newstartrepeats := [];
+	local newmiddles := [];
+	local newends := [];
+	local newendrepeats := [];
+	local newK := K;
+	local temprepeats, temp;
+	local i, j, k;
+	for i from 1 to nops(starts) do
+		temprepeats := [];
+		for j from 1 to nops(startrepeats[i]) do
+			temp := [];
+			for k in startrepeats[i][j] do
+				if not(subwordin(unconvert([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]], b), newK, b)) then
+					if isprime(unconvert([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]], b)) then
+						newK := [op(newK), unconvert([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]], b)];
+					else
+						temp := [op(temp), k];
+					end if;
+				end if;
+			end do;
+			temprepeats := [op(temprepeats), temp];
+		end do;
+		newstarts := [op(newstarts), starts[i]];
+		newstartrepeats := [op(newstartrepeats), temprepeats];
+		newmiddles := [op(newmiddles), middles[i]];
+		newends := [op(newends), ends[i]];
+		newendrepeats := [op(newendrepeats), endrepeats[i]];
+	end do;
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
 end proc:
 
 P3 := proc(K, b, d)
@@ -346,13 +380,16 @@ P3 := proc(K, b, d)
 		end if;
 
 		starts, startrepeats, middles, ends, endrepeats, newK := split2(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
 		starts, startrepeats, middles, ends, endrepeats, newK := explorestart(starts, startrepeats, middles, ends, endrepeats, newK, b);
 		starts, startrepeats, middles, ends, endrepeats, newK := split2(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#printf("BEFORE:\n");familyformat(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#printf("AFTER:\n");familyformat(starts, startrepeats, middles, ends, endrepeats, newK, b);
 		starts, startrepeats, middles, ends, endrepeats, newK := exploreend(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#printf("AFTER2:\n");familyformat(starts, startrepeats, middles, ends, endrepeats, newK, b);
 		starts, startrepeats, middles, ends, endrepeats, newK := split2(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		#starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
 	end do;
 
 	return starts, startrepeats, middles, ends, endrepeats, newK;
@@ -443,9 +480,10 @@ search := proc(b, d1, d2)
 		end if;
 	end do;
 	printf("]\n");
+	#return starts, startrepeats, middles, ends, endrepeats, map(unconvert, K, b), b;
 end proc:
 
-search(10, 2, 4);
-
+#search(10, 2, 4);
+#
 #K := [2, 3, 5, 7, 11, 19, 41, 61, 89, 409, 449, 499, 881, 991, 6469, 6949, 9001, 9049, 9649, 9949, 60649, 666649, 946669, 60000049, 66000049, 66600049]:
 #printf("Prime kernel: %a\n", K);
