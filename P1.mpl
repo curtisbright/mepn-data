@@ -577,7 +577,8 @@ end proc:
 
 fd2 := fopen("bases.txt", WRITE);
 fprintf(fd2, "Base\tSize\tWidth\n");
-for b from 2 to 10 do
+fclose(fd2);
+for b from 2 to 50 do
 	printf("Starting base %a...\n", b);
 	starts, startrepeats, middles, ends, endrepeats, K := search(b, 3, 100);
 	fd := fopen("base" || b || ".txt", WRITE);
@@ -602,10 +603,11 @@ for b from 2 to 10 do
 	fprintf(fd, "]\n");
 	fprintf(fd, "Size: %a\n", nops(newK));
 	fprintf(fd, "Width: %a\n", max(map(nops, newK)));
-	fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
 	fclose(fd);
+	fd2 := fopen("bases.txt", APPEND);
+	fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
+	fclose(fd2);
 end do;
-fclose(fd2);
 
 #search(10, 2, 4);
 #
