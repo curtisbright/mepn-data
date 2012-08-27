@@ -362,6 +362,7 @@ P3 := proc(K, b, d)
 	#startrepeats := [startrepeats];
 	#endrepeats := [endrepeats];
 	for l from 1 to d do
+		printf("Trying depth %a...\n", l);
 
 		newstarts, newstartrepeats, newmiddles, newends, newendrepeats := [], [], [], [], [];
 		for i from 1 to nops(starts) do
@@ -395,10 +396,10 @@ P3 := proc(K, b, d)
 					end do;
 				end do;
 				inc := min(inc1, inc2);
-				if inc > 1 then
-					printf("Divisible by %a and %a: ", inc1, inc2);
-					familyformat([starts[i]], [startrepeats[i]], [middles[i]], [ends[i]], [endrepeats[i]]);					
-				end if;
+				#if inc > 1 then
+				#	printf("Divisible by %a and %a: ", inc1, inc2);
+				#	familyformat([starts[i]], [startrepeats[i]], [middles[i]], [ends[i]], [endrepeats[i]]);					
+				#end if;
 			end if;
 			if inc = 1 then
 				newstarts := [op(newstarts), starts[i]];
@@ -486,6 +487,63 @@ familyformat := proc(starts, startrepeats, middles, ends, endrepeats)
 	end do;
 end proc:
 
+ffamilyformat := proc(fd, starts, startrepeats, middles, ends, endrepeats)
+	local i, j, k, c;
+	for i from 1 to nops(starts) do
+		c := nops(starts[i])+1;
+		for j in ListTools[Reverse](starts[i]) do
+			c := c-1;
+			if nops(startrepeats[i][c]) > 0 then
+				fprintf(fd, "[");
+				for k in startrepeats[i][c] do
+					if k < 10 then
+						fprintf(fd, "%a", k);
+					else
+						fprintf(fd, "%c", k+55);
+					end if;
+				end do;
+				fprintf(fd, "]*");
+			end if;
+			if j < 10 then
+				fprintf(fd, "%a", j);
+			else
+				fprintf(fd, "%c", j+55);
+			end if;
+		end do;
+		#fprintf(fd, "%a*", middles[i]);
+		fprintf(fd, "[");
+		for j in middles[i] do
+			if j < 10 then
+				fprintf(fd, "%a", j);
+			else
+				fprintf(fd, "%c", j+55);
+			end if;
+		end do;
+		fprintf(fd, "]*");
+		c := nops(ends[i])+1;
+		for j in ListTools[Reverse](ends[i]) do
+			c := c-1;
+			if j < 10 then
+				fprintf(fd, "%a", j);
+			else
+				fprintf(fd, "%c", j+55);
+			end if;
+			if nops(endrepeats[i][c]) > 0 then
+				fprintf(fd, "[");
+				for k in endrepeats[i][c] do
+					if k < 10 then
+						fprintf(fd, "%a", k);
+					else
+						fprintf(fd, "%c", k+55);
+					end if;
+				end do;
+				fprintf(fd, "]*");
+			end if;
+		end do;
+		fprintf(fd, "\n");
+	end do;
+end proc:
+
 search := proc(b, d1, d2)
 	local K, L;
 	local starts, middles, ends, startrepeats, endrepeats;
@@ -494,28 +552,60 @@ search := proc(b, d1, d2)
 	#printf("Prime kernel: %a\n", K);
 	starts, startrepeats, middles, ends, endrepeats, K := P3(K, b, d2);
 	#print(starts, startrepeats, middles, ends, endrepeats);
-	if nops(starts) > 0 then
-		printf("Unsolved families:\n");
-		familyformat(starts, startrepeats, middles, ends, endrepeats);
-	end if;
+	#if nops(starts) > 0 then
+	#	printf("Unsolved families:\n");
+	#	familyformat(starts, startrepeats, middles, ends, endrepeats);
+	#end if;
 	#printf("Prime kernel: %a\n", K);
 	K := map(convert, K, base, b);
-	printf("Prime kernel: [");
-	for i from 1 to nops(K) do
-		for j in ListTools[Reverse](K[i]) do
+	#printf("Prime kernel: [");
+	#for i from 1 to nops(K) do
+	#	for j in ListTools[Reverse](K[i]) do
+	#		if j < 10 then
+	#			printf("%a", j);
+	#		else
+	#			printf("%c", j+55);
+	#		end if;
+	#	end do;
+	#	if i <> nops(K) then
+	#		printf(", ");
+	#	end if;
+	#end do;
+	printf("]\n");
+	return starts, startrepeats, middles, ends, endrepeats, map(unconvert, K, b);
+end proc:
+
+fd2 := fopen("bases.txt", WRITE);
+fprintf(fd2, "Base\tSize\tWidth\n");
+for b from 2 to 10 do
+	printf("Starting base %a...\n", b);
+	starts, startrepeats, middles, ends, endrepeats, K := search(b, 3, 100);
+	fd := fopen("base" || b || ".txt", WRITE);
+	if nops(starts) > 0 then
+		fprintf(fd, "Unsolved families:\n");
+		ffamilyformat(fd, starts, startrepeats, middles, ends, endrepeats);
+	end if;
+	newK := map(convert, K, base, b);
+	fprintf(fd, "Prime kernel: [");
+	for i from 1 to nops(newK) do
+		for j in ListTools[Reverse](newK[i]) do
 			if j < 10 then
-				printf("%a", j);
+				fprintf(fd, "%a", j);
 			else
-				printf("%c", j+55);
+				fprintf(fd, "%c", j+55);
 			end if;
 		end do;
-		if i <> nops(K) then
-			printf(", ");
+		if i <> nops(newK) then
+			fprintf(fd, ", ");
 		end if;
 	end do;
-	printf("]\n");
-	#return starts, startrepeats, middles, ends, endrepeats, map(unconvert, K, b), b;
-end proc:
+	fprintf(fd, "]\n");
+	fprintf(fd, "Size: %a\n", nops(newK));
+	fprintf(fd, "Width: %a\n", max(map(nops, newK)));
+	fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
+	fclose(fd);
+end do;
+fclose(fd2);
 
 #search(10, 2, 4);
 #
