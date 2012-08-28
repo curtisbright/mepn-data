@@ -1,0 +1,3 @@
+Prime kernel: [2, 3, 5, 7, B, 11, 61, 81, 91, 401, A41, 4441, A0A1, AAAA1, 44AAA1, AAA0001, AA000001]
+Size: 17
+Width: 8

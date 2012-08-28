@@ -1,0 +1,3 @@
+Prime kernel: [10, 11]
+Size: 2
+Width: 2

@@ -108,6 +108,7 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local newK := K;
 	local temp;
 	local i, j, k;
+	local didsplit := false;
 	for i from 1 to nops(starts) do
 		temp := true;
 		for j in middles[i] do
@@ -141,6 +142,7 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 						newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
 						newends := [op(newends), ends[i]];
 						newendrepeats := [op(newendrepeats), endrepeats[i]];
+						didsplit := true;
 					#else
 					#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
 					#	printf(" ALREADY IN\n");
@@ -152,6 +154,7 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 						newmiddles := [op(newmiddles), [({middles[i][]} minus {k})[]]];
 						newends := [op(newends), ends[i]];
 						newendrepeats := [op(newendrepeats), endrepeats[i]];
+						didsplit := true;
 					#else
 					#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i]);
 					#	printf(" ALREADY IN\n");
@@ -169,7 +172,7 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 			end if;
 		end if;
 	end do;
-	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK, didsplit;
 end proc:
 
 simplifyrepeats := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
@@ -295,6 +298,8 @@ P3 := proc(K, b, d)
 	local inc;
 	local inc1, inc2;
 	local total;
+	local didsplit;
+	local c;
 
 	for i from 1 to b-1 do
 		for j from 0 to b-1 do
@@ -326,18 +331,14 @@ P3 := proc(K, b, d)
 	for l from 1 to d do
 		printf("Trying depth %a...\n", l);
 		familyformat(starts, startrepeats, middles, ends, endrepeats);
-		#printf("1...\n");
-		starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		#printf("2...\n");
-		starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		#printf("3...\n");
-		starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		#printf("4...\n");
-		starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
-		starts, startrepeats, middles, ends, endrepeats, newK := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		didsplit := true;
+		c := 0;
+		while didsplit do
+			c := c+1;
+			printf("Iteration %a...\n", c);
+			starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
+			starts, startrepeats, middles, ends, endrepeats, newK, didsplit := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		end do;
 		starts, startrepeats, middles, ends, endrepeats, newK := explore(starts, startrepeats, middles, ends, endrepeats, newK, b);
 	end do;
 
@@ -550,3 +551,37 @@ search := proc(b, d1, d2)
 	printf("Width: %a\n", max(map(nops, map(convert, K, base, b))));
 	return starts, startrepeats, middles, ends, endrepeats, K;
 end proc:
+
+#fd2 := fopen("bases.txt", WRITE);
+#fprintf(fd2, "Base\tSize\tWidth\n");
+#fclose(fd2);
+for b from 17 to 50 do
+	printf("Starting base %a...\n", b);
+	starts, startrepeats, middles, ends, endrepeats, K := search(b, 3, 50);
+	fd := fopen("base" || b || ".txt", WRITE);
+	if nops(starts) > 0 then
+		fprintf(fd, "Unsolved families:\n");
+		ffamilyformat(fd, starts, startrepeats, middles, ends, endrepeats);
+	end if;
+	newK := map(convert, K, base, b);
+	fprintf(fd, "Prime kernel: [");
+	for i from 1 to nops(newK) do
+		for j in ListTools[Reverse](newK[i]) do
+			if j < 10 then
+				fprintf(fd, "%a", j);
+			else
+				fprintf(fd, "%c", j+55);
+			end if;
+		end do;
+		if i <> nops(newK) then
+			fprintf(fd, ", ");
+		end if;
+	end do;
+	fprintf(fd, "]\n");
+	fprintf(fd, "Size: %a\n", nops(newK));
+	fprintf(fd, "Width: %a\n", max(map(nops, newK)));
+	fclose(fd);
+	fd2 := fopen("bases.txt", APPEND);
+	fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
+	fclose(fd2);
+end do;
