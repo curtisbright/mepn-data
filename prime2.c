@@ -5,6 +5,7 @@
 
 int main(int argc, char** argv)
 {	
+    FILE* fd;
     int i,j,np=0,m=1000000000; 
     char* pr = (char*)malloc((m>>3)+1); 
     if(pr==NULL) 
@@ -20,16 +21,20 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	for(i=30000; i<50000; i++)
+	for(i=20000; i<50000; i++)
 	{	mpz_ui_pow_ui(p, 17, i);
 		mpz_mul_ui(p, p, 4105);
 		mpz_sub_ui(p, p, 9);
 		mpz_divexact_ui(p, p, 16);
-		//gmp_printf("%u %Zd\n", i, p);
-		//printf("%u %u\n", i, mpz_probab_prime_p(p, 1));
 		printf("%u\n", i);
+		fd = fopen("F19.txt", "a");
+		fprintf(fd, "%u\n", i);
+		fclose(fd);
 		if(mpz_probab_prime_p(p, 1, pr, m)>0)
 		{	printf("index %u probably prime\n", i);
+			fd = fopen("F19.txt", "a");
+			fprintf(fd, "index %u probably prime\n", i);
+			fclose(fd);
 			break;
 		}
 	}
