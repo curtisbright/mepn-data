@@ -46,7 +46,7 @@ P1 := proc(b, depth)
 	return sort(K), sort(L);
 end proc:
 
-explore := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
+exploreleft := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local newstarts := [];
 	local newstartrepeats := [];
 	local newmiddles := [];
@@ -57,33 +57,75 @@ explore := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local i, j, k, l;
 	printf("Exploring...\n");
 	for i from 1 to nops(starts) do
-		for j in middles[i] do
-			for k in middles[i] do
-				if not(subwordin(unconvert([op(ends[i]), k, j, op(starts[i])], b), newK, b)) then
-					if isprime(unconvert([op(ends[i]), k, j, op(starts[i])], b)) then
-						newK := [op(newK), unconvert([op(ends[i]), k, j, op(starts[i])], b)];
-					else
-						temp := [];
-						for l in middles[i] do
-							if not(subwordin(unconvert([op(ends[i]), k, l, j, op(starts[i])], b), newK, b)) then
-								if isprime(unconvert([op(ends[i]), k, l, j, op(starts[i])], b)) then
-									newK := [op(newK), unconvert([op(ends[i]), k, l, j, op(starts[i])], b)];
-								else
-									temp := [op(temp), l];
-								end if;
-							end if;
-						end do;
-						if nops(temp)>0 then
-							newstarts := [op(newstarts), [j, op(starts[i])]];
-							newstartrepeats := [op(newstartrepeats), [[], op(startrepeats[i])]];
-							newmiddles := [op(newmiddles), temp];
-							newends := [op(newends), [op(ends[i]), k]];
-							newendrepeats := [op(newendrepeats), [op(endrepeats[i]), []]];
-						end if;
+		#if nops(middles[i]) > 0 then
+			for j in middles[i] do
+				if not(subwordin(unconvert([op(ends[i]), j, op(starts[i])], b), newK, b)) then
+					if isprime(unconvert([op(ends[i]), j, op(starts[i])], b)) then
+						newK := [op(newK), unconvert([op(ends[i]), j, op(starts[i])], b)];
 					end if;
+
+					temp := [];
+					for l in middles[i] do
+						if not(subwordin(unconvert([op(ends[i]), l, j, op(starts[i])], b), newK, b)) then
+							if isprime(unconvert([op(ends[i]), l, j, op(starts[i])], b)) then
+								newK := [op(newK), unconvert([op(ends[i]), l, j, op(starts[i])], b)];
+							else
+								temp := [op(temp), l];
+							end if;
+						end if;
+					end do;
+					#printf("EXPLORED: ");
+					#singleformat([j, op(starts[i])], [[], op(startrepeats[i])], temp, ends[i], endrepeats[i]);
+					#printf("\n");
+					if checkfordivisors([j, op(starts[i])], [[], op(startrepeats[i])], temp, ends[i], endrepeats[i], b) = false then
+						newstarts := [op(newstarts), [j, op(starts[i])]];
+						newstartrepeats := [op(newstartrepeats), [[], op(startrepeats[i])]];
+						newmiddles := [op(newmiddles), temp];
+						newends := [op(newends), ends[i]];
+						newendrepeats := [op(newendrepeats), endrepeats[i]];
+					end if;
+
 				end if;
 			end do;
-		end do;
+		#else
+			#printf("exploring repeats for ");
+			singleformat(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i]);
+			printf("\n");
+			for k from 1 to nops(startrepeats[i]) do
+				if nops(startrepeats[i][k]) > 0 then
+					for j in startrepeats[i][k] do
+						#print([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], subwordin(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b), newK, b), newK);
+						if not(subwordin(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b), newK, b)) then
+							if isprime(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b)) then
+								newK := [op(newK), unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b)];
+							end if;
+							temp := [];
+							for l in startrepeats[i][k] do
+								if not(subwordin(unconvert([op(ends[i]), [op(starts[i])][1..k][], l, j, [op(starts[i])][k+1..-1][]], b), newK, b)) then
+									if isprime(unconvert([op(ends[i]), [op(starts[i])][1..k][], l, j, [op(starts[i])][k+1..-1][]], b)) then
+										newK := [op(newK), unconvert([op(ends[i]), [op(starts[i])][1..k][], l, j, [op(starts[i])][k+1..-1][]], b)];
+									else
+										temp := [op(temp), l];
+									end if;
+								end if;
+							end do;
+							#singleformat([op(starts[i][1..k]), j, op(starts[i][k+1..-1])], [op(startrepeats[i][1..k-1]), temp, [], op(startrepeats[i][k+1..-1])], [], ends[i], endrepeats[i]);
+							#printf("\n");
+							if checkfordivisors([op(starts[i][1..k]), j, op(starts[i][k+1..-1])], [op(startrepeats[i][1..k-1]), temp, [], op(startrepeats[i][k+1..-1])], [], ends[i], endrepeats[i], b) = false then
+								newstarts := [op(newstarts), [op(starts[i][1..k]), j, op(starts[i][k+1..-1])]];
+								newstartrepeats := [op(newstartrepeats), [op(startrepeats[i][1..k-1]), temp, [], op(startrepeats[i][k+1..-1])]];
+								newmiddles := [op(newmiddles), []];
+								newends := [op(newends), ends[i]];
+								newendrepeats := [op(newendrepeats), endrepeats[i]];
+							end if;
+						end if;
+					end do;
+					#k = nops(startrepeats[i]);
+				end if;
+			end do;
+
+		#end if;
+
 	end do;
 
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
@@ -134,45 +176,257 @@ split := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 					singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
 					printf(" and ");
 					singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i]);
-					printf("\n");
+
 					temp := false;
-					if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
-						newstarts := [op(newstarts), starts[i]];
-						newstartrepeats := [op(newstartrepeats), startrepeats[i]];
-						newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
-						newends := [op(newends), ends[i]];
-						newendrepeats := [op(newendrepeats), endrepeats[i]];
-						didsplit := true;
-					#else
-					#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
-					#	printf(" ALREADY IN\n");
+					if checkfordivisors(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i], b) = false then
+						if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
+							newstarts := [op(newstarts), starts[i]];
+							newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+							newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
+							newends := [op(newends), ends[i]];
+							newendrepeats := [op(newendrepeats), endrepeats[i]];
+							didsplit := true;
+						#else
+						#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
+						#	printf(" ALREADY IN\n");
+						end if;
+					else
+						printf(" (1st excluded)");
 					end if;
 
-					if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i])) then
-						newstarts := [op(newstarts), starts[i]];
-						newstartrepeats := [op(newstartrepeats), startrepeats[i]];
-						newmiddles := [op(newmiddles), [({middles[i][]} minus {k})[]]];
-						newends := [op(newends), ends[i]];
-						newendrepeats := [op(newendrepeats), endrepeats[i]];
-						didsplit := true;
-					#else
-					#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i]);
-					#	printf(" ALREADY IN\n");
+					if checkfordivisors(starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i], b) = false then
+						if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i])) then
+							newstarts := [op(newstarts), starts[i]];
+							newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+							newmiddles := [op(newmiddles), [({middles[i][]} minus {k})[]]];
+							newends := [op(newends), ends[i]];
+							newendrepeats := [op(newendrepeats), endrepeats[i]];
+							didsplit := true;
+						#else
+						#	singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {k})[]], ends[i], endrepeats[i]);
+						#	printf(" ALREADY IN\n");
+						end if;
+					else
+						printf(" (2nd excluded)");
 					end if;
+					printf("\n");
 				end if;
 			end do;
 		end do;
 		if temp = true then
-			if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i])) then
-				newstarts := [op(newstarts), starts[i]];
-				newstartrepeats := [op(newstartrepeats), startrepeats[i]];
-				newmiddles := [op(newmiddles), middles[i]];
-				newends := [op(newends), ends[i]];
-				newendrepeats := [op(newendrepeats), endrepeats[i]];
+			if checkfordivisors(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i], b) = false then
+				if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i])) then
+					newstarts := [op(newstarts), starts[i]];
+					newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+					newmiddles := [op(newmiddles), middles[i]];
+					newends := [op(newends), ends[i]];
+					newendrepeats := [op(newendrepeats), endrepeats[i]];
+				end if;
 			end if;
 		end if;
 	end do;
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK, didsplit;
+end proc:
+
+split2 := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
+	local newstarts := [];
+	local newstartrepeats := [];
+	local newmiddles := [];
+	local newends := [];
+	local newendrepeats := [];
+	local newK := K;
+	local temp;
+	local i, j, k;
+	for i from 1 to nops(starts) do
+		temp := true;
+		if nops(middles[i]) > 1 then
+			for j in middles[i] do
+				if temp = false then
+					next;
+				end if;
+				if not(subwordin(unconvert([op(ends[i]), j, j, op(starts[i])], b), newK, b)) then
+					if isprime(unconvert([op(ends[i]), j, j, op(starts[i])], b)) then
+						temp := false;
+						newK := [op(newK), unconvert([op(ends[i]), j, j, op(starts[i])], b)];
+
+						singleformat(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i]);
+						printf(" splits into ");
+						singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
+						printf(" and ");
+						singleformat([j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
+
+						if checkfordivisors(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i], b) = false then
+							if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
+								newstarts := [op(newstarts), starts[i]];
+								newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+								newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
+								newends := [op(newends), ends[i]];
+								newendrepeats := [op(newendrepeats), endrepeats[i]];
+							end if;
+						else
+							printf(" (1st excluded)");
+						end if;
+
+						if checkfordivisors([j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i], b) = false then
+							if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, [j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
+								newstarts := [op(newstarts), [j, op(starts[i])]];
+								newstartrepeats := [op(newstartrepeats), [[({middles[i][]} minus {j})[]] , op(startrepeats[i])]];
+								newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
+								newends := [op(newends), ends[i]];
+								newendrepeats := [op(newendrepeats), endrepeats[i]];
+							end if;
+						else
+							printf(" (2nd excluded)");
+						end if;
+						printf("\n");
+
+					end if;
+				else
+					temp := false;
+
+					singleformat(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i]);
+					printf(" splits into ");
+					singleformat(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
+					printf(" and ");
+					singleformat([j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i]);
+					printf("\n");
+
+					if checkfordivisors(starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i], b) = false then
+						if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
+							newstarts := [op(newstarts), starts[i]];
+							newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+							newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
+							newends := [op(newends), ends[i]];
+							newendrepeats := [op(newendrepeats), endrepeats[i]];
+						end if;
+					end if;
+
+					if checkfordivisors([j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i], b) = false then
+						if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, [j, op(starts[i])], [[({middles[i][]} minus {j})[]] , op(startrepeats[i])], [({middles[i][]} minus {j})[]], ends[i], endrepeats[i])) then
+							newstarts := [op(newstarts), [j, op(starts[i])]];
+							newstartrepeats := [op(newstartrepeats), [[({middles[i][]} minus {j})[]] , op(startrepeats[i])]];
+							newmiddles := [op(newmiddles), [({middles[i][]} minus {j})[]]];
+							newends := [op(newends), ends[i]];
+							newendrepeats := [op(newendrepeats), endrepeats[i]];
+						end if;
+					end if;
+
+				end if;
+			end do;
+		end if;
+		if temp = true then
+			if checkfordivisors(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i], b) = false then
+				if not(alreadyin(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i])) then
+					newstarts := [op(newstarts), starts[i]];
+					newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+					newmiddles := [op(newmiddles), middles[i]];
+					newends := [op(newends), ends[i]];
+					newendrepeats := [op(newendrepeats), endrepeats[i]];
+				end if;
+			end if;
+		end if;
+	end do;
+	#newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK := simplifyrepeats(newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK, b);
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
+end proc:
+
+checkfordivisors := proc(start, startrepeat, middle, End, endrepeat, b)
+	local i, j, k, l, m;
+	local thegcd;
+	local thegcd1, thegcd2;
+	local repeatcount := 0;
+	if nops(middle) > 0 then
+		repeatcount := 1;
+	end if;
+
+	thegcd := unconvert([op(End), op(start)], b);
+	for j in middle do
+		thegcd := igcd(thegcd, unconvert([op(End), j, op(start)], b));
+	end do;
+
+	for j from 1 to nops(startrepeat) do
+		if nops(startrepeat[j]) > 0 then
+			repeatcount := repeatcount + 1;
+		end if;
+		for k in startrepeat[j] do
+			thegcd := igcd(thegcd, unconvert([op(End), [op(start)][1..j][], k, [op(start)][j+1..-1][]], b));
+		end do;
+	end do;
+
+	if thegcd = 1 and repeatcount = 1 then
+		if nops(middle) > 0 then
+			thegcd1 := unconvert([op(End), op(start)], b);
+			for j in middle do
+				for k in middle do
+					thegcd1 := igcd(thegcd1, unconvert([op(End), j, k, op(start)], b));
+				end do;
+			end do;
+			thegcd2 := unconvert([op(End), middle[1], op(start)], b);
+			for j in middle do
+				thegcd2 := igcd(thegcd2, unconvert([op(End), j, op(start)], b));
+			end do;
+			for j in middle do
+				for k in middle do
+					for m in middle do
+						thegcd2 := igcd(thegcd2, unconvert([op(End), j, k, m, op(start)], b));
+					end do;
+				end do;
+			end do;
+		else
+			for k from 1 to nops(startrepeat) do
+				if nops(startrepeat[k]) > 0 then
+					thegcd1 := unconvert([op(End), op(start)], b);
+					for j in startrepeat[k] do
+						for l in startrepeat[k] do
+							thegcd1 := igcd(thegcd1, unconvert([op(End), [op(start)][1..k][], j, l, [op(start)][k+1..-1][]], b));
+						end do;
+					end do;
+					thegcd2 := unconvert([op(End), startrepeat[k][1], op(start)], b);
+					for l in startrepeat[k] do
+						thegcd2 := igcd(thegcd2, unconvert([op(End), [op(start)][1..k][], l, [op(start)][k+1..-1][]], b));
+					end do;
+					for j in startrepeat[k] do
+						for l in startrepeat[k] do
+							for m in startrepeat[k] do
+								thegcd2 := igcd(thegcd2, unconvert([op(End), [op(start)][1..k][], j, l, m, [op(start)][k+1..-1][]], b));
+							end do;
+						end do;
+					end do;
+				end if;
+			end do;
+		end if;
+
+		thegcd := min(thegcd1, thegcd2);
+		if thegcd > 1 then
+			singleformat(start, startrepeat, middle, End, endrepeat);
+			printf(" is divisible by %a and %a\n", thegcd1, thegcd2);
+		end if;
+	end if;
+
+	if thegcd = 1 then
+		return false;
+	else
+		return true;
+	end if;
+end proc:
+
+simplifydivisors := proc(starts, startrepeats, middles, ends, endrepeats, b)
+	local newstarts := [];
+	local newstartrepeats := [];
+	local newmiddles := [];
+	local newends := [];
+	local newendrepeats := [];
+	local i;
+	for i from 1 to nops(starts) do
+		if checkfordivisors(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i], b) = false then
+			newstarts := [op(newstarts), starts[i]];
+			newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+			newmiddles := [op(newmiddles), middles[i]];
+			newends := [op(newends), ends[i]];
+			newendrepeats := [op(newendrepeats), endrepeats[i]];
+		end if;
+	end do;
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats;
 end proc:
 
 simplifyrepeats := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
@@ -205,66 +459,6 @@ simplifyrepeats := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 		newends := [op(newends), ends[i]];
 		newendrepeats := [op(newendrepeats), endrepeats[i]];
 	end do;
-	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
-end proc:
-
-simplifydivisors := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
-	local newstarts := [];
-	local newstartrepeats := [];
-	local newmiddles := [];
-	local newends := [];
-	local newendrepeats := [];
-	local newK := K;
-	local thegcd, thegcd1, thegcd2;
-	local i, j, k, m;
-
-	for i from 1 to nops(starts) do
-		thegcd := unconvert([op(ends[i]), op(starts[i])], b);
-		for j in middles[i] do
-			thegcd := igcd(thegcd, unconvert([op(ends[i]), j, op(starts[i])], b));
-		end do;
-		#for j from 1 to nops(startrepeats[i]) do
-		#	for k in startrepeats[i][j] do
-		#		thegcd := igcd(thegcd, unconvert([op(ends[i]), [op(starts[i])][1..j][], k, [op(starts[i])][j+1..-1][]], b));
-		#	end do;
-		#inend do;
-		thegcd1 := -1;
-		if thegcd = 1 then
-			thegcd1 := unconvert([op(ends[i]), op(starts[i])], b);
-			for j in middles[i] do
-				for k in middles[i] do
-					thegcd1 := igcd(thegcd1, unconvert([op(ends[i]), j, k, op(starts[i])], b));
-				end do;
-			end do;
-			thegcd2 := unconvert([op(ends[i]), middles[i][1], op(starts[i])], b);
-			for j in middles[i] do
-				thegcd2 := igcd(thegcd2, unconvert([op(ends[i]), j, op(starts[i])], b));
-			end do;
-			for j in middles[i] do
-				for k in middles[i] do
-					for m in middles[i] do
-						thegcd2 := igcd(thegcd2, unconvert([op(ends[i]), j, k, m, op(starts[i])], b));
-					end do;
-				end do;
-			end do;
-			thegcd := min(thegcd1, thegcd2);
-			if thegcd > 1 then
-				singleformat(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i]);
-				printf(" is divisible by %a and %a\n", thegcd1, thegcd2);
-			end if;
-		end if;
-		if thegcd = 1 then
-			newstarts := [op(newstarts), starts[i]];
-			newstartrepeats := [op(newstartrepeats), startrepeats[i]];
-			newmiddles := [op(newmiddles), middles[i]];
-			newends := [op(newends), ends[i]];
-			newendrepeats := [op(newendrepeats), endrepeats[i]];
-		elif thegcd1 = -1 then
-			singleformat(starts[i], startrepeats[i], middles[i], ends[i], endrepeats[i]);
-			printf(" is divisible by %a\n", thegcd);
-		end if;
-	end do;
-
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
 end proc:
 
@@ -336,10 +530,13 @@ P3 := proc(K, b, d)
 		while didsplit do
 			c := c+1;
 			printf("Iteration %a...\n", c);
-			starts, startrepeats, middles, ends, endrepeats, newK := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, newK, b);
 			starts, startrepeats, middles, ends, endrepeats, newK, didsplit := split(starts, startrepeats, middles, ends, endrepeats, newK, b);
+			starts, startrepeats, middles, ends, endrepeats := simplifydivisors(starts, startrepeats, middles, ends, endrepeats, b);
+			starts, startrepeats, middles, ends, endrepeats, newK := simplifyrepeats(split2(starts, startrepeats, middles, ends, endrepeats, newK, b), b);
+			#printf("After split...\n");
+			#familyformat(starts, startrepeats, middles, ends, endrepeats);
 		end do;
-		starts, startrepeats, middles, ends, endrepeats, newK := explore(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		starts, startrepeats, middles, ends, endrepeats, newK := exploreleft(starts, startrepeats, middles, ends, endrepeats, newK, b);
 	end do;
 
 	return starts, startrepeats, middles, ends, endrepeats, simplifysubwords(newK, b);
@@ -542,6 +739,7 @@ search := proc(b, d1, d2)
 	local i, j;
 	K, L := P1(b, d1);
 	starts, startrepeats, middles, ends, endrepeats, K := P3(K, b, d2);
+	printf("\n");
 	if nops(starts) > 0 then
 		printf("Unsolved families:\n");
 		familyformat(starts, startrepeats, middles, ends, endrepeats);
@@ -552,36 +750,36 @@ search := proc(b, d1, d2)
 	return starts, startrepeats, middles, ends, endrepeats, K;
 end proc:
 
-#fd2 := fopen("bases.txt", WRITE);
-#fprintf(fd2, "Base\tSize\tWidth\n");
-#fclose(fd2);
-for b from 17 to 50 do
-	printf("Starting base %a...\n", b);
-	starts, startrepeats, middles, ends, endrepeats, K := search(b, 3, 50);
-	fd := fopen("base" || b || ".txt", WRITE);
-	if nops(starts) > 0 then
-		fprintf(fd, "Unsolved families:\n");
-		ffamilyformat(fd, starts, startrepeats, middles, ends, endrepeats);
-	end if;
-	newK := map(convert, K, base, b);
-	fprintf(fd, "Prime kernel: [");
-	for i from 1 to nops(newK) do
-		for j in ListTools[Reverse](newK[i]) do
-			if j < 10 then
-				fprintf(fd, "%a", j);
-			else
-				fprintf(fd, "%c", j+55);
+printinfo := proc(m)
+	local i, j, starts, startrepeats, middles, ends, endrepeats, K, b, fd, fd2, newK;
+	for b from 2 to m do
+		printf("Starting base %a...\n", b);
+		starts, startrepeats, middles, ends, endrepeats, K := search(b, 3, 50);
+		fd := fopen("base" || b || ".txt", WRITE);
+		if nops(starts) > 0 then
+			fprintf(fd, "Unsolved families:\n");
+			ffamilyformat(fd, starts, startrepeats, middles, ends, endrepeats);
+		end if;
+		newK := map(convert, K, base, b);
+		fprintf(fd, "Prime kernel: [");
+		for i from 1 to nops(newK) do
+			for j in ListTools[Reverse](newK[i]) do
+				if j < 10 then
+					fprintf(fd, "%a", j);
+				else
+					fprintf(fd, "%c", j+55);
+				end if;
+			end do;
+			if i <> nops(newK) then
+				fprintf(fd, ", ");
 			end if;
 		end do;
-		if i <> nops(newK) then
-			fprintf(fd, ", ");
-		end if;
+		fprintf(fd, "]\n");
+		fprintf(fd, "Size: %a\n", nops(newK));
+		fprintf(fd, "Width: %a\n", max(map(nops, newK)));
+		fclose(fd);
+		fd2 := fopen("bases.txt", APPEND);
+		fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
+		fclose(fd2);
 	end do;
-	fprintf(fd, "]\n");
-	fprintf(fd, "Size: %a\n", nops(newK));
-	fprintf(fd, "Width: %a\n", max(map(nops, newK)));
-	fclose(fd);
-	fd2 := fopen("bases.txt", APPEND);
-	fprintf(fd2, "%a\t%a\t%a\n", b, nops(newK), max(map(nops, newK)));
-	fclose(fd2);
-end do;
+end proc:
