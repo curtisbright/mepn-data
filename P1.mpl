@@ -55,7 +55,7 @@ exploreleft := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 	local newK := K;
 	local temp;
 	local i, j, k, l;
-	printf("Exploring...\n");
+	printf("Exploring left...\n");
 	for i from 1 to nops(starts) do
 		#if nops(middles[i]) > 0 then
 			for j in middles[i] do
@@ -126,6 +126,78 @@ exploreleft := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
 
 		#end if;
 
+	end do;
+
+	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
+end proc:
+
+exploreright := proc(starts, startrepeats, middles, ends, endrepeats, K, b)
+	local newstarts := [];
+	local newstartrepeats := [];
+	local newmiddles := [];
+	local newends := [];
+	local newendrepeats := [];
+	local newK := K;
+	local temp;
+	local i, j, k, l;
+	printf("Exploring right...\n");
+	for i from 1 to nops(starts) do
+		for j in middles[i] do
+			if not(subwordin(unconvert([op(ends[i]), j, op(starts[i])], b), newK, b)) then
+				if isprime(unconvert([op(ends[i]), j, op(starts[i])], b)) then
+					newK := [op(newK), unconvert([op(ends[i]), j, op(starts[i])], b)];
+				end if;
+
+				temp := [];
+				for l in middles[i] do
+					if not(subwordin(unconvert([op(ends[i]), j, l, op(starts[i])], b), newK, b)) then
+						if isprime(unconvert([op(ends[i]), j, l, op(starts[i])], b)) then
+							newK := [op(newK), unconvert([op(ends[i]), j, l, op(starts[i])], b)];
+						else
+							temp := [op(temp), l];
+						end if;
+					end if;
+				end do;
+				if checkfordivisors(starts[i], startrepeats[i], temp, [op(ends[i]), j], [op(endrepeats[i]), []], b) = false then
+					newstarts := [op(newstarts), starts[i]];
+					newstartrepeats := [op(newstartrepeats), startrepeats[i]];
+					newmiddles := [op(newmiddles), temp];
+					newends := [op(newends), [op(ends[i]), j]];
+					newendrepeats := [op(newendrepeats), [op(endrepeats[i]), []]];
+				end if;
+
+			end if;
+		end do;
+
+		for k from 1 to nops(startrepeats[i]) do
+			if nops(startrepeats[i][k]) > 0 then
+				for j in startrepeats[i][k] do
+					if not(subwordin(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b), newK, b)) then
+						if isprime(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b)) then
+							newK := [op(newK), unconvert([op(ends[i]), [op(starts[i])][1..k][], j, [op(starts[i])][k+1..-1][]], b)];
+						end if;
+						temp := [];
+						for l in startrepeats[i][k] do
+							if not(subwordin(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, l, [op(starts[i])][k+1..-1][]], b), newK, b)) then
+								if isprime(unconvert([op(ends[i]), [op(starts[i])][1..k][], j, l, [op(starts[i])][k+1..-1][]], b)) then
+									newK := [op(newK), unconvert([op(ends[i]), [op(starts[i])][1..k][], j, l, [op(starts[i])][k+1..-1][]], b)];
+								else
+									temp := [op(temp), l];
+								end if;
+							end if;
+						end do;
+
+						if checkfordivisors([op(starts[i][1..k]), j, op(starts[i][k+1..-1])], [op(startrepeats[i][1..k-1]), [], temp, op(startrepeats[i][k+1..-1])], [], ends[i], endrepeats[i], b) = false then
+							newstarts := [op(newstarts), [op(starts[i][1..k]), j, op(starts[i][k+1..-1])]];
+							newstartrepeats := [op(newstartrepeats), [op(startrepeats[i][1..k-1]), [], temp, op(startrepeats[i][k+1..-1])]];
+							newmiddles := [op(newmiddles), []];
+							newends := [op(newends), ends[i]];
+							newendrepeats := [op(newendrepeats), endrepeats[i]];
+						end if;
+					end if;
+				end do;
+			end if;
+		end do;
 	end do;
 
 	return newstarts, newstartrepeats, newmiddles, newends, newendrepeats, newK;
@@ -536,7 +608,7 @@ P3 := proc(K, b, d)
 			#printf("After split...\n");
 			#familyformat(starts, startrepeats, middles, ends, endrepeats);
 		end do;
-		starts, startrepeats, middles, ends, endrepeats, newK := exploreleft(starts, startrepeats, middles, ends, endrepeats, newK, b);
+		starts, startrepeats, middles, ends, endrepeats, newK := exploreright(starts, startrepeats, middles, ends, endrepeats, newK, b);
 	end do;
 
 	return starts, startrepeats, middles, ends, endrepeats, simplifysubwords(newK, b);
