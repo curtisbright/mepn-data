@@ -71,14 +71,14 @@ void adddigit(family* f, char d, char* r, int n)
 {	int len = ++f->len;
 	f->digit = realloc(f->digit, len*sizeof(int));
 	f->digit[len-1] = d;
-	f->numrepeats = realloc(f->numrepeats, len*sizeof(char));
+	f->numrepeats = realloc(f->numrepeats, len*sizeof(int));
 	f->numrepeats[len-1] = n;
 	f->repeats = realloc(f->repeats, len*sizeof(char*));
 	f->repeats[len-1] = r;
 }
 
 char digitchar(char digit)
-{	if(digit>10)
+{	if(digit>=10)
 		return digit+'A'-10;
 	else
 		return digit+'0';
@@ -117,6 +117,7 @@ int hasdivisor(family p)
 	mpz_init(gcd);
 	mpz_init(temp);
 	char str[100];
+	int trivial = 1;
 	emptyinstancestring(str, p);
 	mpz_set_str(gcd, str, base);
 	for(int i=0; i<p.len; i++)
@@ -124,9 +125,10 @@ int hasdivisor(family p)
 		{	instancestring(str, p, i, j);
 			mpz_set_str(temp, str, base);
 			mpz_gcd(gcd, gcd, temp);
+			trivial = 0;
 		}
 
-	if(mpz_cmp_ui(gcd, 1)>0)
+	if(mpz_cmp_ui(gcd, 1)>0 && trivial==0)
 	{	//familystring(str, p);
 		//gmp_printf("%s has a divisor %Zd\n", str, gcd);
 		return 1;
@@ -136,6 +138,82 @@ int hasdivisor(family p)
 
 	mpz_clear(gcd);
 	mpz_clear(temp);
+}
+
+void copyfamily(family* newf, family f)
+{	for(int i=0; i<f.len; i++)
+	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+		adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+	}
+}
+
+void instancefamily(family* newf, family f, int side)
+{	int firstrepeat = 1;
+	for(int i=0; i<f.len; i++)
+	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+		if(f.numrepeats[i]>0 && firstrepeat)
+		{	if(side)
+			{	adddigit(newf, f.digit[i], NULL, 0);
+				adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+			}
+			else
+			{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+				adddigit(newf, 0, NULL, 0);
+			}
+			firstrepeat = 0;
+		}
+		else
+			adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+	}
+}
+
+void explore(kernel* K, family f, int side)
+{	char* str = malloc(100);
+	emptyinstancestring(str, f);
+	if(newminimal(*K, str))
+	{	addtokernel(K, str);
+		return;
+	}
+	free(str);
+	if(f.len>5)
+	{	char tempstr[100];
+		familystring(tempstr, f);
+		printf("Unsolved family: %s\n", tempstr);
+		return;
+	}
+
+	for(int i=0; i<f.len; i++)
+		if(f.numrepeats[i]>0)
+		{	
+			family copyf;
+			familyinit(&copyf);
+			copyfamily(&copyf, f);
+			copyf.repeats[i] = NULL;
+			copyf.numrepeats[i] = 0;
+			if(!hasdivisor(copyf))
+			{	//char tempstr[100];
+				//familystring(tempstr, copyf);
+				//printf("About to explore: %s\n", tempstr);
+				explore(K, copyf, 1-side);
+			}
+
+			for(int j=0; j<f.numrepeats[i]; j++)
+			{	family newf;
+				familyinit(&newf);
+				instancefamily(&newf, f, side);
+				newf.digit[i+1] = f.repeats[i][j];
+				if(!hasdivisor(newf))
+				{	//char tempstr[100];
+					//familystring(tempstr, newf);
+					//printf("About to explore: %s\n", tempstr);
+					explore(K, newf, 1-side);
+				}
+			}
+
+			break;
+		}
 }
 
 int main(int argc, char** argv)
@@ -187,11 +265,10 @@ int main(int argc, char** argv)
 				if(!hasdivisor(f))
 				{	char tempstr[100];
 					familystring(tempstr, f);
-					printf("Unsolved family: %s\n", tempstr);
+					printf("Exploring %s...\n", tempstr);
+					explore(&K, f, 1);
 				}
 			}
-			else
-				free(middles);
 		}
 
 	printf("Prime kernel:\n");
