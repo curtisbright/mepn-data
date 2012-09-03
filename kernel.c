@@ -3,10 +3,6 @@
 #include <gmp.h>
 #include <string.h>
 
-int base;
-int prsize;
-char* pr;
-
 typedef struct
 {	int len;
 	int* numrepeats;
@@ -19,6 +15,36 @@ typedef struct
 	char** primes;
 } kernel;
 
+typedef struct
+{	int size;
+	family* fam;
+} list;
+
+int base;
+int depth = 10;
+kernel K;
+int prsize;
+char* pr;
+list unsolved;
+
+void listinit(list* l)
+{	l->size = 0;
+	l->fam = NULL;
+}
+
+void addtolist(list* l, family f)
+{	int size = ++l->size;
+	l->fam = realloc(l->fam, size*sizeof(family));
+	l->fam[size-1] = f;
+}
+
+void copylist(list* out, list in)
+{	out->size = in.size;
+	out->fam = malloc(in.size*sizeof(family));
+	for(int i=0; i<in.size; i++)
+		out->fam[i] = in.fam[i];
+}
+
 void familyinit(family* p)
 {	p->len = 0;
 	p->numrepeats = NULL;
@@ -26,18 +52,18 @@ void familyinit(family* p)
 	p->repeats = NULL;
 }
 
-void kernelinit(kernel* K)
-{	K->size = 0;
-	K->primes = NULL;
+void kernelinit()
+{	K.size = 0;
+	K.primes = NULL;
 }
 
-void addtokernel(kernel* K, char* p)
-{	int size = ++K->size;
-	K->primes = realloc(K->primes, size*sizeof(char*));
-	K->primes[size-1] = p;
+void addtokernel(char* p)
+{	int size = ++K.size;
+	K.primes = realloc(K.primes, size*sizeof(char*));
+	K.primes[size-1] = p;
 }
 
-int nosubword(kernel K, char* p)
+int nosubword(char* p)
 {	for(int i=0; i<K.size; i++)
 	{	int k = 0;
 		for(int j=0; j<strlen(p); j++)
@@ -50,8 +76,8 @@ int nosubword(kernel K, char* p)
 	return 1;
 }
 
-int newminimal(kernel K, char* p)
-{	if(nosubword(K, p)==0)
+int newminimal(char* p)
+{	if(nosubword(p)==0)
 		return 0;
 
 	mpz_t temp;
@@ -169,22 +195,36 @@ void instancefamily(family* newf, family f, int side)
 	}
 }
 
-void explore(kernel* K, family f, int side)
+int examine(family* f)
 {	char* str = malloc(100);
-	emptyinstancestring(str, f);
-	if(newminimal(*K, str))
-	{	addtokernel(K, str);
-		return;
+	emptyinstancestring(str, *f);
+	if(newminimal(str))
+	{	addtokernel(str);
+		return 0;
 	}
+	if(!nosubword(str))
+		return 0;
 	free(str);
-	if(f.len>5)
-	{	char tempstr[100];
-		familystring(tempstr, f);
-		printf("Unsolved family: %s\n", tempstr);
-		return;
+
+	for(int i=0; i<f->len; i++)
+	{	int newnumrepeat = 0;
+		for(int j=0; j<f->numrepeats[i]; j++)
+		{	char tempstr[100];
+			instancestring(tempstr, *f, i, j);
+			if(nosubword(tempstr))
+				f->repeats[i][newnumrepeat++] = f->repeats[i][j];
+		}
+		f->numrepeats[i] = newnumrepeat;
 	}
 
-	for(int i=0; i<f.len; i++)
+	if(hasdivisor(*f))
+		return 0;
+
+	return 1;
+}
+
+void explore(family f, int side)
+{	for(int i=0; i<f.len; i++)
 		if(f.numrepeats[i]>0)
 		{	
 			family copyf;
@@ -192,24 +232,16 @@ void explore(kernel* K, family f, int side)
 			copyfamily(&copyf, f);
 			copyf.repeats[i] = NULL;
 			copyf.numrepeats[i] = 0;
-			if(!hasdivisor(copyf))
-			{	//char tempstr[100];
-				//familystring(tempstr, copyf);
-				//printf("About to explore: %s\n", tempstr);
-				explore(K, copyf, 1-side);
-			}
+			if(examine(&copyf))
+				addtolist(&unsolved, copyf);
 
 			for(int j=0; j<f.numrepeats[i]; j++)
 			{	family newf;
 				familyinit(&newf);
 				instancefamily(&newf, f, side);
 				newf.digit[i+1] = f.repeats[i][j];
-				if(!hasdivisor(newf))
-				{	//char tempstr[100];
-					//familystring(tempstr, newf);
-					//printf("About to explore: %s\n", tempstr);
-					explore(K, newf, 1-side);
-				}
+				if(examine(&newf))
+					addtolist(&unsolved, newf);
 			}
 
 			break;
@@ -228,8 +260,8 @@ int main(int argc, char** argv)
 
 	base = atoi(argv[1]);
 	char* str;
-	kernel K;
-	kernelinit(&K);
+	kernelinit();
+	listinit(&unsolved);
 
 	for(int i=0; i<base; i++)
 		for(int j=0; j<base; j++)
@@ -241,8 +273,8 @@ int main(int argc, char** argv)
 					sprintf(str, "%c%c", digitchar(j), digitchar(k));
 				else
 					sprintf(str, "%c%c%c", digitchar(i), digitchar(j), digitchar(k));
-				if(newminimal(K, str))
-					addtokernel(&K, str);
+				if(newminimal(str))
+					addtokernel(str);
 				else
 					free(str);
 			}
@@ -254,7 +286,7 @@ int main(int argc, char** argv)
 			for(int k=0; k<base; k++)
 			{	str = calloc(4, sizeof(char));
 				sprintf(str, "%c%c%c", digitchar(i), digitchar(k), digitchar(j));
-				if(nosubword(K, str))
+				if(nosubword(str))
 					middles[middlesize++] = k;
 			}
 			if(middlesize>0)
@@ -263,13 +295,33 @@ int main(int argc, char** argv)
 				adddigit(&f, i, middles, middlesize);
 				adddigit(&f, j, NULL, 0);
 				if(!hasdivisor(f))
-				{	char tempstr[100];
-					familystring(tempstr, f);
-					printf("Exploring %s...\n", tempstr);
-					explore(&K, f, 1);
+				{	//char tempstr[100];
+					//familystring(tempstr, f);
+					//printf("Exploring %s...\n", tempstr);
+					explore(f, 1);
 				}
 			}
 		}
+
+	for(int i=0; i<depth; i++)
+	{	list oldlist;
+		copylist(&oldlist, unsolved);
+		listinit(&unsolved);
+		for(int j=0; j<oldlist.size; j++)
+		{	//char tempstr[100];
+			//familystring(tempstr, oldlist.fam[j]);
+			//printf("Exploring %s...\n", tempstr);
+			explore(oldlist.fam[j], i%2);
+		}
+	}
+
+	printf("Unsolved families:\n");
+	for(int i=0; i<unsolved.size; i++)
+	{	str = calloc(100, sizeof(char));
+		familystring(str, unsolved.fam[i]);
+		printf("%s\n", str);
+		free(str);
+	}
 
 	printf("Prime kernel:\n");
 	for(int i=0; i<K.size; i++)
