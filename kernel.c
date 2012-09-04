@@ -20,6 +20,8 @@ typedef struct
 	family* fam;
 } list;
 
+void familystring(char* str, family p);
+
 int base;
 int depth;
 kernel K;
@@ -36,6 +38,9 @@ void addtolist(list* l, family f)
 {	int size = ++l->size;
 	l->fam = realloc(l->fam, size*sizeof(family));
 	l->fam[size-1] = f;
+	/*char str[100];
+	familystring(str, f);
+	printf("added to list: %s\n", str);*/
 }
 
 void copylist(list* out, list in)
@@ -61,6 +66,7 @@ void addtokernel(char* p)
 {	int size = ++K.size;
 	K.primes = realloc(K.primes, size*sizeof(char*));
 	K.primes[size-1] = p;
+	//printf("added to kernel: %s\n", p);
 }
 
 int nosubword(char* p)
@@ -303,16 +309,55 @@ int examine(family* f)
 }
 
 int split(family f)
-{	for(int i=0; i<f.len; i++)
+{	family copyf;
+	familyinit(&copyf);
+	copyfamily(&copyf, f);
+
+	for(int i=0; i<f.len; i++)
 	{	for(int j=0; j<f.numrepeats[i]; j++)
-		{	char str[100];
+		{	char* str = malloc(100);
 			doubleinstancestring(str, f, i, j, i, j);
-			if(nosubword(str) && isprime(str))
-				addtokernel(str);
+			//if(nosubword(str) && isprime(str))
+			//	addtokernel(str);
 			
-			return 0;	
+			if(!nosubword(str))
+			{	int newnumrepeats = 0;
+				int removeddigit = copyf.repeats[i][j];
+				for(int k=0; k<copyf.numrepeats[i]; k++)
+				{	if(k!=j)
+						copyf.repeats[i][newnumrepeats++] = copyf.repeats[i][k];
+				}
+				copyf.numrepeats[i] = newnumrepeats;
+
+				family newf;
+				familyinit(&newf);
+				for(int k=0; k<copyf.len; k++)
+				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+					adddigit(&newf, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+					if(k==i)
+					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf, removeddigit, newrepeats, copyf.numrepeats[k]);
+					}
+				}
+
+				addtolist(&unsolved, copyf);
+				addtolist(&unsolved, newf);
+
+				/*char str[100];
+				familystring(str, copyf);
+				printf("%s splits into ", str);
+				familystring(str, copyf);
+				printf("%s and ", str);
+				familystring(str, newf);
+				printf("%s\n", str);*/
+			
+				return 0;
+			}
 		}
 	}
+	addtolist(&unsolved, copyf);
 	return 1;
 }
 
@@ -320,7 +365,6 @@ void explore(family f, int side)
 {	for(int i=0; i<f.len; i++)
 		if(f.numrepeats[i]>0)
 		{	
-
 			for(int j=0; j<f.numrepeats[i]; j++)
 			{	family newf;
 				familyinit(&newf);
@@ -330,10 +374,13 @@ void explore(family f, int side)
 					addtolist(&unsolved, newf);
 			}
 
-			f.repeats[i] = NULL;
-			f.numrepeats[i] = 0;
-			if(examine(&f))
-				addtolist(&unsolved, f);
+			family copyf;
+			familyinit(&copyf);
+			copyfamily(&copyf, f);
+			copyf.repeats[i] = NULL;
+			copyf.numrepeats[i] = 0;
+			if(examine(&copyf))
+				addtolist(&unsolved, copyf);
 
 			break;
 		}
@@ -397,6 +444,10 @@ int main(int argc, char** argv)
 
 	for(int i=0; i<depth; i++)
 	{	list oldlist;
+		copylist(&oldlist, unsolved);
+		listinit(&unsolved);
+		for(int j=0; j<oldlist.size; j++)
+			split(oldlist.fam[j]);
 		copylist(&oldlist, unsolved);
 		listinit(&unsolved);
 		for(int j=0; j<oldlist.size; j++)
