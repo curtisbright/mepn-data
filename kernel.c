@@ -76,11 +76,8 @@ int nosubword(char* p)
 	return 1;
 }
 
-int newminimal(char* p)
-{	if(nosubword(p)==0)
-		return 0;
-
-	mpz_t temp;
+int isprime(char* p)
+{	mpz_t temp;
 	mpz_init(temp);
 	mpz_set_str(temp, p, base);
 	if(mpz_probab_prime_p(temp, 1, pr, prsize) > 0)
@@ -91,6 +88,12 @@ int newminimal(char* p)
 	{	mpz_clear(temp);
 		return 0;
 	}
+}
+
+int newminimal(char* p)
+{	if(!nosubword(p))
+		return 0;
+	return isprime(p);
 }
 
 void adddigit(family* f, char d, char* r, int n)
@@ -268,12 +271,12 @@ void instancefamily(family* newf, family f, int side)
 int examine(family* f)
 {	char* str = malloc(100);
 	emptyinstancestring(str, *f);
-	if(newminimal(str))
+	if(!nosubword(str))
+		return 0;
+	else if(isprime(str))
 	{	addtokernel(str);
 		return 0;
 	}
-	if(!nosubword(str))
-		return 0;
 	free(str);
 
 	int trivial = 1;
@@ -299,17 +302,24 @@ int examine(family* f)
 	return 1;
 }
 
+int split(family f)
+{	for(int i=0; i<f.len; i++)
+	{	for(int j=0; j<f.numrepeats[i]; j++)
+		{	char str[100];
+			doubleinstancestring(str, f, i, j, i, j);
+			if(nosubword(str) && isprime(str))
+				addtokernel(str);
+			
+			return 0;	
+		}
+	}
+	return 1;
+}
+
 void explore(family f, int side)
 {	for(int i=0; i<f.len; i++)
 		if(f.numrepeats[i]>0)
 		{	
-			family copyf;
-			familyinit(&copyf);
-			copyfamily(&copyf, f);
-			copyf.repeats[i] = NULL;
-			copyf.numrepeats[i] = 0;
-			if(examine(&copyf))
-				addtolist(&unsolved, copyf);
 
 			for(int j=0; j<f.numrepeats[i]; j++)
 			{	family newf;
@@ -319,6 +329,11 @@ void explore(family f, int side)
 				if(examine(&newf))
 					addtolist(&unsolved, newf);
 			}
+
+			f.repeats[i] = NULL;
+			f.numrepeats[i] = 0;
+			if(examine(&f))
+				addtolist(&unsolved, f);
 
 			break;
 		}
