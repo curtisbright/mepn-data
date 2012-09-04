@@ -21,7 +21,7 @@ typedef struct
 } list;
 
 int base;
-int depth = 10;
+int depth;
 kernel K;
 int prsize;
 char* pr;
@@ -138,29 +138,99 @@ void instancestring(char* str, family p, int x, int y)
 	}
 }
 
+void doubleinstancestring(char* str, family p, int x1, int y1, int x2, int y2)
+{	sprintf(str, "%c", 0);
+	for(int i=0; i<p.len; i++)
+	{	sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+		if(i==x1)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x1][y1]));
+		if(i==x2)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x2][y2]));
+	}
+}
+
+void tripleinstancestring(char* str, family p, int x1, int y1, int x2, int y2, int x3, int y3)
+{	sprintf(str, "%c", 0);
+	for(int i=0; i<p.len; i++)
+	{	sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+		if(i==x1)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x1][y1]));
+		if(i==x2)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x2][y2]));
+		if(i==x3)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x3][y3]));
+	}
+}
+
 int hasdivisor(family p)
 {	mpz_t gcd, temp;
 	mpz_init(gcd);
 	mpz_init(temp);
 	char str[100];
-	int trivial = 1;
+	int numrepeats = 0;
 	emptyinstancestring(str, p);
 	mpz_set_str(gcd, str, base);
 	for(int i=0; i<p.len; i++)
-		for(int j=0; j<p.numrepeats[i]; j++)
+	{	for(int j=0; j<p.numrepeats[i]; j++)
 		{	instancestring(str, p, i, j);
 			mpz_set_str(temp, str, base);
 			mpz_gcd(gcd, gcd, temp);
-			trivial = 0;
 		}
+		if(p.numrepeats[i]>0)
+			numrepeats++;
+	}
 
-	if(mpz_cmp_ui(gcd, 1)>0 && trivial==0)
+	if(numrepeats==0)
+		return 0;
+
+	if(mpz_cmp_ui(gcd, 1)>0)
 	{	//familystring(str, p);
 		//gmp_printf("%s has a divisor %Zd\n", str, gcd);
 		return 1;
 	}
-	else
-		return 0;
+
+	if(numrepeats<3)
+	{	emptyinstancestring(str, p);
+		mpz_set_str(gcd, str, base);
+		for(int i=0; i<p.len; i++)
+			for(int j=0; j<p.numrepeats[i]; j++)
+				for(int k=0; k<p.len; k++)
+					for(int l=0; l<p.numrepeats[k]; l++)
+					{	doubleinstancestring(str, p, i, j, k, l);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(gcd, gcd, temp);
+					}
+
+		if(mpz_cmp_ui(gcd, 1)==0)
+			return 0;
+
+		int gcdbeenset = 0;
+		for(int i=0; i<p.len; i++)
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	instancestring(str, p, i, j);
+				mpz_set_str(temp, str, base);
+				if(gcdbeenset)
+					mpz_gcd(gcd, gcd, temp);
+				else
+				{	gcdbeenset = 1;
+					mpz_set(gcd, temp);
+				}
+			}
+		for(int i=0; i<p.len; i++)
+			for(int j=0; j<p.numrepeats[i]; j++)
+				for(int k=0; k<p.len; k++)
+					for(int l=0; l<p.numrepeats[k]; l++)
+						for(int m=0; m<p.len; m++)
+							for(int n=0; n<p.numrepeats[m]; n++)
+							{	tripleinstancestring(str, p, i, j, k, l, m, n);
+								mpz_set_str(temp, str, base);
+								mpz_gcd(gcd, gcd, temp);
+							}
+		if(mpz_cmp_ui(gcd, 1)>0)
+			return 1;
+	}
+
+	return 0;
 
 	mpz_clear(gcd);
 	mpz_clear(temp);
@@ -206,6 +276,7 @@ int examine(family* f)
 		return 0;
 	free(str);
 
+	int trivial = 1;
 	for(int i=0; i<f->len; i++)
 	{	int newnumrepeat = 0;
 		for(int j=0; j<f->numrepeats[i]; j++)
@@ -215,7 +286,12 @@ int examine(family* f)
 				f->repeats[i][newnumrepeat++] = f->repeats[i][j];
 		}
 		f->numrepeats[i] = newnumrepeat;
+		if(newnumrepeat>0)
+			trivial = 0;
 	}
+
+	if(trivial)
+		return 0;
 
 	if(hasdivisor(*f))
 		return 0;
@@ -259,6 +335,7 @@ int main(int argc, char** argv)
 					pr[(i*j)>>3]&=~(1<<((i*j)&7)); 
 
 	base = atoi(argv[1]);
+	depth = atoi(argv[2]);
 	char* str;
 	kernelinit();
 	listinit(&unsolved);
@@ -315,7 +392,8 @@ int main(int argc, char** argv)
 		}
 	}
 
-	printf("Unsolved families:\n");
+	if(unsolved.size>0)
+		printf("Unsolved families:\n");
 	for(int i=0; i<unsolved.size; i++)
 	{	str = calloc(100, sizeof(char));
 		familystring(str, unsolved.fam[i]);
