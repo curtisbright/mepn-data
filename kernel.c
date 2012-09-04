@@ -82,6 +82,21 @@ int nosubword(char* p)
 	return 1;
 }
 
+int nosubwordskip(char* p, int skip)
+{	for(int i=0; i<K.size; i++)
+	{	if(i==skip)
+			continue;
+		int k = 0;
+		for(int j=0; j<strlen(p); j++)
+		{	if(K.primes[i][k]==p[j])
+				k++;
+			if(k==strlen(K.primes[i]))
+				return 0;
+		}
+	}
+	return 1;
+}
+
 int isprime(char* p)
 {	mpz_t temp;
 	mpz_init(temp);
@@ -315,7 +330,9 @@ int split(family f)
 
 	for(int i=0; i<f.len; i++)
 	{	for(int j=0; j<f.numrepeats[i]; j++)
-		{	char* str = malloc(100);
+		{	if(f.numrepeats[i]==1)
+				continue;
+			char* str = malloc(100);
 			doubleinstancestring(str, f, i, j, i, j);
 			//if(nosubword(str) && isprime(str))
 			//	addtokernel(str);
@@ -358,6 +375,45 @@ int split(family f)
 		}
 	}
 	addtolist(&unsolved, copyf);
+	return 1;
+}
+
+int split2(family f)
+{	for(int i=0; i<f.len; i++)
+	{	for(int j=0; j<f.numrepeats[i]; j++)
+		{	for(int k=j+1; k<f.numrepeats[i]; k++)
+			{	char* str1 = malloc(100);
+				char* str2 = malloc(100);
+				doubleinstancestring(str1, f, i, j, i, k);
+				doubleinstancestring(str2, f, i, k, i, j);
+				if(!nosubword(str1) && !nosubword(str2))
+				{	family copyf;
+					familyinit(&copyf);
+					copyfamily(&copyf, f);
+					int newnumrepeats = 0;
+					for(int l=0; l<copyf.numrepeats[i]; l++)
+					{	if(l!=j)
+							copyf.repeats[i][newnumrepeats++] = copyf.repeats[i][l];
+					}
+					copyf.numrepeats[i] = newnumrepeats;
+					addtolist(&unsolved, copyf);
+
+					familyinit(&copyf);
+					copyfamily(&copyf, f);
+					newnumrepeats = 0;
+					for(int l=0; l<copyf.numrepeats[i]; l++)
+					{	if(l!=k)
+							copyf.repeats[i][newnumrepeats++] = copyf.repeats[i][l];
+					}
+					copyf.numrepeats[i] = newnumrepeats;
+					addtolist(&unsolved, copyf);
+
+					return 0;
+				}
+			}
+		}
+	}
+	addtolist(&unsolved, f);
 	return 1;
 }
 
@@ -444,10 +500,16 @@ int main(int argc, char** argv)
 
 	for(int i=0; i<depth; i++)
 	{	list oldlist;
-		copylist(&oldlist, unsolved);
-		listinit(&unsolved);
-		for(int j=0; j<oldlist.size; j++)
-			split(oldlist.fam[j]);
+		for(int k=0; k<5; k++)
+		{	copylist(&oldlist, unsolved);
+			listinit(&unsolved);
+			for(int j=0; j<oldlist.size; j++)
+				split(oldlist.fam[j]);
+			copylist(&oldlist, unsolved);
+			listinit(&unsolved);
+			for(int j=0; j<oldlist.size; j++)
+				split2(oldlist.fam[j]);
+		}
 		copylist(&oldlist, unsolved);
 		listinit(&unsolved);
 		for(int j=0; j<oldlist.size; j++)
@@ -468,6 +530,16 @@ int main(int argc, char** argv)
 	}
 
 	printf("Prime kernel:\n");
+	kernel temp;
+	temp.size = 0;
+	temp.primes = NULL;
+	for(int i=0; i<K.size; i++)
+		if(nosubwordskip(K.primes[i], i))
+		{	int size = ++temp.size;
+			temp.primes = realloc(temp.primes, size*sizeof(char*));
+			temp.primes[size-1] = K.primes[i];
+		}
+	K = temp;
 	for(int i=0; i<K.size; i++)
 		printf("%s\n", K.primes[i]);
 	printf("Size:\t%d\n", K.size);
