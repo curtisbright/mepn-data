@@ -524,8 +524,8 @@ int main(int argc, char** argv)
 
 	FILE* out = fopen("basedata.txt", "w");
 	fclose(out);
-	//for(base=2; base<atoi(argv[1]); base++)
-	{	base = atoi(argv[1]);
+	for(base=2; base<atoi(argv[1]); base++)
+	{	//base = atoi(argv[1]);
 		depth = atoi(argv[2]);
 
 		FILE* out = fopen("basedata.txt", "a");
@@ -600,7 +600,7 @@ int main(int argc, char** argv)
 
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2);
-
+			printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
 		}
 
 		fprintf(out, "BASE %d:\n", base);
@@ -634,7 +634,7 @@ int main(int argc, char** argv)
 			fprintf(out, "%s\n", str);
 		}
 
-		//clearkernel();
+		clearkernel();
 		clearlist(&unsolved);
 		fclose(out);
 	}
