@@ -24,6 +24,8 @@ typedef struct
 void familystring(char* str, family p);
 void clearfamily(family* f);
 void copyfamily(family* newf, family f);
+void adddigit(family* f, char d, char* r, int n);
+void familyinit(family* p);
 
 int base;
 int depth;
@@ -54,9 +56,10 @@ void clearlist(list* l)
 
 void addtolist(list* l, family f)
 {	int size = ++l->size;
-	l->fam = realloc(l->fam, size*sizeof(family));
-	//copyfamily(&(l->fam[size-1]), f);
-	l->fam[size-1] = f;
+	l->fam = (family*)realloc(l->fam, size*sizeof(family));
+	familyinit(&((l->fam)[size-1]));
+	copyfamily(&((l->fam)[size-1]), f);
+	//l->fam[size-1] = f;
 	/*char str[MAXSTRING];
 	familystring(str, f);
 	printf("added to list: %s\n", str);*/
@@ -225,6 +228,14 @@ void tripleinstancestring(char* str, family p, int x1, int y1, int x2, int y2, i
 	}
 }
 
+void copyfamily(family* newf, family f)
+{	for(int i=0; i<f.len; i++)
+	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+		adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+	}
+}
+
 int hasdivisor(family p)
 {	mpz_t gcd, temp;
 	mpz_init(gcd);
@@ -307,14 +318,6 @@ int hasdivisor(family p)
 	mpz_clear(gcd);
 	mpz_clear(temp);
 	return 0;
-}
-
-void copyfamily(family* newf, family f)
-{	for(int i=0; i<f.len; i++)
-	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-		adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-	}
 }
 
 void instancefamily(family* newf, family f, int side)
@@ -411,10 +414,13 @@ int split(family* f)
 					}
 				}
 
-				clearfamily(f);
+				//clearfamily(f);
 
 				addtolist(&unsolved, copyf);
 				addtolist(&unsolved, newf);
+
+				clearfamily(&copyf);
+				clearfamily(&newf);
 
 				/*char str[MAXSTRING];
 				familystring(str, copyf);
@@ -451,6 +457,7 @@ int split2(family* f)
 					}
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
+					clearfamily(&copyf);
 
 					familyinit(&copyf);
 					copyfamily(&copyf, *f);
@@ -461,8 +468,9 @@ int split2(family* f)
 					}
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
+					clearfamily(&copyf);
 
-					clearfamily(f);
+					//clearfamily(f);
 
 					return 1;
 				}
@@ -470,6 +478,7 @@ int split2(family* f)
 		}
 	}
 	addtolist(&unsolved, *f);
+	//clearfamily(f);
 	return 0;
 }
 
@@ -484,8 +493,8 @@ void explore(family f, int side)
 				newf.digit[i+1] = f.repeats[i][j];
 				if(examine(&newf))
 					addtolist(&unsolved, newf);
-				else
-					clearfamily(&newf);
+				//else
+				clearfamily(&newf);
 			}
 
 			family copyf;
@@ -495,8 +504,8 @@ void explore(family f, int side)
 			copyf.numrepeats[i] = 0;
 			if(examine(&copyf))
 				addtolist(&unsolved, copyf);
-			else
-				clearfamily(&copyf);
+			//else
+			clearfamily(&copyf);
 
 			break;
 		}
@@ -570,39 +579,32 @@ int main(int argc, char** argv)
 		list oldlist;
 		listinit(&oldlist);
 		for(int i=0; i<depth; i++)
-		{	//int didsplit = 1;
-			//int j=0;
-			//while(didsplit)
-			{	//j++;
-				//printf("%d\n", j);
-				//didsplit = 0;
-				/*oldlist = unsolved;
-				listinit(&unsolved);
-				for(int j=0; j<oldlist.size; j++)
-					split(&(oldlist.fam[j]));
-				clearlist(&oldlist);
-				oldlist = unsolved;
-				listinit(&unsolved);
-				for(int j=0; j<oldlist.size; j++)
-					split2(&(oldlist.fam[j]));*/
-				//printf("%d\n", unsolved.size);
-			}
-			//clearlist(&oldlist);
+		{	
+			clearlist(&oldlist);
 			oldlist = unsolved;
 			listinit(&unsolved);
+
 			for(int j=0; j<oldlist.size; j++)
-			{	//char tempstr[MAXSTRING];
-				//familystring(tempstr, oldlist.fam[j]);
-				//printf("Exploring %s...\n", tempstr);
-				explore(oldlist.fam[j], i%2);
-			}
+				split(&(oldlist.fam[j]));
+
 			clearlist(&oldlist);
-			//printf("%i\n", i);
+			oldlist = unsolved;
+			listinit(&unsolved);
+
+			for(int j=0; j<oldlist.size; j++)
+				split2(&(oldlist.fam[j]));
+
+			clearlist(&oldlist);
+			oldlist = unsolved;
+			listinit(&unsolved);
+
+			for(int j=0; j<oldlist.size; j++)
+				explore(oldlist.fam[j], i%2);
+
 		}
 
 		fprintf(out, "BASE %d:\n", base);
 
-		//printf("Prime kernel:\n");
 		kernel temp;
 		temp.size = 0;
 		temp.primes = NULL;
@@ -626,15 +628,14 @@ int main(int argc, char** argv)
 		fprintf(out, "\tWidth:\t%d\n", width);
 		fprintf(out, "\tRemain:\t%d\n", unsolved.size);
 
-		//if(unsolved.size>0)
-		//	printf("\tUnsolved families:\n", unsolved.size);
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
 			familystring(str, unsolved.fam[i]);
 			fprintf(out, "%s\n", str);
 		}
 
-		clearkernel();
+		//clearkernel();
+		clearlist(&unsolved);
 		fclose(out);
 	}
 
