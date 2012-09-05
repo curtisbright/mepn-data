@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	for(i=20000; i<50000; i++)
+	for(i=49086; i<50000; i++)
 	{	mpz_ui_pow_ui(p, 17, i);
 		mpz_mul_ui(p, p, 73);
 		mpz_sub_ui(p, p, 9);
