@@ -570,16 +570,16 @@ int split(family* f)
 				addtolist(&unsolved, copyf);
 				addtolist(&unsolved, newf);
 
-				clearfamily(&copyf);
-				clearfamily(&newf);
-
 				/*char str[MAXSTRING];
-				familystring(str, copyf);
+				familystring(str, *f);
 				printf("%s splits into ", str);
 				familystring(str, copyf);
 				printf("%s and ", str);
 				familystring(str, newf);
 				printf("%s\n", str);*/
+
+				clearfamily(&copyf);
+				clearfamily(&newf);
 			
 				return 1;
 			}
@@ -633,33 +633,63 @@ int split2(family* f)
 	return 0;
 }
 
-void explore(family f, int side)
-{	for(int i=0; i<f.len; i++)
-		if(f.numrepeats[i]>0)
-		{	
-			for(int j=0; j<f.numrepeats[i]; j++)
-			{	family newf;
-				familyinit(&newf);
-				instancefamily(&newf, f, side);
-				newf.digit[i+1] = f.repeats[i][j];
-				if(examine(&newf))
-					addtolist(&unsolved, newf);
+void explore(family f, int side, int back)
+{	if(back==0)
+	{	for(int i=0; i<f.len; i++)
+			if(f.numrepeats[i]>0)
+			{	
+				for(int j=0; j<f.numrepeats[i]; j++)
+				{	family newf;
+					familyinit(&newf);
+					instancefamily(&newf, f, side);
+					newf.digit[i+1] = f.repeats[i][j];
+					if(examine(&newf))
+						addtolist(&unsolved, newf);
+					//else
+					clearfamily(&newf);
+				}
+
+				family copyf;
+				familyinit(&copyf);
+				copyfamily(&copyf, f);
+				copyf.repeats[i] = NULL;
+				copyf.numrepeats[i] = 0;
+				if(examine(&copyf))
+					addtolist(&unsolved, copyf);
 				//else
-				clearfamily(&newf);
+				clearfamily(&copyf);
+
+				break;
 			}
+	}
+	else
+	{	for(int i=f.len-1; i>=0; i--)
+			if(f.numrepeats[i]>0)
+			{	
+				for(int j=0; j<f.numrepeats[i]; j++)
+				{	family newf;
+					familyinit(&newf);
+					instancefamily(&newf, f, side);
+					newf.digit[i+1] = f.repeats[i][j];
+					if(examine(&newf))
+						addtolist(&unsolved, newf);
+					//else
+					clearfamily(&newf);
+				}
 
-			family copyf;
-			familyinit(&copyf);
-			copyfamily(&copyf, f);
-			copyf.repeats[i] = NULL;
-			copyf.numrepeats[i] = 0;
-			if(examine(&copyf))
-				addtolist(&unsolved, copyf);
-			//else
-			clearfamily(&copyf);
+				family copyf;
+				familyinit(&copyf);
+				copyfamily(&copyf, f);
+				copyf.repeats[i] = NULL;
+				copyf.numrepeats[i] = 0;
+				if(examine(&copyf))
+					addtolist(&unsolved, copyf);
+				//else
+				clearfamily(&copyf);
 
-			break;
-		}
+				break;
+			}
+	}
 }
 
 int main(int argc, char** argv)
@@ -721,7 +751,7 @@ int main(int argc, char** argv)
 					{	//char tempstr[MAXSTRING];
 						//familystring(tempstr, f);
 						//printf("Exploring %s...\n", tempstr);
-						explore(f, 1);
+						explore(f, 1, 0);
 					}
 				}
 				else
@@ -739,7 +769,6 @@ int main(int argc, char** argv)
 			int didsplit = 1;
 			int splititer = 0;
 			while(didsplit)
-			//for(int j=0; j<2; j++)
 			{	didsplit = 0;
 				for(int j=0; j<oldlist.size; j++)
 					didsplit |= split(&(oldlist.fam[j]));
@@ -776,7 +805,7 @@ int main(int argc, char** argv)
 			}
 
 			for(int j=0; j<oldlist.size; j++)
-				explore(oldlist.fam[j], i%2);
+				explore(oldlist.fam[j], i%2, (i/2)%2);
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
 			/*for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
