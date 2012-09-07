@@ -54,8 +54,25 @@ void clearlist(list* l)
 	listinit(l);
 }
 
+int samefamily(family f, family g)
+{	if(f.len!=g.len)
+		return 0;
+	for(int i=0; i<f.len; i++)
+	{	if(f.digit[i]!=g.digit[i])
+			return 0;
+		if(f.numrepeats[i]!=g.numrepeats[i])
+			return 0;
+		for(int j=0; j<f.numrepeats[i]; j++)
+			if(f.repeats[i][j]!=g.repeats[i][j])
+				return 0;
+	}
+	return 1;
+}
+
 void addtolist(list* l, family f)
-{	int size = ++l->size;
+{	if((l->size)>0 && samefamily(f, l->fam[(l->size)-1]))
+		return;
+	int size = ++l->size;
 	l->fam = (family*)realloc(l->fam, size*sizeof(family));
 	familyinit(&((l->fam)[size-1]));
 	copyfamily(&((l->fam)[size-1]), f);
@@ -189,6 +206,18 @@ void familystring(char* str, family p)
 	}
 }
 
+void startinstancestring(char* str, family p, int length)
+{	sprintf(str, "%c", 0);
+	for(int i=0; i<=length; i++)
+		sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+}
+
+void endinstancestring(char* str, family p, int start)
+{	sprintf(str, "%c", 0);
+	for(int i=start+1; i<p.len; i++)
+		sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+}
+
 void emptyinstancestring(char* str, family p)
 {	sprintf(str, "%c", 0);
 	for(int i=0; i<p.len; i++)
@@ -280,39 +309,161 @@ int hasdivisor(family p)
 						mpz_gcd(gcd, gcd, temp);
 					}
 
-		if(mpz_cmp_ui(gcd, 1)==0)
-		{	mpz_clear(gcd);
-			mpz_clear(temp);
-			return 0;
-		}
-
-		int gcdbeenset = 0;
-		for(int i=0; i<p.len; i++)
-			for(int j=0; j<p.numrepeats[i]; j++)
-			{	instancestring(str, p, i, j);
-				mpz_set_str(temp, str, base);
-				if(gcdbeenset)
-					mpz_gcd(gcd, gcd, temp);
-				else
-				{	gcdbeenset = 1;
-					mpz_set(gcd, temp);
-				}
-			}
-		for(int i=0; i<p.len; i++)
-			for(int j=0; j<p.numrepeats[i]; j++)
-				for(int k=0; k<p.len; k++)
-					for(int l=0; l<p.numrepeats[k]; l++)
-						for(int m=0; m<p.len; m++)
-							for(int n=0; n<p.numrepeats[m]; n++)
-							{	tripleinstancestring(str, p, i, j, k, l, m, n);
-								mpz_set_str(temp, str, base);
-								mpz_gcd(gcd, gcd, temp);
-							}
 		if(mpz_cmp_ui(gcd, 1)>0)
-		{	mpz_clear(gcd);
-			mpz_clear(temp);
-			return 1;
+		{
+			int gcdbeenset = 0;
+			for(int i=0; i<p.len; i++)
+				for(int j=0; j<p.numrepeats[i]; j++)
+				{	instancestring(str, p, i, j);
+					mpz_set_str(temp, str, base);
+					if(gcdbeenset)
+						mpz_gcd(gcd, gcd, temp);
+					else
+					{	gcdbeenset = 1;
+						mpz_set(gcd, temp);
+					}
+				}
+			for(int i=0; i<p.len; i++)
+				for(int j=0; j<p.numrepeats[i]; j++)
+					for(int k=0; k<p.len; k++)
+						for(int l=0; l<p.numrepeats[k]; l++)
+							for(int m=0; m<p.len; m++)
+								for(int n=0; n<p.numrepeats[m]; n++)
+								{	tripleinstancestring(str, p, i, j, k, l, m, n);
+									mpz_set_str(temp, str, base);
+									mpz_gcd(gcd, gcd, temp);
+								}
+			if(mpz_cmp_ui(gcd, 1)>0)
+			{	mpz_clear(gcd);
+				mpz_clear(temp);
+				return 1;
+			}
 		}
+	}
+
+	if(numrepeats==1)
+	{	for(int i=0; i<p.len; i++)
+			if(p.numrepeats[i]==1)
+			{	/*familystring(str, p);
+				printf("Simple family: %s with repeating digit %d", str, p.repeats[i][0]);
+				startinstancestring(str, p, i);
+				printf(" (start: %s)", str);
+				endinstancestring(str, p, i);
+				printf(" (end: %s length: %d)\n", str, (int)strlen(str));*/
+				mpz_t x, y, z, temp, temp2, temp3, temp4, temp5, temp6;
+				mpz_inits(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+				endinstancestring(str, p, i);
+				int zlen = strlen(str);
+				mpz_set_str(z, str, base);
+				mpz_set_ui(y, p.repeats[i][0]);
+				startinstancestring(str, p, i);
+				mpz_set_str(x, str, base);
+
+				char end[MAXSTRING], start[MAXSTRING], middle[2];
+				endinstancestring(end, p, i);
+				sprintf(middle, "%c", digitchar(p.repeats[i][0]));
+				startinstancestring(start, p, i);
+				sprintf(str, "%s%s\n", start, end);
+				mpz_set_str(temp, str, base);
+				sprintf(str, "%s%s%s\n", start, middle, end);
+				mpz_set_str(temp2, str, base);
+				sprintf(str, "%s%s%s%s\n", start, middle, middle, end);
+				mpz_set_str(temp3, str, base);
+				sprintf(str, "%s%s%s%s%s\n", start, middle, middle, middle, end);
+				mpz_set_str(temp4, str, base);
+				sprintf(str, "%s%s%s%s%s%s\n", start, middle, middle, middle, middle, end);
+				mpz_set_str(temp5, str, base);
+				sprintf(str, "%s%s%s%s%s%s%s\n", start, middle, middle, middle, middle, middle, end);
+				mpz_set_str(temp6, str, base);
+
+				mpz_gcd(temp, temp, temp4);
+				mpz_gcd(temp2, temp2, temp5);
+				mpz_gcd(temp3, temp3, temp6);
+
+				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0)
+				{	mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+					return 1;
+				}
+
+				if(mpz_fdiv_ui(y, base-1)==0)
+				{	mpz_divexact_ui(temp, y, base-1);
+					mpz_set(temp2, temp);
+					mpz_add(temp, temp, x);
+					mpz_ui_pow_ui(temp3, base, zlen);
+					mpz_mul(temp, temp, temp3);
+					mpz_mul(temp2, temp2, temp3);
+					mpz_sub(temp2, temp2, z);
+
+					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
+					{	mpz_add(temp5, temp3, temp4);
+						mpz_sub(temp6, temp3, temp4);
+						mpz_set_ui(temp, base);
+						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 2)!=0)
+						{	//familystring(str, p);
+							//gmp_printf("%s Perfect square x: %Zd y: %Zd z: %Zd temp: %Zd temp2: %Zd\n", str, x, y, z, temp, temp2);
+							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+							return 1;
+						}
+					}
+
+					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
+					{	mpz_mul(temp5, temp3, temp3);
+						mpz_mul(temp6, temp4, temp4);
+						mpz_add(temp6, temp6, temp5);
+						mpz_mul(temp5, temp3, temp4);
+						mpz_add(temp6, temp6, temp5);
+						mpz_sub(temp5, temp3, temp4);
+						mpz_set_ui(temp, base);
+						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 3)!=0)
+						{	//familystring(str, p);
+							//gmp_printf("%s Perfect cube x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
+							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+							return 1;
+						}
+					}
+				}
+				else
+				{	mpz_set(temp, y);
+					mpz_addmul_ui(temp, x, base-1);
+					mpz_ui_pow_ui(temp3, base, zlen);
+					mpz_mul(temp, temp, temp3);
+					mpz_mul(temp2, y, temp3);
+					mpz_submul_ui(temp2, z, base-1);
+
+					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
+					{	mpz_add(temp5, temp3, temp4);
+						mpz_sub(temp6, temp3, temp4);
+						mpz_set_ui(temp, base);
+						if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_root(temp, temp, 2)!=0)
+						{	//familystring(str, p);
+							//gmp_printf("%s Perfect square x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
+							//emptyinstancestring(str, p);
+							//mpz_set_str(temp, str, base);
+							//gmp_printf("empty: %s (%Zd)\n", str, temp);
+							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+							return 1;
+						}
+					}
+
+					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
+					{	mpz_mul(temp5, temp3, temp3);
+						mpz_mul(temp6, temp4, temp4);
+						mpz_add(temp6, temp6, temp5);
+						mpz_mul(temp5, temp3, temp4);
+						mpz_add(temp6, temp6, temp5);
+						mpz_sub(temp5, temp3, temp4);
+						mpz_set_ui(temp, base);
+						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 3)!=0)
+						{	//familystring(str, p);
+							//gmp_printf("%s Perfect cube x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
+							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+							return 1;
+						}
+					}
+				}
+
+				mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+			}
 	}
 
 	mpz_clear(gcd);
@@ -522,13 +673,14 @@ int main(int argc, char** argv)
 					pr[(i*j)>>3]&=~(1<<((i*j)&7));
 	pr[0] &= 252;
 
-	FILE* out = fopen("basedata.txt", "w");
-	fclose(out);
-	for(base=2; base<atoi(argv[1]); base++)
-	{	//base = atoi(argv[1]);
+	FILE* out = stdout;
+	//FILE* out = fopen("basedata.txt", "w");
+	//fclose(out);
+	//for(base=2; base<atoi(argv[1]); base++)
+	{	base = atoi(argv[1]);
 		depth = atoi(argv[2]);
 
-		FILE* out = fopen("basedata.txt", "a");
+		//FILE* out = fopen("basedata.txt", "a");
 
 		kernelinit();
 		listinit(&unsolved);
@@ -601,6 +753,11 @@ int main(int argc, char** argv)
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2);
 			printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
+			/*for(int j=0; j<unsolved.size; j++)
+			{	char str[MAXSTRING];
+				familystring(str, unsolved.fam[j]);
+				printf("%s\n", str);
+			}*/
 		}
 
 		fprintf(out, "BASE %d:\n", base);
@@ -636,7 +793,7 @@ int main(int argc, char** argv)
 
 		clearkernel();
 		clearlist(&unsolved);
-		fclose(out);
+		//fclose(out);
 	}
 
 	free(pr);
