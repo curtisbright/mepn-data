@@ -471,24 +471,57 @@ int hasdivisor(family p)
 	return 0;
 }
 
-void instancefamily(family* newf, family f, int side)
-{	int firstrepeat = 1;
-	for(int i=0; i<f.len; i++)
-	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-		if(f.numrepeats[i]>0 && firstrepeat)
-		{	if(side)
-			{	adddigit(newf, f.digit[i], NULL, 0);
-				adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+void instancefamily(family* newf, family f, int side, int back)
+{	if(back==0)
+	{	int firstrepeat = 1;
+		for(int i=0; i<f.len; i++)
+		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+			if(f.numrepeats[i]>0 && firstrepeat)
+			{	if(side==1)
+				{	adddigit(newf, f.digit[i], NULL, 0);
+					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+				}
+				else if(side==0)
+				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					adddigit(newf, 0, NULL, 0);
+				}
+				/*else
+				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+				}*/
+				firstrepeat = 0;
 			}
 			else
-			{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-				adddigit(newf, 0, NULL, 0);
-			}
-			firstrepeat = 0;
+				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 		}
-		else
-			adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+	}
+	else
+	{	int lastrepeatpos;
+		for(int i=0; i<f.len; i++)
+		{	if(f.numrepeats[i]>0)
+				lastrepeatpos = i;
+		}
+		for(int i=0; i<f.len; i++)
+		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+			if(i==lastrepeatpos)
+			{	if(side==1)
+				{	adddigit(newf, f.digit[i], NULL, 0);
+					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+				}
+				else if(side==0)
+				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					adddigit(newf, 0, NULL, 0);
+				}
+				/*else
+				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
+				}*/
+			}
+			else
+				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+		}
 	}
 }
 
@@ -637,15 +670,24 @@ void explore(family f, int side, int back)
 {	if(back==0)
 	{	for(int i=0; i<f.len; i++)
 			if(f.numrepeats[i]>0)
-			{	
+			{	char str[MAXSTRING];
+				familystring(str, f);
+				//printf("first ");
+				//printf(side ? "left " : "right ");
+				//printf("exploring %s as ", str);
+
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
 					familyinit(&newf);
-					instancefamily(&newf, f, side);
+					instancefamily(&newf, f, side, back);
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(&unsolved, newf);
 					//else
+
+					//familystring(str, newf);
+					//printf("%s, ", str);
+
 					clearfamily(&newf);
 				}
 
@@ -657,6 +699,10 @@ void explore(family f, int side, int back)
 				if(examine(&copyf))
 					addtolist(&unsolved, copyf);
 				//else
+
+				//familystring(str, copyf);
+				//printf("%s\n", str);
+
 				clearfamily(&copyf);
 
 				break;
@@ -665,15 +711,24 @@ void explore(family f, int side, int back)
 	else
 	{	for(int i=f.len-1; i>=0; i--)
 			if(f.numrepeats[i]>0)
-			{	
+			{	char str[MAXSTRING];
+				familystring(str, f);
+				//printf("last ");
+				//printf(side ? "left " : "right ");
+				//printf("exploring %s as ", str);
+
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
 					familyinit(&newf);
-					instancefamily(&newf, f, side);
+					instancefamily(&newf, f, side, back);
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(&unsolved, newf);
 					//else
+
+					//familystring(str, newf);
+					//printf("%s, ", str);
+
 					clearfamily(&newf);
 				}
 
@@ -685,6 +740,10 @@ void explore(family f, int side, int back)
 				if(examine(&copyf))
 					addtolist(&unsolved, copyf);
 				//else
+
+				//familystring(str, copyf);
+				//printf("%s\n", str);
+
 				clearfamily(&copyf);
 
 				break;
@@ -768,7 +827,7 @@ int main(int argc, char** argv)
 
 			int didsplit = 1;
 			int splititer = 0;
-			while(didsplit)
+			//while(didsplit)
 			{	didsplit = 0;
 				for(int j=0; j<oldlist.size; j++)
 					didsplit |= split(&(oldlist.fam[j]));
