@@ -736,23 +736,48 @@ int main(int argc, char** argv)
 			oldlist = unsolved;
 			listinit(&unsolved);
 
-			for(int j=0; j<oldlist.size; j++)
-				split(&(oldlist.fam[j]));
+			int didsplit = 1;
+			int splititer = 0;
+			while(didsplit)
+			//for(int j=0; j<2; j++)
+			{	didsplit = 0;
+				for(int j=0; j<oldlist.size; j++)
+					didsplit |= split(&(oldlist.fam[j]));
 
-			clearlist(&oldlist);
-			oldlist = unsolved;
-			listinit(&unsolved);
+				clearlist(&oldlist);
+				oldlist = unsolved;
+				listinit(&unsolved);
 
-			for(int j=0; j<oldlist.size; j++)
-				split2(&(oldlist.fam[j]));
+				for(int j=0; j<oldlist.size; j++)
+					if(examine(&(oldlist.fam[j])))
+						addtolist(&unsolved, oldlist.fam[j]);
 
-			clearlist(&oldlist);
-			oldlist = unsolved;
-			listinit(&unsolved);
+				clearlist(&oldlist);
+				oldlist = unsolved;
+				listinit(&unsolved);
+
+				for(int j=0; j<oldlist.size; j++)
+					didsplit |= split2(&(oldlist.fam[j]));
+
+				clearlist(&oldlist);
+				oldlist = unsolved;
+				listinit(&unsolved);
+
+				for(int j=0; j<oldlist.size; j++)
+					if(examine(&(oldlist.fam[j])))
+						addtolist(&unsolved, oldlist.fam[j]);
+
+				clearlist(&oldlist);
+				oldlist = unsolved;
+				listinit(&unsolved);
+
+				splititer++;
+				printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
+			}
 
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2);
-			printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
+			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
 			/*for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
