@@ -486,10 +486,12 @@ void instancefamily(family* newf, family f, int side, int back)
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					adddigit(newf, 0, NULL, 0);
 				}
-				/*else
+				else
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+					memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
 					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}*/
+				}
 				firstrepeat = 0;
 			}
 			else
@@ -514,10 +516,12 @@ void instancefamily(family* newf, family f, int side, int back)
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					adddigit(newf, 0, NULL, 0);
 				}
-				/*else
+				else
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+					repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+					memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
 					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}*/
+				}
 			}
 			else
 				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
@@ -765,9 +769,9 @@ int main(int argc, char** argv)
 	FILE* out = stdout;
 	//FILE* out = fopen("basedata.txt", "w");
 	//fclose(out);
-	//for(base=2; base<atoi(argv[1]); base++)
-	{	base = atoi(argv[1]);
-		depth = atoi(argv[2]);
+	for(base=atoi(argv[1]); base<atoi(argv[2]); base++)
+	{	//base = atoi(argv[1]);
+		depth = atoi(argv[3]);
 
 		//FILE* out = fopen("basedata.txt", "a");
 
@@ -827,7 +831,7 @@ int main(int argc, char** argv)
 
 			int didsplit = 1;
 			int splititer = 0;
-			//while(didsplit)
+			while(didsplit)
 			{	didsplit = 0;
 				for(int j=0; j<oldlist.size; j++)
 					didsplit |= split(&(oldlist.fam[j]));
@@ -863,6 +867,10 @@ int main(int argc, char** argv)
 				printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
 			}
 
+			/*if(i==45)
+				for(int j=0; j<oldlist.size; j++)
+					explore(oldlist.fam[j], 2, (i/2)%2);
+			else*/
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2, (i/2)%2);
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
@@ -871,6 +879,15 @@ int main(int argc, char** argv)
 				familystring(str, unsolved.fam[j]);
 				printf("%s\n", str);
 			}*/
+			/*char filename[100];
+			sprintf(filename, "iter%d.txt", i);
+			FILE* out = fopen(filename, "w");
+			for(int j=0; j<unsolved.size; j++)
+			{	char str[MAXSTRING];
+				familystring(str, unsolved.fam[j]);
+				fprintf(out, "%s\n", str);
+			}
+			fclose(out);*/
 		}
 
 		fprintf(out, "BASE %d:\n", base);
