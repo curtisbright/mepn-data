@@ -268,8 +268,8 @@ void copyfamily(family* newf, family f)
 }
 
 int hasdivisor(family p)
-{	mpz_t gcd, temp;
-	mpz_inits(gcd, temp, NULL);
+{	mpz_t gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7;
+	mpz_inits(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 	char str[MAXSTRING];
 	int numrepeats = 0;
 	emptyinstancestring(str, p);
@@ -285,90 +285,84 @@ int hasdivisor(family p)
 	}
 
 	if(numrepeats==0)
-	{	mpz_clear(gcd);
-		mpz_clear(temp);
+	{	
+#ifdef PRINTDIVISOR
 		familystring(str, p);
 		printf("%s is trivial\n", str);
+#endif
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 		return 0;
 	}
 
 	if(mpz_cmp_ui(gcd, 1)>0)
-	{	familystring(str, p);
+	{	
+#ifdef PRINTDIVISOR
+		familystring(str, p);
 		gmp_printf("%s has a divisor %Zd\n", str, gcd);
-		mpz_clear(gcd);
-		mpz_clear(temp);
+#endif
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 		return 1;
 	}
 
 	if(numrepeats<3)
 	{	emptyinstancestring(str, p);
-		mpz_set_str(gcd, str, base);
+		mpz_set_str(gcd1, str, base);
 		for(int i=0; i<p.len; i++)
 			for(int j=0; j<p.numrepeats[i]; j++)
 				for(int k=0; k<p.len; k++)
 					for(int l=0; l<p.numrepeats[k]; l++)
 					{	doubleinstancestring(str, p, i, j, k, l);
 						mpz_set_str(temp, str, base);
-						mpz_gcd(gcd, gcd, temp);
+						mpz_gcd(gcd1, gcd1, temp);
 					}
 
-		if(mpz_cmp_ui(gcd, 1)>0)
-		{
-			mpz_t gcd1;
-			mpz_init(gcd1);
-			mpz_set(gcd1, gcd);
-
-			int gcdbeenset = 0;
-			for(int i=0; i<p.len; i++)
-				for(int j=0; j<p.numrepeats[i]; j++)
-				{	instancestring(str, p, i, j);
-					mpz_set_str(temp, str, base);
-					if(gcdbeenset)
-						mpz_gcd(gcd, gcd, temp);
-					else
-					{	gcdbeenset = 1;
-						mpz_set(gcd, temp);
-					}
+		int gcdbeenset = 0;
+		for(int i=0; i<p.len; i++)
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	instancestring(str, p, i, j);
+				mpz_set_str(temp, str, base);
+				if(gcdbeenset)
+					mpz_gcd(gcd2, gcd2, temp);
+				else
+				{	gcdbeenset = 1;
+					mpz_set(gcd2, temp);
 				}
-			for(int i=0; i<p.len; i++)
-				for(int j=0; j<p.numrepeats[i]; j++)
-					for(int k=0; k<p.len; k++)
-						for(int l=0; l<p.numrepeats[k]; l++)
-							for(int m=0; m<p.len; m++)
-								for(int n=0; n<p.numrepeats[m]; n++)
-								{	tripleinstancestring(str, p, i, j, k, l, m, n);
-									mpz_set_str(temp, str, base);
-									mpz_gcd(gcd, gcd, temp);
-								}
-			if(mpz_cmp_ui(gcd, 1)>0)
-			{	familystring(str, p);
-				gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd);
-				mpz_clears(gcd, temp, gcd1, NULL);
-				return 1;
 			}
-			mpz_clear(gcd1);
+		for(int i=0; i<p.len; i++)
+			for(int j=0; j<p.numrepeats[i]; j++)
+				for(int k=0; k<p.len; k++)
+					for(int l=0; l<p.numrepeats[k]; l++)
+						for(int m=0; m<p.len; m++)
+							for(int n=0; n<p.numrepeats[m]; n++)
+							{	tripleinstancestring(str, p, i, j, k, l, m, n);
+								mpz_set_str(temp, str, base);
+								mpz_gcd(gcd2, gcd2, temp);
+							}
+
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		{	
+#ifdef PRINTDIVISOR
+			familystring(str, p);
+			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
+#endif
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+			return 1;
 		}
 	}
+
+	char end[MAXSTRING], start[MAXSTRING], middle[2];
 
 	if(numrepeats==1)
 	{	for(int i=0; i<p.len; i++)
 			if(p.numrepeats[i]==1)
-			{	/*familystring(str, p);
-				printf("Simple family: %s with repeating digit %d", str, p.repeats[i][0]);
-				startinstancestring(str, p, i);
-				printf(" (start: %s)", str);
-				endinstancestring(str, p, i);
-				printf(" (end: %s length: %d)\n", str, (int)strlen(str));*/
-				mpz_t x, y, z, temp, temp2, temp3, temp4, temp5, temp6;
-				mpz_inits(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
-				endinstancestring(str, p, i);
+			{	endinstancestring(str, p, i);
 				int zlen = strlen(str);
 				mpz_set_str(z, str, base);
 				mpz_set_ui(y, p.repeats[i][0]);
 				startinstancestring(str, p, i);
 				mpz_set_str(x, str, base);
 
-				char end[MAXSTRING], start[MAXSTRING], middle[2];
+				//char end[MAXSTRING], start[MAXSTRING], middle[2];
 				endinstancestring(end, p, i);
 				sprintf(middle, "%c", digitchar(p.repeats[i][0]));
 				startinstancestring(start, p, i);
@@ -390,7 +384,7 @@ int hasdivisor(family p)
 				mpz_gcd(temp3, temp3, temp6);
 
 				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0)
-				{	mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+				{	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 					return 1;
 				}
 
@@ -408,9 +402,12 @@ int hasdivisor(family p)
 						mpz_sub(temp6, temp3, temp4);
 						mpz_set_ui(temp, base);
 						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 2)!=0)
-						{	//familystring(str, p);
-							//gmp_printf("%s Perfect square x: %Zd y: %Zd z: %Zd temp: %Zd temp2: %Zd\n", str, x, y, z, temp, temp2);
-							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+						{	
+#ifdef PRINTDIVISOR
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of squares\n", str);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
 						}
 					}
@@ -424,9 +421,12 @@ int hasdivisor(family p)
 						mpz_sub(temp5, temp3, temp4);
 						mpz_set_ui(temp, base);
 						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 3)!=0)
-						{	//familystring(str, p);
-							//gmp_printf("%s Perfect cube x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
-							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+						{	
+#ifdef PRINTDIVISOR
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of cubes\n", str);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
 						}
 					}
@@ -442,17 +442,45 @@ int hasdivisor(family p)
 					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
-						mpz_set_ui(temp, base);
-						if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_root(temp, temp, 2)!=0)
-						{	//familystring(str, p);
-							//gmp_printf("%s Perfect square x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
-							//emptyinstancestring(str, p);
-							//mpz_set_str(temp, str, base);
-							//gmp_printf("empty: %s (%Zd)\n", str, temp);
-							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+						mpz_set_ui(temp7, base);
+						if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_root(temp7, temp7, 2)!=0)
+						{
+#ifdef PRINTDIVISOR
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of squares\n", str);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+							return 1;
+						}
+						else if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+						{
+#ifdef PRINTDIVISORSPECIAL
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
 						}
 					}
+					/*if(mpz_fdiv_ui(temp, base)==0)
+					{	mpz_divexact_ui(temp, temp, base);
+						if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
+						{	mpz_add(temp5, temp3, temp4);
+							mpz_sub(temp6, temp3, temp4);
+							mpz_set_ui(temp, base);
+
+							if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_cmp_ui(gcd1, 1)>0)
+							{
+#ifdef PRINTDIVISORSPECIAL
+								familystring(str, p);
+								gmp_printf("%s factors as a difference of squares for odd n, and has a factor %Zd for even n\n", str, gcd1);
+#endif
+								mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+								return 1;
+							}
+						}
+					}*/
 
 					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
 					{	mpz_mul(temp5, temp3, temp3);
@@ -463,19 +491,20 @@ int hasdivisor(family p)
 						mpz_sub(temp5, temp3, temp4);
 						mpz_set_ui(temp, base);
 						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 3)!=0)
-						{	//familystring(str, p);
-							//gmp_printf("%s Perfect cube x: %Zd y: %Zd z: %Zd temp5: %Zd temp6: %Zd\n", str, x, y, z, temp5, temp6);
-							mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
+						{	
+#ifdef PRINTDIVISOR
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of cubes\n", str);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
 						}
 					}
 				}
-
-				mpz_clears(x, y, z, temp, temp2, temp3, temp4, temp5, temp6, NULL);
 			}
 	}
 
-	mpz_clears(gcd, temp, NULL);
+	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 	return 0;
 }
 
@@ -494,12 +523,12 @@ void instancefamily(family* newf, family f, int side, int back)
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					adddigit(newf, 0, NULL, 0);
 				}
-				else
+				/*else
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
 					memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
 					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
+				}*/
 				firstrepeat = 0;
 			}
 			else
@@ -524,12 +553,12 @@ void instancefamily(family* newf, family f, int side, int back)
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					adddigit(newf, 0, NULL, 0);
 				}
-				else
+				/*else
 				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 					repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
 					memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
 					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
+				}*/
 			}
 			else
 				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
@@ -973,7 +1002,9 @@ int main(int argc, char** argv)
 				listinit(&unsolved);
 
 				splititer++;
+#ifdef PRINTSTATS
 				printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
+#endif
 			}
 
 			//if(i==180)
@@ -983,11 +1014,13 @@ int main(int argc, char** argv)
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2, (i/2)%2);
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
+#ifdef PRINTUNSOLVED
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
 				printf("%s\n", str);
 			}
+#endif
 			/*char filename[100];
 			sprintf(filename, "iter%d.txt", i);
 			FILE* out = fopen(filename, "w");
@@ -1014,8 +1047,10 @@ int main(int argc, char** argv)
 			}
 		clearkernel();
 		K = temp;
-		//for(int i=0; i<K.size; i++)
-		//	printf("%s\n", K.primes[i]);
+#ifdef PRINTKERNEL
+		for(int i=0; i<K.size; i++)
+			printf("%s\n", K.primes[i]);
+#endif
 		fprintf(out, "\tSize:\t%d\n", K.size);
 		int width = strlen(K.primes[0]);
 		for(int i=1; i<K.size; i++)
