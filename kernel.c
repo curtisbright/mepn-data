@@ -304,6 +304,119 @@ int hasdivisor(family p)
 		return 1;
 	}
 
+	if(numrepeats==2)
+	{	int firstrepeatpos, lastrepeatpos;
+		for(int i=0; i<p.len; i++)
+			if(p.numrepeats[i]>0)
+			{	firstrepeatpos = i;
+				break;
+			}
+		for(int i=p.len-1; i>=0; i--)
+			if(p.numrepeats[i]>0)
+			{	lastrepeatpos = i;
+				break;
+			}
+
+		emptyinstancestring(str, p);
+		mpz_set_str(gcd1, str, base);
+		for(int i=0; i<p.numrepeats[firstrepeatpos]; i++)
+		{	instancestring(str, p, firstrepeatpos, i);
+			mpz_set_str(temp, str, base);
+			mpz_gcd(gcd1, gcd1, temp);
+		}
+
+		for(int i=0; i<p.numrepeats[lastrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[lastrepeatpos]; j++)
+			{	doubleinstancestring(str, p, lastrepeatpos, i, lastrepeatpos, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd1, gcd1, temp);
+			}
+
+		instancestring(str, p, lastrepeatpos, 0);
+		mpz_set_str(gcd2, str, base);
+		for(int i=1; i<p.numrepeats[lastrepeatpos]; i++)
+		{	instancestring(str, p, lastrepeatpos, i);
+			mpz_set_str(temp, str, base);
+			mpz_gcd(gcd2, gcd2, temp);
+		}
+
+		for(int i=0; i<p.numrepeats[lastrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[firstrepeatpos]; j++)
+			{	doubleinstancestring(str, p, lastrepeatpos, i, firstrepeatpos, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd2, gcd2, temp);
+			}
+
+		for(int i=0; i<p.numrepeats[lastrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[lastrepeatpos]; j++)
+				for(int k=0; k<p.numrepeats[lastrepeatpos]; k++)
+				{	tripleinstancestring(str, p, lastrepeatpos, i, lastrepeatpos, j, lastrepeatpos, k);
+					mpz_set_str(temp, str, base);
+					mpz_gcd(gcd2, gcd2, temp);
+				}
+
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		{	
+#ifdef PRINTDIVISORSPECIAL
+			familystring(str, p);
+			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
+#endif
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+			return 1;
+		}
+
+		emptyinstancestring(str, p);
+		mpz_set_str(gcd1, str, base);
+		for(int i=0; i<p.numrepeats[lastrepeatpos]; i++)
+		{	instancestring(str, p, lastrepeatpos, i);
+			mpz_set_str(temp, str, base);
+			mpz_gcd(gcd1, gcd1, temp);
+		}
+
+		for(int i=0; i<p.numrepeats[firstrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[firstrepeatpos]; j++)
+			{	doubleinstancestring(str, p, firstrepeatpos, i, firstrepeatpos, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd1, gcd1, temp);
+			}
+
+		instancestring(str, p, firstrepeatpos, 0);
+		mpz_set_str(gcd2, str, base);
+		for(int i=1; i<p.numrepeats[firstrepeatpos]; i++)
+		{	instancestring(str, p, firstrepeatpos, i);
+			mpz_set_str(temp, str, base);
+			mpz_gcd(gcd2, gcd2, temp);
+		}
+
+		for(int i=0; i<p.numrepeats[firstrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[lastrepeatpos]; j++)
+			{	doubleinstancestring(str, p, firstrepeatpos, i, lastrepeatpos, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd2, gcd2, temp);
+			}
+
+		for(int i=0; i<p.numrepeats[firstrepeatpos]; i++)
+			for(int j=0; j<p.numrepeats[firstrepeatpos]; j++)
+				for(int k=0; k<p.numrepeats[firstrepeatpos]; k++)
+				{	tripleinstancestring(str, p, firstrepeatpos, i, firstrepeatpos, j, firstrepeatpos, k);
+					mpz_set_str(temp, str, base);
+					mpz_gcd(gcd2, gcd2, temp);
+				}
+
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		{	
+#ifdef PRINTDIVISORSPECIAL
+			familystring(str, p);
+			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
+#endif
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+			return 1;
+		}
+
+		mpz_set_ui(gcd1, 0);
+		mpz_set_ui(gcd2, 0);
+	}
+
 	if(numrepeats<3)
 	{	emptyinstancestring(str, p);
 		mpz_set_str(gcd1, str, base);
@@ -328,6 +441,7 @@ int hasdivisor(family p)
 					mpz_set(gcd2, temp);
 				}
 			}
+
 		for(int i=0; i<p.len; i++)
 			for(int j=0; j<p.numrepeats[i]; j++)
 				for(int k=0; k<p.len; k++)
@@ -400,12 +514,23 @@ int hasdivisor(family p)
 					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
-						mpz_set_ui(temp, base);
-						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 2)!=0)
+						mpz_set_ui(temp7, base);
+						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp7, temp7, 2)!=0)
 						{	
 #ifdef PRINTDIVISOR
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares\n", str);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
+#endif
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+							return 1;
+						}
+						else if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+						{
+#ifdef PRINTDIVISOR
+							familystring(str, p);
+							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
 #endif
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
@@ -448,13 +573,14 @@ int hasdivisor(family p)
 #ifdef PRINTDIVISOR
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares\n", str);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
 #endif
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 							return 1;
 						}
 						else if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_cmp_ui(gcd2, 1)>0)
 						{
-#ifdef PRINTDIVISORSPECIAL
+#ifdef PRINTDIVISOR
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
@@ -463,24 +589,6 @@ int hasdivisor(family p)
 							return 1;
 						}
 					}
-					/*if(mpz_fdiv_ui(temp, base)==0)
-					{	mpz_divexact_ui(temp, temp, base);
-						if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
-						{	mpz_add(temp5, temp3, temp4);
-							mpz_sub(temp6, temp3, temp4);
-							mpz_set_ui(temp, base);
-
-							if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_cmp_ui(gcd1, 1)>0)
-							{
-#ifdef PRINTDIVISORSPECIAL
-								familystring(str, p);
-								gmp_printf("%s factors as a difference of squares for odd n, and has a factor %Zd for even n\n", str, gcd1);
-#endif
-								mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
-								return 1;
-							}
-						}
-					}*/
 
 					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
 					{	mpz_mul(temp5, temp3, temp3);
