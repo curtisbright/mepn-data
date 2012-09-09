@@ -4,6 +4,16 @@
 #include <string.h>
 #define MAXSTRING 20000
 
+#ifdef PRINTALL
+#define PRINTDIVISORSPECIAL
+#define PRINTSTATS 
+#define PRINTUNSOLVED 
+#define PRINTSPLIT 
+#define PRINTPRIMES 
+#define PRINTSUBWORD 
+#define PRINTEXPLORE
+#endif
+
 typedef struct
 {	int len;
 	int* numrepeats;
@@ -498,7 +508,12 @@ int hasdivisor(family p)
 				mpz_gcd(temp3, temp3, temp6);
 
 				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0)
-				{	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
+				{	
+#ifdef PRINTDIVISOR
+					familystring(str, p);
+					gmp_printf("%s has three divisors %Zd, %Zd, and %Zd\n", str, temp, temp2, temp3);
+#endif
+					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, NULL);
 					return 1;
 				}
 
@@ -676,13 +691,22 @@ void instancefamily(family* newf, family f, int side, int back)
 
 int examine(family* f)
 {	char* str = malloc(MAXSTRING);
+	char tempstr[MAXSTRING];
 	emptyinstancestring(str, *f);
 	if(!nosubword(str))
 	{	free(str);
+#ifdef PRINTSUBWORD
+		familystring(tempstr, *f);
+		printf("%s has a subword in kernel\n", tempstr);
 		return 0;
+#endif
 	}
 	else if(isprime(str))
 	{	addtokernel(str);
+#ifdef PRINTPRIMES
+		familystring(tempstr, *f);
+		printf("%s has a prime\n", tempstr);
+#endif
 		return 0;
 	}
 	free(str);
@@ -747,18 +771,18 @@ int split(family* f)
 					}
 				}
 
-				//clearfamily(f);
-
 				addtolist(&unsolved, copyf);
 				addtolist(&unsolved, newf);
 
-				/*char str[MAXSTRING];
+#ifdef PRINTSPLIT
+				char str[MAXSTRING];
 				familystring(str, *f);
 				printf("%s splits into ", str);
 				familystring(str, copyf);
 				printf("%s and ", str);
 				familystring(str, newf);
-				printf("%s\n", str);*/
+				printf("%s\n", str);
+#endif
 
 				clearfamily(&copyf);
 				clearfamily(&newf);
@@ -791,11 +815,13 @@ int split2(family* f)
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
 
-					/*char str[MAXSTRING];
+#ifdef PRINTSPLIT
+					char str[MAXSTRING];
 					familystring(str, *f);
 					printf("%s splits into ", str);
 					familystring(str, copyf);
-					printf("%s and ", str);*/
+					printf("%s and ", str);
+#endif
 
 					clearfamily(&copyf);
 
@@ -809,12 +835,12 @@ int split2(family* f)
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
 
-					/*familystring(str, copyf);
-					printf("%s\n", str);*/
+#ifdef PRINTSPLIT
+					familystring(str, copyf);
+					printf("%s\n", str);
+#endif
 
 					clearfamily(&copyf);
-
-					//clearfamily(f);
 
 					return 1;
 				}
@@ -849,11 +875,13 @@ int split2(family* f)
 					}
 					addtolist(&unsolved, newf);
 
-					/*char str[MAXSTRING];
+#ifdef PRINTSPLIT
+					char str[MAXSTRING];
 					familystring(str, *f);
 					printf("%s splits into ", str);
 					familystring(str, newf);
-					printf("%s\n", str);*/
+					printf("%s\n", str);
+#endif
 
 					clearfamily(&newf);
 
@@ -890,11 +918,13 @@ int split2(family* f)
 					}
 					addtolist(&unsolved, newf);
 
-					/*char str[MAXSTRING];
+#ifdef PRINTSPLIT
+					char str[MAXSTRING];
 					familystring(str, *f);
 					printf("%s splits into ", str);
 					familystring(str, newf);
-					printf("%s\n", str);*/
+					printf("%s\n", str);
+#endif
 
 					clearfamily(&newf);
 
@@ -904,7 +934,6 @@ int split2(family* f)
 		}
 	}
 	addtolist(&unsolved, *f);
-	//clearfamily(f);
 	return 0;
 }
 
@@ -1123,6 +1152,7 @@ int main(int argc, char** argv)
 				explore(oldlist.fam[j], i%2, (i/2)%2);
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
 #ifdef PRINTUNSOLVED
+			printf("Unsolved families:\n");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
@@ -1156,6 +1186,7 @@ int main(int argc, char** argv)
 		clearkernel();
 		K = temp;
 #ifdef PRINTKERNEL
+		printf("Kernel:\n");
 		for(int i=0; i<K.size; i++)
 			printf("%s\n", K.primes[i]);
 #endif
