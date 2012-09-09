@@ -169,7 +169,7 @@ void familyinit(family* p)
 
 void adddigit(family* f, char d, char* r, int n)
 {	int len = ++f->len;
-	f->digit = realloc(f->digit, len*sizeof(int));
+	f->digit = realloc(f->digit, len*sizeof(char));
 	f->digit[len-1] = d;
 	f->numrepeats = realloc(f->numrepeats, len*sizeof(int));
 	f->numrepeats[len-1] = n;
@@ -186,8 +186,10 @@ void clearfamily(family* f)
 	familyinit(f);
 }
 
-char digitchar(char digit)
-{	if(digit>=10)
+char digitchar(unsigned char digit)
+{	if(digit==255)
+		return 0;
+	else if(digit>=10)
 		return digit+'A'-10;
 	else
 		return digit+'0';
@@ -267,8 +269,7 @@ void copyfamily(family* newf, family f)
 
 int hasdivisor(family p)
 {	mpz_t gcd, temp;
-	mpz_init(gcd);
-	mpz_init(temp);
+	mpz_inits(gcd, temp, NULL);
 	char str[MAXSTRING];
 	int numrepeats = 0;
 	emptyinstancestring(str, p);
@@ -286,12 +287,14 @@ int hasdivisor(family p)
 	if(numrepeats==0)
 	{	mpz_clear(gcd);
 		mpz_clear(temp);
+		familystring(str, p);
+		printf("%s is trivial\n", str);
 		return 0;
 	}
 
 	if(mpz_cmp_ui(gcd, 1)>0)
-	{	//familystring(str, p);
-		//gmp_printf("%s has a divisor %Zd\n", str, gcd);
+	{	familystring(str, p);
+		gmp_printf("%s has a divisor %Zd\n", str, gcd);
 		mpz_clear(gcd);
 		mpz_clear(temp);
 		return 1;
@@ -311,6 +314,10 @@ int hasdivisor(family p)
 
 		if(mpz_cmp_ui(gcd, 1)>0)
 		{
+			mpz_t gcd1;
+			mpz_init(gcd1);
+			mpz_set(gcd1, gcd);
+
 			int gcdbeenset = 0;
 			for(int i=0; i<p.len; i++)
 				for(int j=0; j<p.numrepeats[i]; j++)
@@ -334,10 +341,12 @@ int hasdivisor(family p)
 									mpz_gcd(gcd, gcd, temp);
 								}
 			if(mpz_cmp_ui(gcd, 1)>0)
-			{	mpz_clear(gcd);
-				mpz_clear(temp);
+			{	familystring(str, p);
+				gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd);
+				mpz_clears(gcd, temp, gcd1, NULL);
 				return 1;
 			}
+			mpz_clear(gcd1);
 		}
 	}
 
@@ -466,8 +475,7 @@ int hasdivisor(family p)
 			}
 	}
 
-	mpz_clear(gcd);
-	mpz_clear(temp);
+	mpz_clears(gcd, temp, NULL);
 	return 0;
 }
 
@@ -645,6 +653,13 @@ int split2(family* f)
 					}
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
+
+					/*char str[MAXSTRING];
+					familystring(str, *f);
+					printf("%s splits into ", str);
+					familystring(str, copyf);
+					printf("%s and ", str);*/
+
 					clearfamily(&copyf);
 
 					familyinit(&copyf);
@@ -656,9 +671,95 @@ int split2(family* f)
 					}
 					copyf.numrepeats[i] = newnumrepeats;
 					addtolist(&unsolved, copyf);
+
+					/*familystring(str, copyf);
+					printf("%s\n", str);*/
+
 					clearfamily(&copyf);
 
 					//clearfamily(f);
+
+					return 1;
+				}
+				else if((!nosubword(str1)) && (f->numrepeats[i])==2)
+				{	family newf;
+					familyinit(&newf);
+					for(int l=0; l<f->len; l++)
+					{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+						memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+						adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
+						if(i==l)
+						{	int newnumrepeats = 0;
+							int removeddigit = f->repeats[i][j];
+							for(int m=0; m<f->numrepeats[i]; m++)
+							{	if(m!=j)
+									newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
+							}
+							newf.numrepeats[i] = newnumrepeats;
+
+							newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+							adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+							newnumrepeats = 0;
+							removeddigit = f->repeats[i][k];
+							for(int m=0; m<f->numrepeats[i]; m++)
+							{	if(m!=k)
+									newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
+							}
+							newf.numrepeats[i+1] = newnumrepeats;
+						}
+					}
+					addtolist(&unsolved, newf);
+
+					/*char str[MAXSTRING];
+					familystring(str, *f);
+					printf("%s splits into ", str);
+					familystring(str, newf);
+					printf("%s\n", str);*/
+
+					clearfamily(&newf);
+
+					return 1;
+				}
+				else if((!nosubword(str2)) && (f->numrepeats[i])==2)
+				{	family newf;
+					familyinit(&newf);
+					for(int l=0; l<f->len; l++)
+					{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+						memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+						adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
+						if(i==l)
+						{	int newnumrepeats = 0;
+							int removeddigit = f->repeats[i][k];
+							for(int m=0; m<f->numrepeats[i]; m++)
+							{	if(m!=k)
+									newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
+							}
+							newf.numrepeats[i] = newnumrepeats;
+
+							newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+							adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+							newnumrepeats = 0;
+							removeddigit = f->repeats[i][j];
+							for(int m=0; m<f->numrepeats[i]; m++)
+							{	if(m!=j)
+									newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
+							}
+							newf.numrepeats[i+1] = newnumrepeats;
+						}
+					}
+					addtolist(&unsolved, newf);
+
+					/*char str[MAXSTRING];
+					familystring(str, *f);
+					printf("%s splits into ", str);
+					familystring(str, newf);
+					printf("%s\n", str);*/
+
+					clearfamily(&newf);
 
 					return 1;
 				}
@@ -678,7 +779,9 @@ void explore(family f, int side, int back)
 				familystring(str, f);
 				//printf("first ");
 				//printf(side ? "left " : "right ");
-				//printf("exploring %s as ", str);
+#ifdef PRINTEXPLORE
+				printf("exploring %s as ", str);
+#endif
 
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
@@ -687,10 +790,11 @@ void explore(family f, int side, int back)
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(&unsolved, newf);
-					//else
 
-					//familystring(str, newf);
-					//printf("%s, ", str);
+#ifdef PRINTEXPLORE
+					familystring(str, newf);
+					printf("%s, ", str);
+#endif
 
 					clearfamily(&newf);
 				}
@@ -702,10 +806,11 @@ void explore(family f, int side, int back)
 				copyf.numrepeats[i] = 0;
 				if(examine(&copyf))
 					addtolist(&unsolved, copyf);
-				//else
 
-				//familystring(str, copyf);
-				//printf("%s\n", str);
+#ifdef PRINTEXPLORE
+				familystring(str, copyf);
+				printf("%s\n", str);
+#endif
 
 				clearfamily(&copyf);
 
@@ -719,7 +824,9 @@ void explore(family f, int side, int back)
 				familystring(str, f);
 				//printf("last ");
 				//printf(side ? "left " : "right ");
-				//printf("exploring %s as ", str);
+#ifdef PRINTEXPLORE
+				printf("exploring %s as ", str);
+#endif
 
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
@@ -728,10 +835,11 @@ void explore(family f, int side, int back)
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(&unsolved, newf);
-					//else
 
-					//familystring(str, newf);
-					//printf("%s, ", str);
+#ifdef PRINTEXPLORE
+					familystring(str, newf);
+					printf("%s, ", str);
+#endif
 
 					clearfamily(&newf);
 				}
@@ -743,10 +851,11 @@ void explore(family f, int side, int back)
 				copyf.numrepeats[i] = 0;
 				if(examine(&copyf))
 					addtolist(&unsolved, copyf);
-				//else
 
-				//familystring(str, copyf);
-				//printf("%s\n", str);
+#ifdef PRINTEXPLORE
+				familystring(str, copyf);
+				printf("%s\n", str);
+#endif
 
 				clearfamily(&copyf);
 
@@ -867,18 +976,18 @@ int main(int argc, char** argv)
 				printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
 			}
 
-			/*if(i==45)
-				for(int j=0; j<oldlist.size; j++)
-					explore(oldlist.fam[j], 2, (i/2)%2);
-			else*/
+			//if(i==180)
+			//	for(int j=0; j<oldlist.size; j++)
+			//		explore(oldlist.fam[j], 2, (i/2)%2);
+			//else
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2, (i/2)%2);
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
-			/*for(int j=0; j<unsolved.size; j++)
+			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
 				printf("%s\n", str);
-			}*/
+			}
 			/*char filename[100];
 			sprintf(filename, "iter%d.txt", i);
 			FILE* out = fopen(filename, "w");
