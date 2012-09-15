@@ -103,7 +103,7 @@ void removedupes()
 				strlist[j] = last;
 				last = temp;
 			}
-			else if(strcmp(str,strlist[j])<0)
+			else if(strcmp(str,strlist[j])>0)
 			{	addedtolist = 1;
 				last = strlist[j];
 				strlist[j] = str;
@@ -345,14 +345,14 @@ void simplefamilystring(char* str, family p)
 	
 	int j=-1;
 	for(int i=repeatedpos; i>=0; i--)
-		if(p.digit[i]!=repeateddigit)
+		if(p.digit[i]!=repeateddigit && p.digit[i]!=255)
 		{	j = i;
 			break;
 		}
 	
 	int k=p.len;
 	for(int i=repeatedpos+1; i<p.len; i++)
-		if(p.digit[i]!=repeateddigit)
+		if(p.digit[i]!=repeateddigit && p.digit[i]!=255)
 		{	k = i;
 			break;
 		}
@@ -1519,8 +1519,6 @@ int main(int argc, char** argv)
 				break;
 		}
 
-		fprintf(out, "BASE %d:\n", base);
-
 		kernel temp;
 		temp.size = 0;
 		temp.primes = NULL;
@@ -1534,27 +1532,37 @@ int main(int argc, char** argv)
 			}
 		clearkernel();
 		K = temp;
-#ifdef PRINTKERNEL
-		printf("Kernel:\n");
+
+		char filename[100];
+		sprintf(filename, "kernel.%d.txt", base);
+		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
-			printf("%s\n", K.primes[i]);
-#endif
-		fprintf(out, "\tSize:\t%d\n", K.size);
+			fprintf(kernelfile, "%s\n", K.primes[i]);
+		fclose(kernelfile);
+
+		sprintf(filename, "summary.txt", base);
+		FILE* summaryfile = fopen(filename, "a");
+		fprintf(summaryfile, "BASE %d:\n", base);
+		fprintf(summaryfile, "\tSize:\t%d\n", K.size);
 		int width = strlen(K.primes[0]);
 		for(int i=1; i<K.size; i++)
 			if(width<strlen(K.primes[i]))
 				width = strlen(K.primes[i]);
-		fprintf(out, "\tWidth:\t%d\n", width);
-		fprintf(out, "\tRemain:\t%d\n", unsolved.size);
+		fprintf(summaryfile, "\tWidth:\t%d\n", width);
+		fprintf(summaryfile, "\tRemain:\t%d\n", unsolved.size);
+		fclose(summaryfile);
 
+		sprintf(filename, "unsolved.%d.txt", base);
+		FILE* unsolvedfile = fopen(filename, "w");
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
 			if(issimple(unsolved.fam[i]))
 				simplefamilystring(str, unsolved.fam[i]);
 			else
 				familystring(str, unsolved.fam[i]);
-			fprintf(out, "%s\n", str);
+			fprintf(unsolvedfile, "%s\n", str);
 		}
+		fclose(unsolvedfile);
 
 		clearkernel();
 		clearlist(&unsolved);
