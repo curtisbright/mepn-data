@@ -7,6 +7,8 @@
 #ifdef PRINTALL
 #define PRINTDIVISOR
 #define PRINTDIVISORSPECIAL
+#define PRINTDIVISORFOUR
+#define PRINTDIVISORFIVE
 #define PRINTSTATS
 #define PRINTUNSOLVED
 #define PRINTSPLIT
@@ -16,6 +18,7 @@
 #define PRINTSUBWORD
 #define PRINTEXPLORE
 #define PRINTTRIVIAL
+#define PRINTSIMPLE
 #endif
 
 typedef struct
@@ -40,6 +43,9 @@ void clearfamily(family* f);
 void copyfamily(family* newf, family f);
 void adddigit(family* f, char d, char* r, int n);
 void familyinit(family* p);
+void addtolist(list* l, family f);
+void simplefamilystring(char* str, family p);
+int issimple(family f);
 
 int base;
 int depth;
@@ -68,7 +74,111 @@ void clearlist(list* l)
 	listinit(l);
 }
 
-int samefamily(family f, family g)
+void removedupes()
+{	if(unsolved.size==0)
+		return;
+	list newlist;
+	listinit(&newlist);
+	int n = 1;
+	char** strlist = malloc(n*sizeof(char*));
+	char* str = malloc(MAXSTRING*sizeof(char));
+	if(issimple(unsolved.fam[0]))
+		simplefamilystring(str, unsolved.fam[0]);
+	else
+		familystring(str, unsolved.fam[0]);
+	strlist[0] = str;
+	addtolist(&newlist, unsolved.fam[0]);
+	for(int i=1; i<unsolved.size; i++)
+	{	str = malloc(MAXSTRING*sizeof(char));
+		if(issimple(unsolved.fam[i]))
+			simplefamilystring(str, unsolved.fam[i]);
+		else
+			familystring(str, unsolved.fam[i]);
+		int addedtolist = 0;
+		char* temp;
+		char* last;
+		for(int j=0; j<n; j++)
+		{	if(addedtolist)
+			{	temp = strlist[j];
+				strlist[j] = last;
+				last = temp;
+			}
+			else if(strcmp(str,strlist[j])<0)
+			{	addedtolist = 1;
+				last = strlist[j];
+				strlist[j] = str;
+				addtolist(&newlist, unsolved.fam[i]);
+			}
+			else if(strcmp(str,strlist[j])==0)
+				break;
+			else if(j==n-1)
+			{	addedtolist = 1;
+				last = str;
+				addtolist(&newlist, unsolved.fam[i]);
+			}
+		}
+		if(addedtolist)
+		{	n++;
+			strlist = realloc(strlist, n*sizeof(char*));
+			strlist[n-1] = last;
+		}
+		else
+			free(str);
+	}
+
+#if 0
+	printf("Distinct unsolved list:\n");
+	for(int i=0; i<n; i++)
+		printf("%s\n", strlist[i]);
+#endif
+
+	clearlist(&unsolved);
+	unsolved = newlist;
+
+	for(int i=0; i<n; i++)
+		free(strlist[i]);
+	free(strlist);
+}
+
+int issimple(family f)
+{	int hasrepeat = 0;
+	for(int i=0; i<f.len; i++)
+	{	if(f.numrepeats[i]>1)
+			return 0;
+		if(f.numrepeats[i]==1)
+		{	if(hasrepeat)
+				return 0;
+			hasrepeat = 1;
+		}
+	}
+	return (hasrepeat==1);
+}
+
+int onlysimple(list l)
+{	for(int i=0; i<l.size; i++)
+	{	if(!issimple(l.fam[i]))
+			return 0;
+	}
+	return 1;
+}
+
+void printlist(list l)
+{	for(int i=0; i<l.size; i++)
+	{	char str[MAXSTRING];
+		familystring(str, l.fam[i]);
+		printf("%s\n", str);
+	}
+}
+
+void simpleprintlist(list l)
+{	for(int i=0; i<l.size; i++)
+	{	char str[MAXSTRING];
+		simplefamilystring(str, l.fam[i]);
+		printf("%s\n", str);
+	}
+}
+
+/*int samefamily(family f, family g)
 {	if(f.len!=g.len)
 		return 0;
 	for(int i=0; i<f.len; i++)
@@ -81,11 +191,11 @@ int samefamily(family f, family g)
 				return 0;
 	}
 	return 1;
-}
+}*/
 
 void addtolist(list* l, family f)
-{	if((l->size)>0 && samefamily(f, l->fam[(l->size)-1]))
-		return;
+{	//if((l->size)>0 && samefamily(f, l->fam[(l->size)-1]))
+	//	return;
 	int size = ++l->size;
 	l->fam = (family*)realloc(l->fam, size*sizeof(family));
 	familyinit(&((l->fam)[size-1]));
@@ -220,6 +330,38 @@ void familystring(char* str, family p)
 			sprintf(str, "%s}*", str);
 		}
 	}
+}
+
+void simplefamilystring(char* str, family p)
+{	sprintf(str, "%c", 0);
+	char repeateddigit;
+	int repeatedpos;
+	for(int i=0; i<p.len; i++)
+		if(p.numrepeats[i]==1)
+		{	repeateddigit = p.repeats[i][0];
+			repeatedpos = i;
+			break;
+		}
+	
+	int j=-1;
+	for(int i=repeatedpos; i>=0; i--)
+		if(p.digit[i]!=repeateddigit)
+		{	j = i;
+			break;
+		}
+	
+	int k=p.len;
+	for(int i=repeatedpos+1; i<p.len; i++)
+		if(p.digit[i]!=repeateddigit)
+		{	k = i;
+			break;
+		}
+
+	for(int i=0; i<=j; i++)
+		sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+	sprintf(str, "%s%c*", str, digitchar(repeateddigit));
+	for(int i=k; i<p.len; i++)
+		sprintf(str, "%s%c", str, digitchar(p.digit[i]));
 }
 
 void startinstancestring(char* str, family p, int length)
@@ -1237,7 +1379,7 @@ int main(int argc, char** argv)
 	//fclose(out);
 	for(base=atoi(argv[1]); base<atoi(argv[2]); base++)
 	{	//base = atoi(argv[1]);
-		depth = atoi(argv[3]);
+		//depth = atoi(argv[3]);
 
 		//FILE* out = fopen("basedata.txt", "a");
 
@@ -1289,68 +1431,79 @@ int main(int argc, char** argv)
 
 		list oldlist;
 		listinit(&oldlist);
-		for(int i=0; i<depth; i++)
+		for(int i=0; /*i<depth*/; i++)
 		{	
 			clearlist(&oldlist);
 			oldlist = unsolved;
 			listinit(&unsolved);
 
-			int didsplit = 1;
-			int splititer = 0;
-			while(didsplit)
-			{	didsplit = 0;
+			if(!onlysimple(oldlist))
+			{	int didsplit = 1;
+				int splititer = 0;
+				while(didsplit)
+				{	didsplit = 0;
 
-				for(int j=0; j<oldlist.size; j++)
-					didsplit |= split(&(oldlist.fam[j]));
+					for(int j=0; j<oldlist.size; j++)
+						didsplit |= split(&(oldlist.fam[j]));
 
-				clearlist(&oldlist);
-				oldlist = unsolved;
-				listinit(&unsolved);
+					removedupes();
+					clearlist(&oldlist);
+					oldlist = unsolved;
+					listinit(&unsolved);
 
-				for(int j=0; j<oldlist.size; j++)
-					if(examine(&(oldlist.fam[j])))
-						addtolist(&unsolved, oldlist.fam[j]);
+					for(int j=0; j<oldlist.size; j++)
+						if(examine(&(oldlist.fam[j])))
+							addtolist(&unsolved, oldlist.fam[j]);
 
-				clearlist(&oldlist);
-				oldlist = unsolved;
-				listinit(&unsolved);
+					removedupes();
+					clearlist(&oldlist);
+					oldlist = unsolved;
+					listinit(&unsolved);
 
-				for(int j=0; j<oldlist.size; j++)
-					didsplit |= split2(&(oldlist.fam[j]));
+					for(int j=0; j<oldlist.size; j++)
+						didsplit |= split2(&(oldlist.fam[j]));
 
-				clearlist(&oldlist);
-				oldlist = unsolved;
-				listinit(&unsolved);
+					removedupes();
+					clearlist(&oldlist);
+					oldlist = unsolved;
+					listinit(&unsolved);
 
-				for(int j=0; j<oldlist.size; j++)
-				{	if(examine(&(oldlist.fam[j])))
-						addtolist(&unsolved, oldlist.fam[j]);
-				}
+					for(int j=0; j<oldlist.size; j++)
+					{	if(examine(&(oldlist.fam[j])))
+							addtolist(&unsolved, oldlist.fam[j]);
+					}
 
-				clearlist(&oldlist);
-				oldlist = unsolved;
-				listinit(&unsolved);
+					removedupes();
+					clearlist(&oldlist);
+					oldlist = unsolved;
+					listinit(&unsolved);
 
-				splititer++;
+					splititer++;
 #ifdef PRINTSTATS
-				printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
+					printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, oldlist.size);
+#endif
+				}
+			}
+			else
+			{	unsolved = oldlist;
+				break;
+#ifdef PRINTSIMPLE
+				printf("Only simple families remain: ");
+				for(int j=0; j<oldlist.size; j++)
+				{	char str[MAXSTRING];
+					simplefamilystring(str, oldlist.fam[j]);
+					printf("%s%s", str, j<oldlist.size-1 ? ", " : "\n");
+				}
 #endif
 			}
 
-			//if(i==180)
-			//	for(int j=0; j<oldlist.size; j++)
-			//		explore(oldlist.fam[j], 2, (i/2)%2);
-			//else
 			for(int j=0; j<oldlist.size; j++)
 				explore(oldlist.fam[j], i%2, (i/2)%2);
+
 			//printf("base %d\titeration %d\tsize %d\tremain %d\n", base, i, K.size, unsolved.size);
 #ifdef PRINTUNSOLVED
 			printf("Unsolved families after explore:\n");
-			for(int j=0; j<unsolved.size; j++)
-			{	char str[MAXSTRING];
-				familystring(str, unsolved.fam[j]);
-				printf("%s\n", str);
-			}
+			printlist(unsolved);
 #endif
 			/*char filename[100];
 			sprintf(filename, "iter%d.txt", i);
@@ -1361,6 +1514,9 @@ int main(int argc, char** argv)
 				fprintf(out, "%s\n", str);
 			}
 			fclose(out);*/
+
+			if(unsolved.size==0)
+				break;
 		}
 
 		fprintf(out, "BASE %d:\n", base);
@@ -1393,7 +1549,10 @@ int main(int argc, char** argv)
 
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
-			familystring(str, unsolved.fam[i]);
+			if(issimple(unsolved.fam[i]))
+				simplefamilystring(str, unsolved.fam[i]);
+			else
+				familystring(str, unsolved.fam[i]);
 			fprintf(out, "%s\n", str);
 		}
 
