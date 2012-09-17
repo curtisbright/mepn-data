@@ -15,6 +15,7 @@
 #define PRINTSPLITSPECIAL
 #define PRINTSPLITTRIPLE
 #define PRINTSPLITQUAD
+#define PRINTSPLITQUINT
 #define PRINTPRIMES
 #define PRINTSUBWORD
 #define PRINTEXPLORE
@@ -428,6 +429,23 @@ void quadinstancestring(char* str, family p, int x1, int y1, int x2, int y2, int
 			sprintf(str, "%s%c", str, digitchar(p.repeats[x3][y3]));
 		if(i==x4)
 			sprintf(str, "%s%c", str, digitchar(p.repeats[x4][y4]));
+	}
+}
+
+void quintinstancestring(char* str, family p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5)
+{	sprintf(str, "%c", 0);
+	for(int i=0; i<p.len; i++)
+	{	sprintf(str, "%s%c", str, digitchar(p.digit[i]));
+		if(i==x1)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x1][y1]));
+		if(i==x2)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x2][y2]));
+		if(i==x3)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x3][y3]));
+		if(i==x4)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x4][y4]));
+		if(i==x5)
+			sprintf(str, "%s%c", str, digitchar(p.repeats[x5][y5]));
 	}
 }
 
@@ -1095,8 +1113,8 @@ int split(family* f)
 			}
 
 			quadinstancestring(str, *f, i, j, i, j, i, j, i, j);
-
-if(!nosubword(str))
+	
+			if(!nosubword(str))
 			{	
 				family copyf;
 				familyinit(&copyf);
@@ -1148,10 +1166,10 @@ if(!nosubword(str))
 					if(k==i)
 					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
 						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf2, removeddigit, newrepeats, copyf.numrepeats[k]);
+						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
 						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
 						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf2, removeddigit, newrepeats, copyf.numrepeats[k]);
+						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
 						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
 						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
 						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
@@ -1181,6 +1199,123 @@ if(!nosubword(str))
 				clearfamily(&newf);
 				clearfamily(&newf2);
 				clearfamily(&newf3);
+			
+				return 1;
+			}
+
+			quintinstancestring(str, *f, i, j, i, j, i, j, i, j, i, j);
+	
+			if(!nosubword(str))
+			{	
+				family copyf;
+				familyinit(&copyf);
+				copyfamily(&copyf, *f);
+
+				int newnumrepeats = 0;
+				int removeddigit = copyf.repeats[i][j];
+				for(int k=0; k<copyf.numrepeats[i]; k++)
+				{	if(k!=j)
+						copyf.repeats[i][newnumrepeats++] = copyf.repeats[i][k];
+				}
+				copyf.numrepeats[i] = newnumrepeats;
+
+				family newf;
+				familyinit(&newf);
+				for(int k=0; k<copyf.len; k++)
+				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+					adddigit(&newf, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+					if(k==i)
+					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf, removeddigit, newrepeats, copyf.numrepeats[k]);
+					}
+				}
+
+				family newf2;
+				familyinit(&newf2);
+				for(int k=0; k<copyf.len; k++)
+				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+					adddigit(&newf2, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+					if(k==i)
+					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf2, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf2, removeddigit, newrepeats, copyf.numrepeats[k]);
+					}
+				}
+
+				family newf3;
+				familyinit(&newf3);
+				for(int k=0; k<copyf.len; k++)
+				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+					adddigit(&newf3, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+					if(k==i)
+					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
+					}
+				}
+
+				family newf4;
+				familyinit(&newf4);
+				for(int k=0; k<copyf.len; k++)
+				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+					adddigit(&newf4, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+					if(k==i)
+					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
+						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
+					}
+				}
+
+				addtolist(&unsolved, copyf);
+				addtolist(&unsolved, newf);
+				addtolist(&unsolved, newf2);
+				addtolist(&unsolved, newf3);
+				addtolist(&unsolved, newf4);
+
+#ifdef PRINTSPLITQUINT
+				char str[MAXSTRING];
+				familystring(str, *f);
+				printf("%s splits into ", str);
+				familystring(str, copyf);
+				printf("%s and ", str);
+				familystring(str, newf);
+				printf("%s and ", str);
+				familystring(str, newf2);
+				printf("%s and ", str);
+				familystring(str, newf3);
+				printf("%s and ", str);
+				familystring(str, newf4);
+				printf("%s\n", str);
+#endif
+
+				clearfamily(&copyf);
+				clearfamily(&newf);
+				clearfamily(&newf2);
+				clearfamily(&newf3);
+				clearfamily(&newf4);
 			
 				return 1;
 			}
