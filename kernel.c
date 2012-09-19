@@ -966,8 +966,12 @@ int examine(family* f)
 	return 1;
 }
 
-int split(family* f, list* unsolved)
-{	for(int i=0; i<f->len; i++)
+int split(family* f, list* unsolved, char insplit)
+{	if(insplit==0)
+	{	addtolist(unsolved, *f, 0);
+		return 0;
+	}
+	for(int i=0; i<f->len; i++)
 	{	for(int j=0; j<f->numrepeats[i]; j++)
 		{	char str[MAXSTRING];
 			doubleinstancestring(str, *f, i, j, i, j);
@@ -999,8 +1003,8 @@ int split(family* f, list* unsolved)
 					}
 				}
 
-				addtolist(unsolved, copyf, 1);
-				addtolist(unsolved, newf, 1);
+				addtolist(unsolved, copyf, 2);
+				addtolist(unsolved, newf, 2);
 
 #ifdef PRINTSPLIT
 				char str[MAXSTRING];
@@ -1063,9 +1067,9 @@ int split(family* f, list* unsolved)
 					}
 				}
 
-				addtolist(unsolved, copyf, 1);
-				addtolist(unsolved, newf, 1);
-				addtolist(unsolved, newf2, 1);
+				addtolist(unsolved, copyf, 2);
+				addtolist(unsolved, newf, 2);
+				addtolist(unsolved, newf2, 2);
 
 #ifdef PRINTSPLITTRIPLE
 				char str[MAXSTRING];
@@ -1150,10 +1154,10 @@ int split(family* f, list* unsolved)
 					}
 				}
 
-				addtolist(unsolved, copyf, 1);
-				addtolist(unsolved, newf, 1);
-				addtolist(unsolved, newf2, 1);
-				addtolist(unsolved, newf3, 1);
+				addtolist(unsolved, copyf, 2);
+				addtolist(unsolved, newf, 2);
+				addtolist(unsolved, newf2, 2);
+				addtolist(unsolved, newf3, 2);
 
 #ifdef PRINTSPLITQUAD
 				char str[MAXSTRING];
@@ -1263,11 +1267,11 @@ int split(family* f, list* unsolved)
 					}
 				}
 
-				addtolist(unsolved, copyf, 1);
-				addtolist(unsolved, newf, 1);
-				addtolist(unsolved, newf2, 1);
-				addtolist(unsolved, newf3, 1);
-				addtolist(unsolved, newf4, 1);
+				addtolist(unsolved, copyf, 2);
+				addtolist(unsolved, newf, 2);
+				addtolist(unsolved, newf2, 2);
+				addtolist(unsolved, newf3, 2);
+				addtolist(unsolved, newf4, 2);
 
 #ifdef PRINTSPLITQUINT
 				char str[MAXSTRING];
@@ -1296,12 +1300,16 @@ int split(family* f, list* unsolved)
 
 		}
 	}
-	addtolist(unsolved, *f, 0);
+	addtolist(unsolved, *f, 1);
 	return 0;
 }
 
-int split2(family* f, list* unsolved)
-{	for(int i=0; i<f->len; i++)
+int split2(family* f, list* unsolved, char insplit)
+{	if(insplit==0)
+	{	addtolist(unsolved, *f, 0);
+		return 0;
+	}
+	for(int i=0; i<f->len; i++)
 	{	for(int j=0; j<f->numrepeats[i]; j++)
 		{	for(int m=i; m<f->len; m++)
 			{	for(int k=0; k<f->numrepeats[m]; k++)
@@ -1483,7 +1491,7 @@ int split2(family* f, list* unsolved)
 			}
 		}
 	}
-	addtolist(unsolved, *f, 0);
+	addtolist(unsolved, *f, insplit-1);
 	return 0;
 }
 
@@ -1587,6 +1595,11 @@ int main(int argc, char** argv)
 					pr[(i*j)>>3]&=~(1<<((i*j)&7));
 	pr[0] &= 252;
 
+	char filename[100];
+	sprintf(filename, "summary.txt", base);
+	FILE* summaryfile = fopen(filename, "w");
+	fclose(summaryfile);
+
 	FILE* out = stdout;
 	for(base=atoi(argv[1]); base<=atoi(argv[2]); base++)
 	{	kernelinit();
@@ -1648,7 +1661,7 @@ int main(int argc, char** argv)
 					clearlist(&unsolved);
 
 					for(int j=0; j<oldlist.size; j++)
-						didsplit |= split(&(oldlist.fam[j]), &unsolved);
+						didsplit |= split(&(oldlist.fam[j]), &unsolved, oldlist.split[j]);
 
 					clearlist(&oldlist);
 					removedupes(&unsolved);
@@ -1665,7 +1678,7 @@ int main(int argc, char** argv)
 					clearlist(&unsolved);
 
 					for(int j=0; j<oldlist.size; j++)
-						didsplit |= split2(&(oldlist.fam[j]), &unsolved);
+						didsplit |= split2(&(oldlist.fam[j]), &unsolved, oldlist.split[j]);
 
 					clearlist(&oldlist);
 					removedupes(&unsolved);
@@ -1731,7 +1744,6 @@ int main(int argc, char** argv)
 		clearkernel();
 		K = temp;
 
-		char filename[100];
 		sprintf(filename, "data/kernel.%d.txt", base);
 		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
@@ -1739,8 +1751,6 @@ int main(int argc, char** argv)
 		fclose(kernelfile);
 
 		sprintf(filename, "summary.txt", base);
-		FILE* summaryfile = fopen(filename, "w");
-		fclose(summaryfile);
 		summaryfile = fopen(filename, "a");
 		fprintf(summaryfile, "BASE %d:\n", base);
 		fprintf(summaryfile, "\tSize:\t%d\n", K.size);
