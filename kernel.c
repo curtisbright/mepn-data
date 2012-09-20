@@ -1669,7 +1669,7 @@ int main(int argc, char** argv)
 					clearlist(&unsolved);
 
 					for(int j=0; j<oldlist.size; j++)
-						if(examine(&(oldlist.fam[j])))
+						if(oldlist.split[j]==0 || examine(&(oldlist.fam[j])))
 							addtolist(&unsolved, oldlist.fam[j], oldlist.split[j]);
 
 					clearlist(&oldlist);
@@ -1686,9 +1686,8 @@ int main(int argc, char** argv)
 					clearlist(&unsolved);
 
 					for(int j=0; j<oldlist.size; j++)
-					{	if(examine(&(oldlist.fam[j])))
-							addtolist(&unsolved, oldlist.fam[j], oldlist.split[j]);
-					}
+						if(oldlist.split[j]==0 || examine(&(oldlist.fam[j])))
+							addtolist(&unsolved, oldlist.fam[j], oldlist.split[j]);				
 
 					clearlist(&oldlist);
 					removedupes(&unsolved);
