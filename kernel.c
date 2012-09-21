@@ -141,6 +141,7 @@ void removedupes(list* unsolved)
 
 	clearlist(unsolved);
 	copylist(unsolved, newlist);
+	clearlist(&newlist);
 
 	for(int i=0; i<n; i++)
 		free(strlist[i]);
@@ -187,7 +188,7 @@ void simpleprintlist(list l)
 
 void addtolist(list* l, family f, char split)
 {	int size = ++l->size;
-	l->fam = (family*)realloc(l->fam, size*sizeof(family));
+	l->fam = realloc(l->fam, size*sizeof(family));
 	familyinit(&((l->fam)[size-1]));
 	copyfamily(&((l->fam)[size-1]), f);
 	l->split = realloc(l->split, size*sizeof(char));
