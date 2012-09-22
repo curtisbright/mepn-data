@@ -55,6 +55,7 @@ int depth;
 kernel K;
 int prsize;
 char* pr;
+FILE* distinct;
 
 void listinit(list* l)
 {	l->size = 0;
@@ -133,10 +134,10 @@ void removedupes(list* unsolved)
 			free(str);
 	}
 
-#if 0
-	printf("Distinct unsolved list:\n");
+#ifdef DISTINCT
+	fprintf(distinct, "Distinct unsolved list:\n");
 	for(int i=0; i<n; i++)
-		printf("%s\n", strlist[i]);
+		fprintf(distinct, "%s\n", strlist[i]);
 #endif
 
 	clearlist(unsolved);
@@ -324,14 +325,14 @@ void simplefamilystring(char* str, family p)
 	
 	int j=-1;
 	for(int i=repeatedpos; i>=0; i--)
-		if(p.digit[i]!=repeateddigit && p.digit[i]!=255)
+		if(p.digit[i]!=repeateddigit && (unsigned char)p.digit[i]!=255)
 		{	j = i;
 			break;
 		}
 	
 	int k=p.len;
 	for(int i=repeatedpos+1; i<p.len; i++)
-		if(p.digit[i]!=repeateddigit && p.digit[i]!=255)
+		if(p.digit[i]!=repeateddigit && (unsigned char)p.digit[i]!=255)
 		{	k = i;
 			break;
 		}
@@ -1549,6 +1550,9 @@ int main(int argc, char** argv)
 	FILE* summaryfile = fopen(filename, "w");
 	fclose(summaryfile);
 
+#ifdef DISTINCT
+	distinct = fopen("distinct.txt", "w");
+#endif
 	FILE* out = stdout;
 	for(base=atoi(argv[1]); base<=atoi(argv[2]); base++)
 	{	kernelinit();
@@ -1737,6 +1741,9 @@ int main(int argc, char** argv)
 		clearlist(&unsolved);
 	}
 
+#ifdef DISTINCT
+	fclose(distinct);
+#endif
 	free(pr);
 	return 0;
 }
