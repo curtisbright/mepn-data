@@ -409,20 +409,13 @@ void quadinstancestring(char* str, family p, int x1, int y1, int x2, int y2, int
 	}
 }
 
-void quintinstancestring(char* str, family p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int x5, int y5)
+void quintinstancestring(char* str, family p, int x1, int y1)
 {	sprintf(str, "%c", 0);
 	for(int i=0; i<p.len; i++)
 	{	sprintf(str, "%s%c", str, digitchar(p.digit[i]));
 		if(i==x1)
-			sprintf(str, "%s%c", str, digitchar(p.repeats[x1][y1]));
-		if(i==x2)
-			sprintf(str, "%s%c", str, digitchar(p.repeats[x2][y2]));
-		if(i==x3)
-			sprintf(str, "%s%c", str, digitchar(p.repeats[x3][y3]));
-		if(i==x4)
-			sprintf(str, "%s%c", str, digitchar(p.repeats[x4][y4]));
-		if(i==x5)
-			sprintf(str, "%s%c", str, digitchar(p.repeats[x5][y5]));
+		{	sprintf(str, "%s%c%c%c%c%c%c%c%c%c%c", str, digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]), digitchar(p.repeats[x1][y1]));
+		}
 	}
 }
 
@@ -1182,7 +1175,7 @@ int split(family* f, list* unsolved, char insplit)
 				return 1;
 			}
 
-			quintinstancestring(str, *f, i, j, i, j, i, j, i, j, i, j);
+			quintinstancestring(str, *f, i, j);
 	
 			if(!nosubword(str))
 			{	
@@ -1198,20 +1191,33 @@ int split(family* f, list* unsolved, char insplit)
 				}
 				copyf.numrepeats[i] = newnumrepeats;
 
-				family newf;
-				familyinit(&newf);
-				for(int k=0; k<copyf.len; k++)
-				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-					adddigit(&newf, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
-					if(k==i)
-					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+				addtolist(unsolved, copyf, 2);
+
+				for(int l=1; l<=9; l++)
+				{
+					family newf;
+					familyinit(&newf);
+					for(int k=0; k<copyf.len; k++)
+					{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
 						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf, removeddigit, newrepeats, copyf.numrepeats[k]);
+						adddigit(&newf, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
+						if(k==i)
+						{	for(int m=0; m<l; m++)
+							{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
+								memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
+								adddigit(&newf, removeddigit, newrepeats, copyf.numrepeats[k]);
+							}
+						}
 					}
+
+					addtolist(unsolved, newf, 2);
+					clearfamily(&newf);
+
 				}
 
-				family newf2;
+				clearfamily(&copyf);
+
+/*				family newf2;
 				familyinit(&newf2);
 				for(int k=0; k<copyf.len; k++)
 				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
@@ -1226,75 +1232,13 @@ int split(family* f, list* unsolved, char insplit)
 						adddigit(&newf2, removeddigit, newrepeats, copyf.numrepeats[k]);
 					}
 				}
-
-				family newf3;
-				familyinit(&newf3);
-				for(int k=0; k<copyf.len; k++)
-				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-					adddigit(&newf3, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
-					if(k==i)
-					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
-						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
-						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf3, removeddigit, newrepeats, copyf.numrepeats[k]);
-					}
-				}
-
-				family newf4;
-				familyinit(&newf4);
-				for(int k=0; k<copyf.len; k++)
-				{	char* newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-					memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-					adddigit(&newf4, copyf.digit[k], newrepeats, copyf.numrepeats[k]);
-					if(k==i)
-					{	newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
-						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
-						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
-						newrepeats = malloc(copyf.numrepeats[k]*sizeof(char));
-						memcpy(newrepeats, copyf.repeats[k], copyf.numrepeats[k]*sizeof(char));
-						adddigit(&newf4, removeddigit, newrepeats, copyf.numrepeats[k]);
-					}
-				}
-
-				addtolist(unsolved, copyf, 2);
-				addtolist(unsolved, newf, 2);
-				addtolist(unsolved, newf2, 2);
-				addtolist(unsolved, newf3, 2);
-				addtolist(unsolved, newf4, 2);
+*/
 
 #ifdef PRINTSPLITQUINT
 				char str[MAXSTRING];
 				familystring(str, *f);
-				printf("%s splits into ", str);
-				familystring(str, copyf);
-				printf("%s and ", str);
-				familystring(str, newf);
-				printf("%s and ", str);
-				familystring(str, newf2);
-				printf("%s and ", str);
-				familystring(str, newf3);
-				printf("%s and ", str);
-				familystring(str, newf4);
-				printf("%s\n", str);
+				printf("%s splits ten ways\n", str);
 #endif
-
-				clearfamily(&copyf);
-				clearfamily(&newf);
-				clearfamily(&newf2);
-				clearfamily(&newf3);
-				clearfamily(&newf4);
 			
 				return 1;
 			}
