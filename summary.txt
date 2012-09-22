@@ -1,0 +1,100 @@
+BASE 2:
+	Size:	2
+	Width:	2
+	Remain:	0
+BASE 3:
+	Size:	3
+	Width:	3
+	Remain:	0
+BASE 4:
+	Size:	3
+	Width:	2
+	Remain:	0
+BASE 5:
+	Size:	6
+	Width:	3
+	Remain:	2
+BASE 6:
+	Size:	7
+	Width:	5
+	Remain:	0
+BASE 7:
+	Size:	8
+	Width:	2
+	Remain:	1
+BASE 8:
+	Size:	14
+	Width:	6
+	Remain:	3
+BASE 9:
+	Size:	12
+	Width:	4
+	Remain:	0
+BASE 10:
+	Size:	23
+	Width:	6
+	Remain:	3
+BASE 11:
+	Size:	135
+	Width:	15
+	Remain:	36
+BASE 12:
+	Size:	15
+	Width:	6
+	Remain:	2
+BASE 13:
+	Size:	214
+	Width:	14
+	Remain:	31
+BASE 14:
+	Size:	233
+	Width:	28
+	Remain:	22
+BASE 15:
+	Size:	98
+	Width:	10
+	Remain:	2
+BASE 16:
+	Size:	452
+	Width:	16
+	Remain:	48
+BASE 17:
+	Size:	1204
+	Width:	21
+	Remain:	152
+BASE 18:
+	Size:	44
+	Width:	7
+	Remain:	17
+BASE 19:
+	Size:	3318
+	Width:	23
+	Remain:	256
+BASE 20:
+	Size:	631
+	Width:	17
+	Remain:	23
+BASE 21:
+	Size:	2525
+	Width:	26
+	Remain:	118
+BASE 22:
+	Size:	1177
+	Width:	16
+	Remain:	110
+BASE 23:
+	Size:	5825
+	Width:	26
+	Remain:	348
+BASE 24:
+	Size:	286
+	Width:	8
+	Remain:	59
+BASE 25:
+	Size:	17003
+	Width:	23
+	Remain:	1033
+BASE 26:
+	Size:	5497
+	Width:	24
+	Remain:	302
