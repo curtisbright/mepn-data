@@ -1660,15 +1660,18 @@ int main(int argc, char** argv)
 			printf("Unsolved families after explore:\n");
 			printlist(unsolved);
 #endif
-			/*char filename[100];
-			sprintf(filename, "iter%d.txt", i);
+
+#ifdef PRINTITER
+			char filename[100];
+			sprintf(filename, "base%d-iter%d.txt", base, i);
 			FILE* out = fopen(filename, "w");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
 				fprintf(out, "%s\n", str);
 			}
-			fclose(out);*/
+			fclose(out);
+#endif
 
 			if(unsolved.size==0)
 				break;
