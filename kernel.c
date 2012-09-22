@@ -1256,9 +1256,9 @@ int split2(family* f, list* unsolved, char insplit)
 		return 0;
 	}
 	int nonzerorepeats = 0;
-	for(int i=0; i<f->len; i++)
+	/*for(int i=0; i<f->len; i++)
 		if(f->numrepeats[i]>0)
-			nonzerorepeats++;
+			nonzerorepeats++;*/
 	for(int i=0; i<f->len; i++)
 	{	for(int j=0; j<f->numrepeats[i]; j++)
 		{	for(int m=i; m<f->len; m++)
@@ -1310,7 +1310,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str1)) && nonzerorepeats==1)
+					else if(m==i && (!nosubword(str1)) /*&& nonzerorepeats==1 && f->numrepeats[i]<=4*/ && f->len>10)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1353,7 +1353,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str2)) && nonzerorepeats==1)
+					else if(m==i && (!nosubword(str2)) /*&& nonzerorepeats==1 && f->numrepeats[i]<=4*/ && f->len>10)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
