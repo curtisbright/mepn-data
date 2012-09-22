@@ -1254,6 +1254,10 @@ int split2(family* f, list* unsolved, char insplit)
 	{	addtolist(unsolved, *f, 0);
 		return 0;
 	}
+	int nonzerorepeats = 0;
+	for(int i=0; i<f->len; i++)
+		if(f->numrepeats[i]>0)
+			nonzerorepeats++;
 	for(int i=0; i<f->len; i++)
 	{	for(int j=0; j<f->numrepeats[i]; j++)
 		{	for(int m=i; m<f->len; m++)
@@ -1305,7 +1309,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str1)) && (f->numrepeats[i])<=2)
+					else if(m==i && (!nosubword(str1)) && nonzerorepeats==1)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1348,7 +1352,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str2)) && (f->numrepeats[i])<=2)
+					else if(m==i && (!nosubword(str2)) && nonzerorepeats==1)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1663,12 +1667,20 @@ int main(int argc, char** argv)
 
 #ifdef PRINTITER
 			char filename[100];
-			sprintf(filename, "base%d-iter%d.txt", base, i);
+			sprintf(filename, "unsolved-base%d-iter%d.txt", base, i);
 			FILE* out = fopen(filename, "w");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
 				familystring(str, unsolved.fam[j]);
 				fprintf(out, "%s\n", str);
+			}
+			fclose(out);
+
+			filename[100];
+			sprintf(filename, "kernel-base%d-iter%d.txt", base, i);
+			out = fopen(filename, "w");
+			for(int j=0; j<K.size; j++)
+			{	fprintf(out, "%s\n", K.primes[j]);
 			}
 			fclose(out);
 #endif

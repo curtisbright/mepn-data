@@ -1,6 +1,6 @@
 compile:
-	gcc kernel.c -o kernel -Ofast -lgmp -std=c99 -DPRINTSTATS
+	gcc kernel.c -o kernel -O3 -lgmp -std=c99 -DPRINTSTATS -DPRINTITER
 debug:
-	gcc kernel.c -o kernel -Ofast -lgmp -std=c99 -DPRINTSTATS -g -pg
+	gcc kernel.c -o kernel -O3 -lgmp -std=c99 -DPRINTSTATS -g -pg
 clean:
 	rm kernel
