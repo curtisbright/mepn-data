@@ -1617,8 +1617,11 @@ int main(int argc, char** argv)
 
 	char filename[100];
 	sprintf(filename, "summary.txt", base);
-	FILE* summaryfile = fopen(filename, "w");
+	FILE* summaryfile;
+#ifdef CLEARSUMMARY
+	summaryfile = fopen(filename, "w");
 	fclose(summaryfile);
+#endif
 
 #ifdef DISTINCT
 	distinct = fopen("distinct.txt", "w");
