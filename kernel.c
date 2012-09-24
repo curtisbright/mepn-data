@@ -465,7 +465,77 @@ int hasdivisor(family p)
 		return 1;
 	}
 
-	if(numrepeats==2)
+	for(int m=0; m<p.len; m++)
+	{	if(p.numrepeats[m]==0)
+			continue;
+
+		emptyinstancestring(str, p);
+		mpz_set_str(gcd1, str, base);
+
+		for(int i=0; i<p.len; i++)
+		{	if(i==m)
+				continue;
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	instancestring(str, p, i, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd1, gcd1, temp);
+			}
+		}
+		
+		for(int i=0; i<p.numrepeats[m]; i++)
+			for(int j=0; j<p.numrepeats[m]; j++)
+			{	doubleinstancestring(str, p, m, i, m, j);
+				mpz_set_str(temp, str, base);
+				mpz_gcd(gcd1, gcd1, temp);
+			}
+
+		int gcdbeenset = 0;
+		for(int n=0; n<p.numrepeats[m]; n++)
+		{
+			instancestring(str, p, m, n);
+			mpz_set_str(temp, str, base);
+			if(gcdbeenset)
+				mpz_gcd(gcd2, gcd2, temp);
+			else
+			{	mpz_set(gcd2, temp);
+				gcdbeenset = 1;
+			}
+
+			for(int i=0; i<p.len; i++)
+			{	if(i==m)
+					continue;
+				for(int j=0; j<p.numrepeats[i]; j++)
+				{	doubleinstancestring(str, p, i, j, m, n);
+					mpz_set_str(temp, str, base);
+					mpz_gcd(gcd2, gcd2, temp);
+				}
+			}
+		
+			for(int i=0; i<p.numrepeats[m]; i++)
+				for(int j=0; j<p.numrepeats[m]; j++)
+					for(int k=0; k<p.numrepeats[m]; k++)
+					{	tripleinstancestring(str, p, m, i, m, j, m, k);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(gcd2, gcd2, temp);
+					}
+
+		}
+
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		{	
+#ifdef PRINTDIVISORSPECIAL
+			familystring(str, p);
+			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
+#endif
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+			return 1;
+		}
+
+		mpz_set_ui(gcd1, 0);
+		mpz_set_ui(gcd2, 0);
+	}
+
+	/*if(numrepeats==2)
 	{	int firstrepeatpos, lastrepeatpos;
 		for(int i=0; i<p.len; i++)
 			if(p.numrepeats[i]>0)
@@ -576,7 +646,7 @@ int hasdivisor(family p)
 
 		mpz_set_ui(gcd1, 0);
 		mpz_set_ui(gcd2, 0);
-	}
+	}*/
 
 	if(numrepeats<3)
 	{	emptyinstancestring(str, p);
