@@ -102,3 +102,7 @@ BASE 27:
 	Size:	17013
 	Width:	68
 	Remain:	321
+BASE 28:
+	Size:	5608
+	Width:	16
+	Remain:	320
