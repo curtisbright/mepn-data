@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <gmp.h>
 #include <string.h>
-#define MAXSTRING 20000
+#define MAXSTRING 200
 
 #ifdef PRINTALL
 #define PRINTDIVISOR
@@ -1338,7 +1338,8 @@ int split2(family* f, list* unsolved, char insplit)
 					char str1[MAXSTRING];
 					char str2[MAXSTRING];
 					doubleinstancestring(str1, *f, i, j, m, k);
-					doubleinstancestring(str2, *f, i, k, m, j);
+					if(m==i)
+						doubleinstancestring(str2, *f, i, k, m, j);
 					if(m==i && !nosubword(str1) && !nosubword(str2))
 					{	family copyf;
 						familyinit(&copyf);
@@ -1628,7 +1629,8 @@ int main(int argc, char** argv)
 #endif
 	FILE* out = stdout;
 	for(base=atoi(argv[1]); base<=atoi(argv[2]); base++)
-	{	kernelinit();
+	{	printf("base %d:\n", base);
+		kernelinit();
 		list unsolved;
 		listinit(&unsolved);
 
