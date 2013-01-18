@@ -36,11 +36,11 @@ double primeprob(int m)
 			return 0.038558;
 		case(64000001):
 			return 0.037129;
-		case(128000001)
+		case(128000001):
 			return 0.035801;
-		case(256000001)
+		case(256000001):
 			return 0.034562;
-		case(512000001)
+		case(512000001):
 			return 0.033410;
 		default:
 			return 0.03;
