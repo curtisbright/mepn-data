@@ -20,13 +20,40 @@ static int isprime (unsigned long int t)
 	return 0;
 }
 
-int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mrtime)
+double primeprob(int m)
+{	switch(m)
+	{	case(1000001):
+			return 0.047785;
+		case(2000001):
+			return 0.045570;
+		case(4000001):
+			return 0.043607;
+		case(8000001):
+			return 0.041778;
+		case(16000001):
+			return 0.040107;
+		case(32000001):
+			return 0.038558;
+		case(64000001):
+			return 0.037129;
+		case(128000001)
+			return 0.035801;
+		case(256000001)
+			return 0.034562;
+		case(512000001)
+			return 0.033410;
+		default:
+			return 0.03;
+	}
+}
+
+int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mrtime, int* count1, int* count2, int* count4, int* count8, int* count16, int* count32, int* success1, int* success2, int* success4, int* success8, int* success16, int* success32)
 {
 	clock_t begin, end;	
 	//clock_t trialbegin, trialend;	
 	double time_spent;
 	int result;
-	int mm = 10000000;
+	int mm = 1000000;
 	//char* newpr;
 
 	mp_limb_t r;
@@ -132,6 +159,20 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 						end = clock();
 						time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 						printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+
+						if(q>1000000 && q<2000001)
+							(*success1)++;
+						else if(q>2000000 && q<4000001)
+							(*success2)++;
+						else if(q>4000000 && q<8000001)
+							(*success4)++;
+						else if(q>8000000 && q<16000001)
+							(*success8)++;
+						else if(q>16000000 && q<32000001)
+							(*success16)++;
+						else if(q>32000000)
+							(*success32)++;
+
 						return 0;
 					}
 				p = q;
@@ -171,12 +212,34 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 					trialbegin = clock();
 				}*/
 
+				switch(q)
+					{	case(1000001):
+							(*count1)++;
+							break;
+						case(2000001):
+							(*count2)++;
+							break;
+						case(4000001):
+							(*count4)++;
+							break;
+						case(8000001):
+							(*count8)++;
+							break;
+						case(16000001):
+							(*count16)++;
+							break;
+						case(32000001):
+							(*count32)++;
+							break;
+					}
+
 				end = clock();
 				time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-				printf("timer: %f vs. %f*%f=%f\n", time_spent, 0.5614*(1/log(mm)-1/log(2*mm)), *mrtime, 0.5614*(1/log(mm)-1/log(2*mm))*(*mrtime));
+				printf("timer: %f vs. %f*%f=%f\n", time_spent, primeprob(q), *mrtime, primeprob(q)*(*mrtime));
 
-				if(time_spent > 0.5614*(1/log(mm)-1/log(2*mm))*(*mrtime))
+				if(time_spent > primeprob(q)*(*mrtime))
+				//if(q>=64000000)
 				{	printf("stopping trial factoring at %ld - ", q);
 					break;
 				}
@@ -200,6 +263,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 	printf("miller rabin time:    %f sec\n", time_spent);
+
 	*mrtime = time_spent;
 	return result;
 }
