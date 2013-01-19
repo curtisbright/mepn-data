@@ -5,6 +5,7 @@
 #include <string.h>
 #include <gmp.h>
 #include "../pprime_p.c"
+#define MAXSTRING 50000
 
 int main(int argc, char** argv)
 {
@@ -17,8 +18,7 @@ int main(int argc, char** argv)
 	double mrtime;
 	int i, j, m=1000000; 
 	char* pr = (char*)malloc((m>>3)+1); 
-	char str[50000];
-	if(pr==NULL) 
+	if(pr==NULL)
 		exit(1); 
 	memset(pr,255,(m>>3)+1); 
 
@@ -36,19 +36,22 @@ int main(int argc, char** argv)
 	{	dp = opendir("./");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
-			{	char str[20];
-				strcpy(str, ep->d_name);
-				str[8] = '\0';
-				if(strcmp(str, "unsolved")==0)
-				{	strcpy(strchr(str+9, '.'), "\0");
-					int n = atoi(str+9);
+			{	char filename[100];
+				strcpy(filename, ep->d_name);
+				filename[8] = '\0';
+				if(strcmp(filename, "unsolved")==0)
+				{	strcpy(strchr(filename+9, '.'), "\0");
+					int n = atoi(filename+9);
 					//printf("base %d:\n", n);
 					FILE* in = fopen(ep->d_name, "r");
+					strcpy(filename, "tmp-");
+					strcat(filename, ep->d_name);
+					FILE* out = fopen(filename, "w");
 					char line[100];
 					char start[100];
 					char middle;
 					char end[100];
-					char candidate[10000];
+					char candidate[MAXSTRING];
 					while(fgets(line, 100, in)!=NULL)
 					{	int l = (int)(strchr(line, '*')-line);
 						middle = line[l-1];
@@ -64,8 +67,6 @@ int main(int argc, char** argv)
 						strcat(candidate, end);
 						//printf("candidate: %s\n", candidate);
 
-						//begin = clock();
-
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
@@ -74,12 +75,20 @@ int main(int argc, char** argv)
 							//printf("string: %s\n", candidate);
 							//printf("width: %d\n", (int)strlen(candidate));
 							printf("%s (base %d) probably prime\n", candidate, n);
-							break;
+							char kernelfilename[100];
+							sprintf(kernelfilename, "kernel.%d.txt", n);
+							FILE* append = fopen(kernelfilename, "a");
+							fprintf(append, "%s\n", candidate);
+							fclose(append);
 						}
-						//end = clock();
-						//time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+						else
+						{	fprintf(out, "%s%c*%s\n", start, middle, end);
+						}						
 					}
+					fclose(out);
 					fclose(in);
+					remove(ep->d_name);
+					rename(filename, ep->d_name);
 				}
 			}
 			(void)closedir(dp);
