@@ -42,15 +42,15 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 	/* Handle small n. */
 	if(mpz_cmp_ui(n, *m) <= 0)
     {	int is_prime;
-		if (mpz_cmpabs_ui(n, *m) <= 0)
-		{	is_prime = (*pr)[mpz_get_ui(n)>>3]&(1<<(mpz_get_ui(n)&7));
-			return is_prime ? 2 : 0;
-		}
+		is_prime = (*pr)[mpz_get_ui(n)>>3]&(1<<(mpz_get_ui(n)&7));
+		return is_prime ? 2 : 0;
 	}
 
 	/* n even */
 	if((mpz_get_ui(n) & 1) == 0)
+	{	//printf("the candidate is even\n");
 		return 0;
+	}
 
 	{	unsigned long int q;
 		mp_limb_t p1, p0, p=1, r;
@@ -88,10 +88,10 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 				if(p1 != 0)
 				{	r = mpn_mod_1(n->_mp_d, n->_mp_size, p);
 					while(--nprimes >= 0)
-						if (r % primes[nprimes] == 0)
+						if(r % primes[nprimes] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+							//printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
 
 							return 0;
 						}
@@ -109,20 +109,20 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 			{	end = clock();
 				time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-				printf("timer: %f vs. %f*%f=%f\n", time_spent, primeprob(q), *mrtime, primeprob(q)*(*mrtime));
+				//printf("timer: %f vs. %f*%f=%f\n", time_spent, primeprob(q), *mrtime, primeprob(q)*(*mrtime));
 
 				if(time_spent > primeprob(q)*(*mrtime))
 				{	r = mpn_mod_1(n->_mp_d, n->_mp_size, p);
 					while(--nprimes >= 0)
-						if (r % primes[nprimes] == 0)
+						if(r % primes[nprimes] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+							//printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
 
 							return 0;
 						}
 
-					printf("stopping trial factoring at %ld - ", q);
+					//printf("stopping trial factoring at %ld - ", q);
 					break;
 				}
 				mm = mm*2;
@@ -130,7 +130,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 		}
 		end = clock();
 		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-		printf("trial factoring time: %f sec\n", time_spent);
+		//printf("trial factoring time: %f sec\n", time_spent);
 	}
 
 	/* Perform a number of Miller-Rabin tests. */
@@ -138,7 +138,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 	result = mpz_millerrabin(n, reps);
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	printf("miller rabin time:    %f sec\n", time_spent);
+	//printf("miller rabin time:    %f sec\n", time_spent);
 
 	*mrtime = time_spent;
 	return result;

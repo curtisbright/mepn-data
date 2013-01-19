@@ -28,12 +28,14 @@ int main(int argc, char** argv)
 
 	mpz_t p;
 	mpz_init(p);
-
 	begin = clock();
 
 	strcpy(str, argv[2]);
-	for(i=0; i<5000; i++)
+
+	for(i=0; i<10000; i++)
 	{	strcpy(str+i+strlen(argv[2]), argv[4]);
+
+		//printf("%s\n", str);
 
 		//if(i>=11000)
 		{	mpz_set_str(p, str, base);
