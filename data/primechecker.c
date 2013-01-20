@@ -7,6 +7,17 @@
 #include "../pprime_p.c"
 #define MAXSTRING 50000
 
+int nosubword(char* prime, char* candidate)
+{	int k=0;
+	for(int i=0; i<strlen(candidate); i++)
+	{	if(candidate[i]==prime[k])
+			k++;
+		if(k==strlen(prime))
+			return 0;
+	}
+	return 1;
+}
+
 int main(int argc, char** argv)
 {
 	DIR *dp;
@@ -67,6 +78,23 @@ int main(int argc, char** argv)
 						strcat(candidate, end);
 						//printf("candidate: %s\n", candidate);
 
+						char kernelfilename[100];
+						sprintf(kernelfilename, "kernel.%d.txt", n);
+						FILE* kernel = fopen(kernelfilename, "r");
+						char prime[MAXSTRING];
+						int hassubword = 0;
+						while(fgets(prime, MAXSTRING, kernel)!=NULL)
+						{	prime[strlen(prime)-1] = '\0';
+							if(nosubword(prime, candidate)==0)
+								hassubword = 1;
+						}
+						fclose(kernel);
+
+						if(hassubword)
+						{	printf("%s (base %d) has a kernel subword\n", candidate, n);
+							continue;
+						}
+
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
@@ -75,8 +103,6 @@ int main(int argc, char** argv)
 							//printf("string: %s\n", candidate);
 							//printf("width: %d\n", (int)strlen(candidate));
 							printf("%s (base %d) probably prime\n", candidate, n);
-							char kernelfilename[100];
-							sprintf(kernelfilename, "kernel.%d.txt", n);
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
