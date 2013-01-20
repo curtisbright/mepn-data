@@ -45,7 +45,12 @@ int main(int argc, char** argv)
 
 	begin = clock();
 
-	for(int num=5000; num<10000; num++)
+	char numline[100];
+	FILE* in = fopen("num", "r");
+	fgets(numline, 100, in);
+	fclose(in);
+
+	for(int num=atoi(numline); num<10000; num++)
 	{	dp = opendir("./");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
