@@ -52,6 +52,7 @@ int main(int argc, char** argv)
 
 	for(int num=atoi(numline); num<10000; num++)
 	{	dp = opendir("./");
+		int count=0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -102,20 +103,20 @@ int main(int argc, char** argv)
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "kernel.%d.txt", n);
-						FILE* kernel = fopen(kernelfilename, "r");
+						/*FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						/*while(fgets(prime, MAXSTRING, kernel)!=NULL)
+						while(fgets(prime, MAXSTRING, kernel)!=NULL)
 						{	prime[strlen(prime)-1] = '\0';
 							if(nosubword(prime, candidate)==0)
 								hassubword = 1;
-						}*/
+						}
 						fclose(kernel);
 
 						if(hassubword)
 						{	printf("%s (base %d) has a kernel subword\n", candidate, n);
 							continue;
-						}
+						}*/
 
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
@@ -132,6 +133,7 @@ int main(int argc, char** argv)
 						else
 						{	fprintf(out, "%s%c*%s\n", start, middle, end);
 							fprintf(mrout, "%f\n", mrtime);
+							count++;
 						}						
 					}
 					fclose(out);
@@ -151,6 +153,7 @@ int main(int argc, char** argv)
 		FILE* out = fopen("num", "w");
 		fprintf(out, "%d", num);
 		fclose(out);
+		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);
 	}
 
 	mpz_clear(p);
