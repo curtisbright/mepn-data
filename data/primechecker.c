@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	fgets(numline, 100, in);
 	fclose(in);
 
-	for(int num=atoi(numline); num<10000; num++)
+	for(int num=atoi(numline); num<49500; num++)
 	{	dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
@@ -103,20 +103,22 @@ int main(int argc, char** argv)
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "kernel.%d.txt", n);
-						/*FILE* kernel = fopen(kernelfilename, "r");
-						char prime[MAXSTRING];
-						int hassubword = 0;
-						while(fgets(prime, MAXSTRING, kernel)!=NULL)
-						{	prime[strlen(prime)-1] = '\0';
-							if(nosubword(prime, candidate)==0)
-								hassubword = 1;
-						}
-						fclose(kernel);
+						if(num%100==0)
+						{	FILE* kernel = fopen(kernelfilename, "r");
+							char prime[MAXSTRING];
+							int hassubword = 0;
+							while(fgets(prime, MAXSTRING, kernel)!=NULL)
+							{	prime[strlen(prime)-1] = '\0';
+								if(nosubword(prime, candidate)==0)
+									hassubword = 1;
+							}
+							fclose(kernel);
 
-						if(hassubword)
-						{	printf("%s (base %d) has a kernel subword\n", candidate, n);
-							continue;
-						}*/
+							if(hassubword)
+							{	printf("%s (base %d) has a kernel subword\n", candidate, n);
+								continue;
+							}
+						}
 
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
