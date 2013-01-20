@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
 	begin = clock();
 
-	for(int num=0; num<10; num++)
+	for(int num=0; num<100; num++)
 	{	dp = opendir("./");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
@@ -123,6 +123,9 @@ int main(int argc, char** argv)
 		}
 		else
 			perror ("Couldn't open the directory");
+		FILE* out = fopen("num", "w");
+		fprintf(out, "%d", num);
+		fclose(out);
 	}
 
 	mpz_clear(p);
