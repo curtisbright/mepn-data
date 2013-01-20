@@ -45,28 +45,43 @@ int main(int argc, char** argv)
 
 	begin = clock();
 
-	for(int num=100; num<10000; num++)
+	for(int num=5000; num<10000; num++)
 	{	dp = opendir("./");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
+				char mrfilename[100];
+				char tmpmrfilename[100];
 				strcpy(filename, ep->d_name);
 				filename[8] = '\0';
 				if(strcmp(filename, "unsolved")==0)
-				{	strcpy(strchr(filename+9, '.'), "\0");
+				{	strcpy(mrfilename, "mrtime");
+					strcat(mrfilename, filename+9);
+					strcpy(tmpmrfilename, "tmp-");
+					strcat(tmpmrfilename, mrfilename);
+					strcpy(strchr(filename+9, '.'), "\0");
 					int n = atoi(filename+9);
 					//printf("base %d:\n", n);
 					FILE* in = fopen(ep->d_name, "r");
+					FILE* mrin = fopen(mrfilename, "r");
 					strcpy(filename, "tmp-");
 					strcat(filename, ep->d_name);
 					FILE* out = fopen(filename, "w");
+					FILE* mrout = fopen(tmpmrfilename, "w");
 					char line[100];
+					char mrline[100];
 					char start[100];
 					char middle;
 					char end[100];
 					char candidate[MAXSTRING];
 					while(fgets(line, 100, in)!=NULL)
-					{	int l = (int)(strchr(line, '*')-line);
+					{	if(mrin==NULL)
+							mrtime = 0;
+						else
+						{	fgets(mrline, 100, mrin);
+							mrtime = atof(mrline);
+						}
+						int l = (int)(strchr(line, '*')-line);
 						middle = line[l-1];
 						//printf("%s", line);
 						line[strlen(line)-1] = '\0';
@@ -85,11 +100,11 @@ int main(int argc, char** argv)
 						FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						while(fgets(prime, MAXSTRING, kernel)!=NULL)
+						/*while(fgets(prime, MAXSTRING, kernel)!=NULL)
 						{	prime[strlen(prime)-1] = '\0';
 							if(nosubword(prime, candidate)==0)
 								hassubword = 1;
-						}
+						}*/
 						fclose(kernel);
 
 						if(hassubword)
@@ -111,12 +126,17 @@ int main(int argc, char** argv)
 						}
 						else
 						{	fprintf(out, "%s%c*%s\n", start, middle, end);
+							fprintf(mrout, "%f\n", mrtime);
 						}						
 					}
 					fclose(out);
+					fclose(mrout);
 					fclose(in);
+					if(mrin!=NULL)
+						fclose(mrin);
 					remove(ep->d_name);
 					rename(filename, ep->d_name);
+					rename(tmpmrfilename, mrfilename);
 				}
 			}
 			(void)closedir(dp);
