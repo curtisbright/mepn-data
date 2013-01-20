@@ -13,7 +13,6 @@
 A*60F
 A*6F
 A*06F
-A*P6F
 A1A*P
 A1A*PP
 AM*P
@@ -25,7 +24,6 @@ G*9
 G*O9
 G*OO9
 IG*9
-IG*O9
 I*0GL
 I*GL
 KIA*F

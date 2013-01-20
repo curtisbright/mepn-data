@@ -12,5 +12,3 @@ OA*F
 QCO*9
 QO*69
 Q0*EP
-QI*6R
-QI*OR
