@@ -43,6 +43,8 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
+	begin = clock();
+
 	for(int num=0; num<10; num++)
 	{	dp = opendir("./");
 		if(dp != NULL)
@@ -125,6 +127,8 @@ int main(int argc, char** argv)
 
 	mpz_clear(p);
 	free(pr);
+
+	printf("total time %f\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
 
 	return 0;
 }
