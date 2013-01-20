@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
 	begin = clock();
 
-	for(int num=0; num<100; num++)
+	for(int num=100; num<10000; num++)
 	{	dp = opendir("./");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))

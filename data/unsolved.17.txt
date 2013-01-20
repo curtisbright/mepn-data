@@ -8,13 +8,7 @@
 80C*9
 9*1
 9*C1
-9*1G1
-9*G88
-9*G8
 919*
-9*GF
-919*G
-9*G
 9CCCG*
 9CCG*
 9CG*
@@ -25,10 +19,5 @@ A*GF
 C9*1
 CE*F
 E*F
-E*CF
 F9*1
-FF0F*A6
-F*A6
 F19*
-F*A6F
-GA*GF
