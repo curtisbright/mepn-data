@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 	fgets(numline, 100, in);
 	fclose(in);
 
-	for(int num=atoi(numline); num<49500; num++)
+	for(int num=atoi(numline); num<49950; num++)
 	{	dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
@@ -140,24 +140,23 @@ int main(int argc, char** argv)
 							{	prime[strlen(prime)-1] = '\0';
 								int k;
 								if(subword(prime, start, middle, end, &k)==1)
-									printf("%s%c^%d%s (base %d) has a kernel subword\n", start, middle, k, end, n);
+								{	printf("%s%c^%d%s (base %d) has a kernel subword\n", start, middle, k, end, n);
+									if(k>=num)
+									{	hassubword = 1;
+										break;
+									}
+								}
 							}
 							fclose(kernel);
 
-							/*if(hassubword)
-							{	printf("%s (base %d) has a kernel subword\n", candidate, n);
+							if(hassubword)
 								continue;
-							}*/
 						}
 
-						/*mpz_set_str(p, candidate, n);
+						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
-						{	//printf("index %u probably prime\n", num);
-							//printf("base: %d start: %s middle: %c end: %s\n", n, start, middle, end);
-							//printf("string: %s\n", candidate);
-							//printf("width: %d\n", (int)strlen(candidate));
-							printf("%s (base %d) probably prime\n", candidate, n);
+						{	printf("%s%c^%d%s (base %d) probably prime\n", start, middle, num, end n);
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
@@ -166,26 +165,27 @@ int main(int argc, char** argv)
 						{	fprintf(out, "%s%c*%s\n", start, middle, end);
 							fprintf(mrout, "%f\n", mrtime);
 							count++;
-						}*/		
+						}
+						count++;
 					}
 					fclose(out);
 					fclose(mrout);
 					fclose(in);
 					if(mrin!=NULL)
 						fclose(mrin);
-					/*remove(ep->d_name);
+					remove(ep->d_name);
 					rename(filename, ep->d_name);
-					rename(tmpmrfilename, mrfilename);*/
+					rename(tmpmrfilename, mrfilename);
 				}
 			}
 			(void)closedir(dp);
 		}
 		else
 			perror ("Couldn't open the directory");
-		/*FILE* out = fopen("num", "w");
+		FILE* out = fopen("num", "w");
 		fprintf(out, "%d", num);
 		fclose(out);
-		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);*/
+		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);
 	}
 
 	mpz_clear(p);
