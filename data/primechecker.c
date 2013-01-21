@@ -27,7 +27,7 @@ int subword(char* prime, char* start, char middle, char* end, int* k)
 		}
 		if(i==strlen(prime))
 			return 1;
-		else if(j==strlen(start) && l==strlen(end))
+		else if(l==strlen(end)+1)
 			return 0;
 	}
 }
@@ -45,6 +45,10 @@ int nosubword(char* prime, char* candidate)
 
 int main(int argc, char** argv)
 {
+	/*int k;
+	int n = subword("11111111111111111", "19", '1', "", &k);
+	printf("%d %d\n", n, k);*/
+
 	DIR *dp;
 	struct dirent *ep;     
 
@@ -77,7 +81,7 @@ int main(int argc, char** argv)
 		fclose(in);
 	}
 
-	for(int num=atoi(numline); num<50; num++)
+	for(int num=0; num<200; num++)
 	{	dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
@@ -138,23 +142,29 @@ int main(int argc, char** argv)
 							{	prime[strlen(prime)-1] = '\0';
 								int k;
 								if(subword(prime, start, middle, end, &k)==1)
-								{	if(k>=num)
+								{	if(k<=num)
 									{	hassubword = 1;
-										printf("%s%c^(%d)%s (base %d) has a kernel subword\n", start, middle, k, end, n);
 										break;
 									}
 								}
+								/*if(nosubword(prime, candidate)==0)
+								{	hassubword = 1;
+									break;
+								}*/
 							}
 							fclose(kernel);
 
 							if(hassubword)
+							{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle, num, end, n, prime);
 								continue;
+							}
 						}
 
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
-						{	printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle, num, end, n);
+						{	//gmp_printf("%s%c^(%d)%s (base %d) (%Zd) probably prime\n", start, middle, num, end, n, p);
+							printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle, num, end, n);
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
