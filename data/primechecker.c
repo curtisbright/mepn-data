@@ -138,9 +138,9 @@ int main(int argc, char** argv)
 							{	prime[strlen(prime)-1] = '\0';
 								int k;
 								if(subword(prime, start, middle, end, &k)==1)
-								{	printf("%s%c^(%d)%s (base %d) has a kernel subword\n", start, middle, k, end, n);
-									if(k>=num)
+								{	if(k>=num)
 									{	hassubword = 1;
+										printf("%s%c^(%d)%s (base %d) has a kernel subword\n", start, middle, k, end, n);
 										break;
 									}
 								}
