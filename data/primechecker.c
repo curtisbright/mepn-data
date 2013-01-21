@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "kernel.%d.txt", n);
-						if(num%100==0)
+						/*if(num%100==0)
 						{	FILE* kernel = fopen(kernelfilename, "r");
 							char prime[MAXSTRING];
 							int hassubword = 0;
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 							{	printf("%s (base %d) has a kernel subword\n", candidate, n);
 								continue;
 							}
-						}
+						}*/
 
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);

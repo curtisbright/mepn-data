@@ -7,4 +7,3 @@ EE16*
 FA6*
 FFFA6*
 FG6*
-G*1
