@@ -9,8 +9,6 @@ CF*IA
 CL*E
 EI*F8
 F*9FM
-ICL*G
-IL*0G
 KKL*G
 KL*G
 L*0G
@@ -18,4 +16,3 @@ L*GLG
 L*G
 ME*9G
 Q0*964
-Q0*EEFA

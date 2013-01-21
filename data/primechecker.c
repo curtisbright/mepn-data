@@ -72,8 +72,6 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	begin = clock();
-
 	char numline[100] = "0";
 	FILE* in = fopen("num", "r");
 	if(in!=NULL)
@@ -82,7 +80,8 @@ int main(int argc, char** argv)
 	}
 
 	for(int num=atoi(numline); num<49950; num++)
-	{	dp = opendir("./");
+	{	begin = clock();
+		dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
@@ -152,7 +151,7 @@ int main(int argc, char** argv)
 						fclose(kernel);
 
 						if(hassubword)
-						{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle, num, end, n, prime);
+						{	//printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle, num, end, n, prime);
 							continue;
 						}
 
@@ -188,13 +187,11 @@ int main(int argc, char** argv)
 		FILE* out = fopen("num", "w");
 		fprintf(out, "%d", num);
 		fclose(out);
-		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);
+		printf("FINISHED LEVEL %d, COUNT REMAINING %d, TIME %f\n", num, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
 
 	mpz_clear(p);
 	free(pr);
-
-	printf("total time %f\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
 
 	return 0;
 }

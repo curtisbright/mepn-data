@@ -4,7 +4,6 @@
 6MF*9
 80*1KO
 96*M
-A*EFO
 CM1*
 C1*8
 EE1*
@@ -14,7 +13,6 @@ EFO*
 F1*F1
 F0*KO
 F0K*O
-FKOK*O
 G06*FC
 KF*66
 L8*
