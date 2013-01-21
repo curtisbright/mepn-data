@@ -7,6 +7,31 @@
 #include "../pprime_p.c"
 #define MAXSTRING 50000
 
+int subword(char* prime, char* start, char middle, char* end, int* k)
+{	int i=0, j=0, l=0;
+	*k = 0;
+	while(1)
+	{	if(j!=strlen(start))
+		{	if(prime[i]==start[j])
+				i++;
+			j++;
+		}
+		else if(l==0 && prime[i]==middle)
+		{	(*k)++;
+			i++;
+		}
+		else
+		{	if(prime[i]==end[l])
+				i++;
+			l++;
+		}
+		if(i==strlen(prime))
+			return 1;
+		else if(j==strlen(start) && l==strlen(end))
+			return 0;
+	}
+}
+
 int nosubword(char* prime, char* candidate)
 {	int k=0;
 	for(int i=0; i<strlen(candidate); i++)
@@ -20,6 +45,10 @@ int nosubword(char* prime, char* candidate)
 
 int main(int argc, char** argv)
 {
+	/*int k=0;
+	printf("%d\n", subword("abbcd", "a", 'b', "c", &k));
+	printf("k: %d\n", k);*/
+
 	DIR *dp;
 	struct dirent *ep;     
 
@@ -103,24 +132,25 @@ int main(int argc, char** argv)
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "kernel.%d.txt", n);
-						/*if(num%100==0)
 						{	FILE* kernel = fopen(kernelfilename, "r");
 							char prime[MAXSTRING];
 							int hassubword = 0;
+							printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
 							while(fgets(prime, MAXSTRING, kernel)!=NULL)
 							{	prime[strlen(prime)-1] = '\0';
-								if(nosubword(prime, candidate)==0)
-									hassubword = 1;
+								int k;
+								if(subword(prime, start, middle, end, &k)==1)
+									printf("%s%c^%d%s (base %d) has a kernel subword\n", start, middle, k, end, n);
 							}
 							fclose(kernel);
 
-							if(hassubword)
+							/*if(hassubword)
 							{	printf("%s (base %d) has a kernel subword\n", candidate, n);
 								continue;
-							}
-						}*/
+							}*/
+						}
 
-						mpz_set_str(p, candidate, n);
+						/*mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
 						{	//printf("index %u probably prime\n", num);
@@ -136,26 +166,26 @@ int main(int argc, char** argv)
 						{	fprintf(out, "%s%c*%s\n", start, middle, end);
 							fprintf(mrout, "%f\n", mrtime);
 							count++;
-						}						
+						}*/		
 					}
 					fclose(out);
 					fclose(mrout);
 					fclose(in);
 					if(mrin!=NULL)
 						fclose(mrin);
-					remove(ep->d_name);
+					/*remove(ep->d_name);
 					rename(filename, ep->d_name);
-					rename(tmpmrfilename, mrfilename);
+					rename(tmpmrfilename, mrfilename);*/
 				}
 			}
 			(void)closedir(dp);
 		}
 		else
 			perror ("Couldn't open the directory");
-		FILE* out = fopen("num", "w");
+		/*FILE* out = fopen("num", "w");
 		fprintf(out, "%d", num);
 		fclose(out);
-		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);
+		printf("FINISHED LEVEL %d, COUNT REMAINING %d\n", num, count);*/
 	}
 
 	mpz_clear(p);
