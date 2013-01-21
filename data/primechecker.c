@@ -134,30 +134,26 @@ int main(int argc, char** argv)
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "kernel.%d.txt", n);
-						{	FILE* kernel = fopen(kernelfilename, "r");
-							char prime[MAXSTRING];
-							int hassubword = 0;
-							//printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
-							while(fgets(prime, MAXSTRING, kernel)!=NULL)
-							{	prime[strlen(prime)-1] = '\0';
-								int k;
-								if(subword(prime, start, middle, end, &k)==1)
-								{	if(k<=num)
-									{	hassubword = 1;
-										break;
-									}
-								}
-								/*if(nosubword(prime, candidate)==0)
+
+						FILE* kernel = fopen(kernelfilename, "r");
+						char prime[MAXSTRING];
+						int hassubword = 0;
+						//printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
+						while(fgets(prime, MAXSTRING, kernel)!=NULL)
+						{	prime[strlen(prime)-1] = '\0';
+							int k;
+							if(subword(prime, start, middle, end, &k)==1)
+							{	if(k<=num)
 								{	hassubword = 1;
 									break;
-								}*/
+								}
 							}
-							fclose(kernel);
+						}
+						fclose(kernel);
 
-							if(hassubword)
-							{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle, num, end, n, prime);
-								continue;
-							}
+						if(hassubword)
+						{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle, num, end, n, prime);
+							continue;
 						}
 
 						mpz_set_str(p, candidate, n);
