@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 						maxsize = strlen(lines[numlines-1]);
 				}
 
-				printf("base %d\t size %d\tlength %d\n", n, numlines, maxsize);
+				printf("%d\t size %d\tlength %d\n", n, numlines, maxsize);
 
 				fclose(in);
 				for(int i=0; i<numlines; i++)

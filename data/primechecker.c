@@ -45,10 +45,6 @@ int nosubword(char* prime, char* candidate)
 
 int main(int argc, char** argv)
 {
-	/*int k=0;
-	printf("%d\n", subword("abbcd", "a", 'b', "c", &k));
-	printf("k: %d\n", k);*/
-
 	DIR *dp;
 	struct dirent *ep;     
 
@@ -74,12 +70,14 @@ int main(int argc, char** argv)
 
 	begin = clock();
 
-	char numline[100];
+	char numline[100] = "0";
 	FILE* in = fopen("num", "r");
-	fgets(numline, 100, in);
-	fclose(in);
+	if(in!=NULL)
+	{	fgets(numline, 100, in);
+		fclose(in);
+	}
 
-	for(int num=atoi(numline); num<49950; num++)
+	for(int num=atoi(numline); num<50; num++)
 	{	dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
@@ -135,12 +133,12 @@ int main(int argc, char** argv)
 						{	FILE* kernel = fopen(kernelfilename, "r");
 							char prime[MAXSTRING];
 							int hassubword = 0;
-							printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
+							//printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
 							while(fgets(prime, MAXSTRING, kernel)!=NULL)
 							{	prime[strlen(prime)-1] = '\0';
 								int k;
 								if(subword(prime, start, middle, end, &k)==1)
-								{	printf("%s%c^%d%s (base %d) has a kernel subword\n", start, middle, k, end, n);
+								{	printf("%s%c^(%d)%s (base %d) has a kernel subword\n", start, middle, k, end, n);
 									if(k>=num)
 									{	hassubword = 1;
 										break;
@@ -156,7 +154,7 @@ int main(int argc, char** argv)
 						mpz_set_str(p, candidate, n);
 						result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 						if(result>0)
-						{	printf("%s%c^%d%s (base %d) probably prime\n", start, middle, num, end n);
+						{	printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle, num, end, n);
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
@@ -166,7 +164,6 @@ int main(int argc, char** argv)
 							fprintf(mrout, "%f\n", mrtime);
 							count++;
 						}
-						count++;
 					}
 					fclose(out);
 					fclose(mrout);
