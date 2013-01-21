@@ -5,7 +5,6 @@
 A0*PM
 A0*F9P
 CA0F*A
-CF*IA
 CL*E
 EI*F8
 F*9FM
