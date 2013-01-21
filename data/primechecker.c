@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 		fclose(in);
 	}
 
-	for(int num=0; num<200; num++)
+	for(int num=atoi(numline); num<49950; num++)
 	{	dp = opendir("./");
 		int count=0;
 		if(dp != NULL)
