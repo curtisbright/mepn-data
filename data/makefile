@@ -6,3 +6,5 @@ prune: prune.c
 	gcc prune.c -O3 -o prune -std=c99
 data: data.c
 	gcc data.c -O3 -o data -std=c99
+output: output.c
+	gcc output.c -O3 -o output -std=c99 -lgmp

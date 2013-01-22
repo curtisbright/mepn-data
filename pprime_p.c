@@ -32,7 +32,7 @@ double primeprob(int m)
 	}
 }
 
-int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mrtime)
+int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, long* m, double* mrtime)
 {
 	clock_t begin, end;	
 	double time_spent;
@@ -54,20 +54,20 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 
 	{	unsigned long int q;
 		mp_limb_t p1, p0, p=1, r;
-		unsigned int primes[15];
+		unsigned long primes[15];
 		int nprimes=0;
 
 		begin = clock();
 		for(q=3;;)
 		{	/* increase primes array if necessary */
 			if(q > *m)
-			{	int newm = (*m) + 1000000;
+			{	long newm = (*m) + 1000000;
 				*pr = realloc(*pr, (newm>>3)+1);
 				memset((*pr)+((*m)>>3)+1, 255, 125000);
 
-				for(int i=2; i*i<=newm; i++)
+				for(long i=2; i*i<=newm; i++)
 					if((*pr)[i>>3]&(1<<(i&7)))
-						for(int j=(*m)-((*m)%i); j<=newm; j+=i)
+						for(long j=(*m)-((*m)%i); j<=newm; j+=i)
 							(*pr)[j>>3]&=~(1<<(j&7));
 
 				*m = newm;
@@ -87,11 +87,11 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 			{	umul_ppmm(p1, p0, p, q);
 				if(p1 != 0)
 				{	r = mpn_mod_1(n->_mp_d, n->_mp_size, p);
-					while(--nprimes >= 0)
-						if(r % primes[nprimes] == 0)
+					for(int i=0; i<nprimes; i++)
+						if(r % primes[i] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							//printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+							gmp_printf("trial factoring time: %f sec (%Zd divisible by %d)\n", time_spent, n, primes[i]);
 
 							return 0;
 						}
@@ -105,7 +105,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 
 			q += 2;
 
-			if(q>mm)
+			/*if(q>mm)
 			{	end = clock();
 				time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
@@ -117,16 +117,16 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, int* m, double* mr
 						if(r % primes[nprimes] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							//printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+							printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
 
 							return 0;
 						}
 
-					//printf("stopping trial factoring at %ld - ", q);
+					gmp_printf("stopping trial factoring of %Zd at %ld - ", n, q);
 					break;
 				}
 				mm = mm*2;
-			}
+			}*/
 		}
 		end = clock();
 		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
