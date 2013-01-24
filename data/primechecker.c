@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	clock_t begin, end;	
 	double time_spent;
 	double mrtime;
-	int i, j, m=1000000; 
+	long i, j, m=1000000; 
 	char* pr = (char*)malloc((m>>3)+1); 
 	if(pr==NULL)
 		exit(1); 

@@ -91,7 +91,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, long* m, double* m
 						if(r % primes[i] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							gmp_printf("trial factoring time: %f sec (%Zd divisible by %d)\n", time_spent, n, primes[i]);
+							//gmp_printf("trial factoring time: %f sec (%Zd divisible by %d)\n", time_spent, n, primes[i]);
 
 							return 0;
 						}
@@ -105,7 +105,7 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, long* m, double* m
 
 			q += 2;
 
-			/*if(q>mm)
+			if(q>mm)
 			{	end = clock();
 				time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
@@ -117,16 +117,16 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, long* m, double* m
 						if(r % primes[nprimes] == 0)
 						{	end = clock();
 							time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-							printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
+							//printf("trial factoring time: %f sec (divisible by %d)\n", time_spent, primes[nprimes]);
 
 							return 0;
 						}
 
-					gmp_printf("stopping trial factoring of %Zd at %ld - ", n, q);
+					//gmp_printf("stopping trial factoring of %Zd at %ld - ", n, q);
 					break;
 				}
 				mm = mm*2;
-			}*/
+			}
 		}
 		end = clock();
 		time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
