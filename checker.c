@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	clock_t begin, end;	
 	double time_spent;
 	double mrtime;
-	int i,j,m=1000000, base = atoi(argv[1]); 
+	long i,j,m=1000000, base = atoi(argv[1]); 
 	char* pr = (char*)malloc((m>>3)+1); 
 	char str[50000];
 	if(pr==NULL) 
@@ -32,21 +32,21 @@ int main(int argc, char** argv)
 
 	strcpy(str, argv[2]);
 
-	for(i=0; i<10000; i++)
+	for(i=0; i<100; i++)
 	{	strcpy(str+i+strlen(argv[2]), argv[4]);
 
 		//printf("%s\n", str);
 
 		//if(i>=11000)
 		{	mpz_set_str(p, str, base);
-			printf("Testing %d...\n", i);
+			gmp_printf("Testing %ld (%Zd)...\n", i, p);
 			//begin = clock();
 			result = mpz_probab_prime_p_mod(p, 2, &pr, &m, &mrtime);
 			//end = clock();
 			//time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 			//printf("time: %f sec", time_spent);
 			if(result>0)
-			{	printf("index %u probably prime\n", i);
+			{	printf("index %lu probably prime\n", i);
 				printf("string: %s\n", str);
 				printf("width: %d\n", (int)strlen(str));
 				break;
