@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 		fclose(in);
 	}
 
-	for(int num=atoi(numline); num<49950; num++)
+	for(int num=atoi(numline)+1; num<49950; num++)
 	{	begin = clock();
 		dp = opendir("./");
 		int count=0;
