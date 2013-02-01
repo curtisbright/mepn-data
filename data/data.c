@@ -9,6 +9,7 @@ struct data {
 	int level;
 	int size;
 	int width;
+	int unsolved;
 };
 
 struct data* levels = NULL;
@@ -60,6 +61,14 @@ int main(int argc, char** argv)
 				for(int i=0; i<numlines; i++)
 					free(lines[i]);
 				free(lines);
+
+				numlines = 0;
+				sprintf(filename, "unsolved.%d.txt", n);
+				in = fopen(filename, "r");
+				while(fgets(line,MAXSTRING,in)!=NULL)
+					numlines++;
+				fclose(in);
+				levels[count-1].unsolved = numlines;
 			}
 		}
 		(void)closedir(dp);
@@ -69,9 +78,9 @@ int main(int argc, char** argv)
 
 	qsort(levels, count, sizeof(struct data), compare);
 
-	printf("level\tsize\twidth\n");
+	printf("level\tsize\twidth\tunsolved\n");
 	for(int i=0; i<count; i++)
-		printf("%d\t%d\t%d\n", levels[i].level, levels[i].size, levels[i].width);
+		printf("%d\t%d\t%d\t%d\n", levels[i].level, levels[i].size, levels[i].width, levels[i].unsolved);
 
 	return 0;
 }
