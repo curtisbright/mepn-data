@@ -5,6 +5,19 @@
 #include <string.h>
 #define MAXSTRING 50000
 
+struct data {
+	int level;
+	int size;
+	int width;
+};
+
+struct data* levels = NULL;
+int count = 0;
+
+int compare(const void* a, const void* b)
+{	return ((struct data*)a)->level - ((struct data*)b)->level;
+}
+
 int main(int argc, char** argv)
 {
 	DIR *dp;
@@ -17,7 +30,8 @@ int main(int argc, char** argv)
 			strcpy(filename, ep->d_name);
 			filename[6] = '\0';
 			if(strcmp(filename, "kernel")==0)
-			{	strcpy(strchr(filename+7, '.'), "\0");
+			{	count++;
+				strcpy(strchr(filename+7, '.'), "\0");
 				int n = atoi(filename+7);
 				FILE* in = fopen(ep->d_name, "r");
 
@@ -36,7 +50,11 @@ int main(int argc, char** argv)
 						maxsize = strlen(lines[numlines-1]);
 				}
 
-				printf("%d\t size %d\tlength %d\n", n, numlines, maxsize);
+				//printf("%d\t size %d\tlength %d\n", n, numlines, maxsize);
+				levels = realloc(levels, sizeof(struct data)*count);
+				levels[count-1].level = n;
+				levels[count-1].size = numlines;
+				levels[count-1].width = maxsize;
 
 				fclose(in);
 				for(int i=0; i<numlines; i++)
@@ -47,7 +65,13 @@ int main(int argc, char** argv)
 		(void)closedir(dp);
 	}
 	else
-		perror ("Couldn't open the directory");
+		perror("Couldn't open the directory");
+
+	qsort(levels, count, sizeof(struct data), compare);
+
+	printf("level\tsize\twidth\n");
+	for(int i=0; i<count; i++)
+		printf("%d\t%d\t%d\n", levels[i].level, levels[i].size, levels[i].width);
 
 	return 0;
 }
