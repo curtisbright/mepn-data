@@ -246,7 +246,7 @@ int isprime(char* p)
 {	mpz_t temp;
 	mpz_init(temp);
 	mpz_set_str(temp, p, base);
-	if(mpz_probab_prime_p(temp, 1, pr, prsize) > 0)
+	if(mpz_probab_prime_p(temp, 1) > 0)
 	{	//gmp_printf("%Zd is prime\n", temp);
 		mpz_clear(temp);
 		return 1;
@@ -807,22 +807,24 @@ int hasdivisor(family p)
 					return 1;
 				}
 
-				if(mpz_fdiv_ui(y, base-1)==0)
-				{	mpz_divexact_ui(temp, y, base-1);
+				//if(mpz_fdiv_ui(y, base-1)==0)
+				{	mpz_gcd_ui(temp10, y, base-1);
+					int g = mpz_get_ui(temp10);
+					mpz_divexact_ui(temp, y, g);
 					mpz_set(temp2, temp);
-					mpz_add(temp, temp, x);
+					mpz_addmul_ui(temp, x, (base-1)/g);
 					mpz_ui_pow_ui(temp3, base, zlen);
 					mpz_mul(temp, temp, temp3);
 					mpz_mul(temp2, temp2, temp3);
-					mpz_sub(temp2, temp2, z);
+					mpz_submul_ui(temp2, z, (base-1)/g);
 
 					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
 						mpz_set_ui(temp7, base);
-						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp7, temp7, 2)!=0)
+						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
 						{	
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares\n", str);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
@@ -830,9 +832,9 @@ int hasdivisor(family p)
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
 							return 1;
 						}
-						else if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+						else if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0)
 						{
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
@@ -850,7 +852,7 @@ int hasdivisor(family p)
 						mpz_add(temp6, temp6, temp5);
 						mpz_sub(temp5, temp3, temp4);
 						mpz_set_ui(temp, base);
-						if(mpz_cmp_ui(temp5, 1)>0 && mpz_cmp_ui(temp6, 1)>0 && mpz_root(temp, temp, 3)!=0)
+						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp, temp, 3)!=0)
 						{	
 #ifdef PRINTDIVISOR
 							familystring(str, p);
@@ -861,8 +863,11 @@ int hasdivisor(family p)
 						}
 					}
 				}
-				else
-				{	mpz_set(temp, y);
+				//else
+				/*{	mpz_set(temp, y);
+					//mpz_gcd_ui(temp10, y, base-1);
+					//mpz_divexact(temp, y, temp10);
+					//int g = mpz_get_ui(temp10);
 					mpz_addmul_ui(temp, x, base-1);
 					mpz_ui_pow_ui(temp3, base, zlen);
 					mpz_mul(temp, temp, temp3);
@@ -875,7 +880,7 @@ int hasdivisor(family p)
 						mpz_set_ui(temp7, base);
 						if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_root(temp7, temp7, 2)!=0)
 						{
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares\n", str);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
@@ -885,7 +890,7 @@ int hasdivisor(family p)
 						}
 						else if(mpz_cmp_ui(temp5, base-1)>0 && mpz_cmp_ui(temp6, base-1)>0 && mpz_cmp_ui(gcd2, 1)>0)
 						{
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
@@ -913,7 +918,7 @@ int hasdivisor(family p)
 							return 1;
 						}
 					}
-				}
+				}*/
 			}
 	}
 
@@ -1782,12 +1787,15 @@ int main(int argc, char** argv)
 		clearkernel();
 		K = temp;
 
+#ifdef PRINTDATA
 		sprintf(filename, "data/kernel.%d.txt", base);
 		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
 			fprintf(kernelfile, "%s\n", K.primes[i]);
 		fclose(kernelfile);
+#endif
 
+#ifdef PRINTSUMMARY
 		sprintf(filename, "summary.txt", base);
 		summaryfile = fopen(filename, "a");
 		fprintf(summaryfile, "BASE %d:\n", base);
@@ -1799,7 +1807,9 @@ int main(int argc, char** argv)
 		fprintf(summaryfile, "\tWidth:\t%d\n", width);
 		fprintf(summaryfile, "\tRemain:\t%d\n", unsolved.size);
 		fclose(summaryfile);
+#endif
 
+#ifdef PRINTDATA
 		sprintf(filename, "data/unsolved.%d.txt", base);
 		FILE* unsolvedfile = fopen(filename, "w");
 		for(int i=0; i<unsolved.size; i++)
@@ -1811,6 +1821,7 @@ int main(int argc, char** argv)
 			fprintf(unsolvedfile, "%s\n", str);
 		}
 		fclose(unsolvedfile);
+#endif
 
 		clearkernel();
 		clearlist(&unsolved);
