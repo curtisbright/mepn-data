@@ -1,5 +1,5 @@
 kernel: kernel.c
-	gcc kernel.c -o kernel -O3 -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDIVISORSQUARE $(FLAGS)
+	gcc kernel.c -o kernel -O3 -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDIVISORSQUARE -DPRINTDIVISORCUBE -DPRINTDATA $(FLAGS)
 debug: FLAGS = -g -pg
 debug: kernel
 clean:

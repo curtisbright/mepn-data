@@ -7,6 +7,8 @@
 #ifdef PRINTALL
 #define PRINTDIVISOR
 #define PRINTDIVISORSPECIAL
+#define PRINTDIVISORSQUARE
+#define PRINTDIVISORCUBE
 #define PRINTDIVISORFOUR
 #define PRINTDIVISORFIVE
 #define PRINTSTATS
@@ -818,6 +820,9 @@ int hasdivisor(family p)
 					mpz_mul(temp2, temp2, temp3);
 					mpz_submul_ui(temp2, z, (base-1)/g);
 
+					//gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g);
+					//gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g);
+
 					if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
@@ -827,7 +832,8 @@ int hasdivisor(family p)
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares\n", str);
-							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
+							//gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, (base-1)/g);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*(%Zd*%Zd^n+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, temp7, temp4, temp3, temp7, temp4, (base-1)/g);
 #endif
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
 							return 1;
@@ -837,7 +843,7 @@ int hasdivisor(family p)
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
-							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, base-1);
+							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, base, temp4, temp3, base, temp4, (base-1)/g);
 #endif
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
 							return 1;
@@ -851,12 +857,18 @@ int hasdivisor(family p)
 						mpz_mul(temp5, temp3, temp4);
 						mpz_add(temp6, temp6, temp5);
 						mpz_sub(temp5, temp3, temp4);
-						mpz_set_ui(temp, base);
-						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp, temp, 3)!=0)
+						mpz_set_ui(temp10, base);
+						//gmp_printf("%s%s = (%Zd-%Zd)/%d = (%Zd-%Zd)*(%Zd^2+%Zd*%Zd+%Zd^2)/%d\n", start, end, temp, temp2, (base-1)/g, temp3, temp4, temp3, temp3, temp4, temp4, (base-1)/g);
+						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
 						{	
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORCUBE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of cubes\n", str);
+							//gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/3)-%Zd)*((%Zd*%d^(n/3))^2+%Zd*%d^(n/3)*%Zd+%Zd^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, base, temp4, temp3, base, temp3, base, temp4, temp4, (base-1)/g);
+							if(mpz_sgn(temp2)>=0)
+								gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*((%Zd*%Zd^n)^2+%Zd*%Zd^n*%Zd+%Zd^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp10, temp4, temp3, temp10, temp3, temp10, temp4, temp4, (base-1)/g);
+							else
+								gmp_printf("%s(%s)^n%s = (%Zd*%d^n-(%Zd))/%d = (%Zd*%Zd^n-(%Zd))*((%Zd*%Zd^n)^2+%Zd*%Zd^n*(%Zd)+(%Zd)^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp10, temp4, temp3, temp10, temp3, temp10, temp4, temp4, (base-1)/g);
 #endif
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
 							return 1;
@@ -1633,6 +1645,26 @@ int main(int argc, char** argv)
 	distinct = fopen("distinct.txt", "w");
 #endif
 	FILE* out = stdout;
+
+	family f;
+	familyinit(&f);
+
+	/*base = 27;
+	char* middles = calloc(base, sizeof(char));
+	middles[0] = 16;
+	adddigit(&f, 9, NULL, 0);
+	adddigit(&f, 16, middles, 1);
+	adddigit(&f, 16, NULL, 0);
+	//adddigit(&f, 6, NULL, 0);
+	//adddigit(&f, 6, NULL, 0);
+	//middles[0] = 6;
+	//adddigit(&f, 1, middles, 1);
+	//adddigit(&f, 6, NULL, 0);
+	//adddigit(&f, 6, NULL, 0);
+	char str[MAXSTRING];
+	familystring(str, f);
+	printf("%s: %d\n", str, hasdivisor(f));*/
+
 	for(base=atoi(argv[1]); base<=atoi(argv[2]); base++)
 	{	printf("base %d:\n", base);
 		kernelinit();
@@ -1682,7 +1714,7 @@ int main(int argc, char** argv)
 					free(middles);
 			}
 
-		for(int i=0; /*i<depth*/; i++)
+		for(int i=0; ; i++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
@@ -1788,7 +1820,7 @@ int main(int argc, char** argv)
 		K = temp;
 
 #ifdef PRINTDATA
-		sprintf(filename, "data/kernel.%d.txt", base);
+		sprintf(filename, "data2/kernel.%d.txt", base);
 		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
 			fprintf(kernelfile, "%s\n", K.primes[i]);
@@ -1810,7 +1842,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PRINTDATA
-		sprintf(filename, "data/unsolved.%d.txt", base);
+		sprintf(filename, "data2/unsolved.%d.txt", base);
 		FILE* unsolvedfile = fopen(filename, "w");
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
