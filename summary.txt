@@ -69,7 +69,7 @@ BASE 18:
 BASE 19:
 	Size:	3318
 	Width:	23
-	Remain:	256
+	Remain:	254
 BASE 20:
 	Size:	631
 	Width:	17
@@ -93,7 +93,7 @@ BASE 24:
 BASE 25:
 	Size:	17003
 	Width:	23
-	Remain:	1033
+	Remain:	1031
 BASE 26:
 	Size:	5497
 	Width:	24
@@ -101,7 +101,7 @@ BASE 26:
 BASE 27:
 	Size:	17013
 	Width:	68
-	Remain:	321
+	Remain:	320
 BASE 28:
 	Size:	5608
 	Width:	16
