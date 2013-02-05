@@ -1,4 +1,3 @@
-18*
 4F*OO
 6MF*9
 96*M
@@ -10,7 +9,6 @@ EFO*
 F1*F1
 F0*KO
 F0K*O
-L8*
 LOL*8
 LO*KC
 LF*KI
