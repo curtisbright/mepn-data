@@ -5,7 +5,7 @@
 #include <string.h>
 #include <gmp.h>
 #include "../pprime_p.c"
-#define MAXSTRING 50000
+#define MAXSTRING 60000
 
 int subword(char* prime, char* start, char middle, char* end, int* k)
 {	int i=0, j=0, l=0;
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 		fclose(in);
 	}
 
-	for(int num=atoi(numline)+1; num<49950; num++)
+	for(int num=atoi(numline)+1; num<59950; num++)
 	{	begin = clock();
 		dp = opendir("./");
 		int count=0;
