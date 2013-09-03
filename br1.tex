@@ -169,10 +169,66 @@ representations based on modular techniques and factorizations.
 This is discussed in the next section.
 
 \section{Some useful lemmas}
+It will be necessary for our algorithm to determine if families of the
+form $xL^*z$ contain a prime or not.  One way of showing such families
+do not contain a prime is to show that some prime $p$ nontrivially
+divides every such number.  At first glance, this would require
+checking that $p$ divides $xL^nz$ for $n=0$, $1$, $2$, $\dotsc$,
+however the following lemma shows that it is only necessary to check
+the cases $n=0$ and $1$.
+
+\begin{lemma}
+Let $p$ be a prime, let $x$, $z\in L_b$, and let $L\subseteq L_b$.
+Then $p$ divides all numbers of the form $[xL^*z]_b$ if and only if
+$p$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
+\end{lemma}
 
 \section{Our heuristic algorithm}
 
 \section{Results}
+A summary of the results of our algorithm is presented in Figure~\ref{resultsfig}.
+For each base $b$ between 2 and 16 the size and width of $M(L_b)$ is given.
+For bases between 17 and 28 a lower bound on the size and width of $M(L_b)$ is given,
+along with the number of families of the form $xy^*z$ for which no prime could be found,
+nor could the family be ruled out as only containing composites.
+
+The results assume that a number which has passed several Miller--Rabin
+tests is in fact prime, since in some cases (e.g., $b=13$) a candidate for $M(L_b)$
+is too long to be proven prime rigorously.
+
+\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
+b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
+2 & 2 & 2 & 0 \\ 
+3 & 3 & 3 & 0 \\ 
+4 & 3 & 2 & 0 \\ 
+5 & 8 & 5 & 0 \\ 
+6 & 7 & 5 & 0 \\ 
+7 & 9 & 5 & 0 \\ 
+8 & 15 & 9 & 0 \\ 
+9 & 12 & 4 & 0 \\ 
+10 & 26 & 8 & 0 \\ 
+11 & 152 & 45 & 0 \\ 
+12 & 17 & 8 & 0 \\ 
+13 & 228 & 32021 & 0 \\ 
+14 & 240 & 86 & 0 \\ 
+15 & 100 & 107 & 0 \\ 
+16 & 483 & 3545 & 0 \\ 
+17 & \geq1278 & \geq7093 & 2 \\ 
+18 & 50 & 33 & 0 \\ 
+19 & \geq3460 & \geq42996 & 3 \\ 
+20 & 651 & 449 & 0 \\ 
+21 & \geq2598 & \geq1634 & 3 \\ 
+22 & 1242 & 764 & 0 \\ 
+23 & \geq6018 & \geq23278 & 4 \\ 
+24 & 306 & 100 & 0 \\ 
+25 & \geq17591 & \geq18470 & 18 \\ 
+26 & \geq5662 & \geq8773 & 2 \\ 
+27 & \geq17207 & \geq50632 & 9 \\ 
+28 & \geq5782 & \geq4242 & 2 
+\end{array}\]
+\caption{Summary of results for each base $b$.}
+\label{resultsfig}
+\end{figure}
 
 \section{Some additional strategies}
 
