@@ -1,0 +1,265 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,amscd,amsfonts}
+
+\usepackage{fullpage}
+
+\def\subw{\triangleleft}
+\DeclareMathOperator\supe{sup}
+\DeclareMathOperator\subb{sub}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Problem}
+
+\title{Minimal Elements for the Prime Numbers}
+
+\author{Curtis Bright\\
+School of Computer Science\\
+University of Waterloo\\
+Waterloo, ON  N2L 3G1\\
+Canada\\
+\ \\
+Raymond Devillers\\
+D\'epartement d'Informatique, CP 212\\
+Universit\'e Libre de Bruxelles \\
+B-1050 Bruxelles\\
+Belgium\\
+\ \\
+Jeffrey Shallit \\
+School of Computer Science\\
+University of Waterloo\\
+Waterloo, ON  N2L 3G1\\
+Canada}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We say a string of symbols $s$ is {\it minimal} for a language $L$
+if $s$ is a member of $L$, and it is not possible to obtain another 
+member of $L$ by striking out one or more symbols from $s$.  Although
+the set $M(L)$ of minimal strings is necessarily finite, determining
+it explicitly for a given $L$ can be a difficult computational problem.  
+We use some number-theoretic heuristics to compute $M(L)$, where $L$
+is the language of base-$b$ representations of the prime numbers,
+for $2 \leq b \leq 28$.
+\end{abstract}
+
+\section{Introduction}
+
+Problems about the digits of prime numbers have a long history, and many
+of them are still unsolved.  For example, are there infinitely many
+primes, all of whose base-$10$ digits are $1$?  Currently,
+there are only five
+known, corresponding to $(10^p-1)/9$ for $p = 2, 19, 23, 317, $ and
+$1031$.    It seems likely that four more are given by
+$p = 49081, 86453, 109297, 270343$, but this has not yet been
+rigorously proven.
+
+Another problem on the digits of primes was introduced by the
+third author \cite{Sh00}.  To describe it, we need some definitions.
+We say that a string $x$ is a {\it subword} of a string $y$, and 
+we write $x \subw y$, if 
+one can strike out zero or more symbols of $y$ to get $x$.
+For example, {\tt string} is a subword of
+{\tt Meistersinger}.  
+(In the literature, this concept is sometimes called a ``scattered
+subword'' or ``substring''.)
+A {\it language} is a set of strings.  A string $s$ is {\it minimal}
+for $L$ if  (a) $s \in L$ and (b) if $x \in L$ and $x \subw s$, then
+$x = s$.    The set of all minimal strings of $L$ is denoted $M(L)$.
+
+In this paper, we describe a heuristic
+technique for determining $M(L_b)$ in the
+case where $L_b$ consists of the representations, in base $b$, of the
+the prime numbers $\lbrace 2, 3, 5, \cdots \rbrace$.  We obtain
+a complete characterization of $M(L_b)$ for bases
+$2 \leq b \leq 16$.   For $17 \leq b \leq 28$, we obtain
+results that allow us to ``almost'' completely characterize this set.
+
+In what follows, if $x$ is a string of symbols over the alphabet
+$\Sigma_b = \lbrace 0, 1, \ldots, b-1 \rbrace$, we let 
+$[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
+most significant digit).  We let $(x)_b$ be the canonical representation
+of $x$ in base-$b$, that is, the representation without leading zeroes.
+The set of all canonical representations in base $b$ is denoted
+$C_b$.
+
+\section{Why minimal sets are interesting}
+
+The minimal set $M(L)$ of a language $L$ is interesting because it
+allows us to compute two natural and related languages,
+defined as follows:
+\begin{align*}
+\subb(L) &= \lbrace x \in \Sigma^* \ : \ 
+	\text{ there exists } y \in L \text{ such that } x \subw y \rbrace  ;\\
+\supe(L) &= \lbrace x \in \Sigma^* \ : \ 
+	\text{ there exists } y \in L \text{ such that } y \subw x \rbrace .
+\end{align*}
+
+An amazing fact is that $\subb(L)$ and $\supe(L)$ are always regular.
+This follows from
+the following classical theorem due to Higman \cite{Hi52} and
+Haines \cite{Ha69}.
+
+\begin{theorem}
+For every language $L$, there are only finitely many minimal strings.
+\end{theorem}
+
+Indeed, we have $\supe(L) = \bigcup_{x \in M(L)} \supe (\lbrace x \rbrace)$
+and $\Sigma^* - \subb(L) = \supe(M(\Sigma^* - \supe(L)))$.
+
+\section{Why the problem is hard}
+
+Determining $M(L)$ for arbitrary $L$
+is in general unsolvable, and can be difficult even for
+relatively simple $L$ \cite{GHK07}.
+
+The following is a ``semi-algorithm'' that 
+is guaranteed to produce $M(L)$, but not so easy to implement:
+\bigskip
+\noindent (1) $ M := \emptyset$ \\
+\noindent (2) while ($L \not= \emptyset$) do \\
+\quad (3) choose $x$, a shortest string in $L$ \\
+\quad (4) $ M := M \ \cup \ \lbrace  x \rbrace$ \\
+\quad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
+
+In practice, for arbitrary $L$,
+we cannot feasibly carry out step (5).  Instead, we work
+with $L'$, some regular overapproximation to $L$, until we can show $L' =
+\emptyset$ (which implies $L = \emptyset$).  In practice,
+$L'$ is usually chosen to be a finite union of sets of the form 
+$L_1 L_2^* L_3$, where each of $L_1, L_2, L_3$ is finite.
+In the case we consider in this paper,
+we then have to determine whether such a language contains
+a prime or not.
+
+However, it is not even known if the following simpler decision problem is 
+recursively solvable:
+
+\medskip
+
+\begin{problem}
+Given strings $x, y, z$, and a base $b$, does there exist a prime
+number whose base-$b$ expansion is of the form $x \overbrace{yy\cdots y}^n z$
+for some $n \geq 0$?
+\end{problem}
+
+\medskip
+
+An algorithm to solve this problem, for example, would allow us to decide
+if there are any additional Fermat primes (of the form $2^{2^n}+1$)
+other than the known ones (corresponding to $n = 0,1,2,3,4$).
+
+Therefore, in practice, we are forced to try to rule out prime
+representations based on modular techniques and factorizations.
+This is discussed in the next section.
+
+\section{Some useful lemmas}
+
+\section{Our heuristic algorithm}
+
+\section{Results}
+
+\section{Some additional strategies}
+
+\section{Composite numbers}
+
+One can also consider the companion problem of determining the
+minimal elements for the composite numbers
+$\lbrace 4,6,8,9,10, 12, \ldots $.  
+Here, in contrast with the primes, we have
+
+\begin{theorem}
+The following decision problem is recursively solvable:  given
+a base $b$ and a DFA $M$ accepting a language $L \subseteq 
+C_b$, does $M$ accept the base-$b$ representation of a composite 
+number?
+\end{theorem}
+
+This follows immediately from
+
+\begin{theorem}
+Suppose $L$ is a regular language, accepted by a 
+deterministic finite automaton $M$ of $n$ states.  Then
+if $M$ accepts a composite number expressed in base $b$, it must
+accept one whose base-$b$ representation has at most
+$n(b^{2n} + 1)$ digits.
+\end{theorem}
+
+\begin{proof}
+If $L$ is finite, then the longest string accepted by $M$ has
+at most $n-1$ digits, and $n-1 < n(b^{2n} + 1)$.
+
+Otherwise $L$ is infinite.  Then $M$ accepts a string of length
+$\ell$ with $n < \ell \leq 2n$ that can be pumped (as in the
+pumping lemma.  That is, there exists $x \in L$ such that
+$x = uvw$ with $|uv| \leq n$.  Then a classical proof of the
+non-regularity of the prime numbers 
+(e.g., \cite[Example 3.2, p.\ 57]{HU79})
+shows that either $x$ is the representation of a composite 
+number (in which case $|x| \leq 2n \leq n(b^{2n} + 1)$)
+or $u v^p w$ is composite, where $p = [x]_b$.  
+Our bound now follows.
+\end{proof}
+
+\section{Open problems}
+
+To illustrate once more the difficult of computing $M(L)$, we recall
+an open problem from \cite{Sh00}:
+
+\begin{problem} 
+Let $L = \lbrace {\tt 1, 2, 4, 8, 16, 32, 64, } \ldots \rbrace$, the
+base-$10$ representation of the powers of $2$.  
+Is it the case that
+$$ M(L) = \lbrace 1, 2, 4, 8, 65536 \rbrace ? $$
+\end{problem}
+
+This would follow, for example, if we could prove that every power
+of $16$ greater than $65536$ contained at least one of the digits
+$\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
+
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
+\newblock The size of Higman-Haines sets.
+\newblock {\it Theoret. Comput. Sci.} {\bf 387} (2007), 167--176.
+
+\bibitem{GHK09}  H. Gruber, M. Holzer, and M. Kutrib.
+\newblock More on the size of Higman-Haines sets:  effective constructions.
+\newblock {\it Fundam. Inform.} {\bf 91} (2009), 105--121.
+
+\bibitem{Ha69}  L. H. Haines.
+\newblock On free monoids partially ordered by embedding.
+\newblock {\it J. Combinatorial Theory} {\bf 6} (1969), 94--98.
+
+\bibitem{Hi52}  G. Higman.
+\newblock Ordering by divisibility in abstract algebras.
+\newblock {\it Proc. London Math. Soc.} (3) {\bf 2} (1952), 326--336.
+
+\bibitem{HU79}  J. E. Hopcroft and J. D. Ullman.
+\newblock {\it Introduction to Automata Theory, Languages, and Computation},
+Addison-Wesley, 1979.
+
+\bibitem{Sh00}  J. Shallit.
+\newblock Minimal primes.
+\newblock {\it J. Recreational Math.} {\bf 30} (2) (200), 113--117.
+
+\end{thebibliography}
+
+\end{document}
