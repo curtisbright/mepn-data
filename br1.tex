@@ -93,7 +93,8 @@ results that allow us to ``almost'' completely characterize this set.
 In what follows, if $x$ is a string of symbols over the alphabet
 $\Sigma_b = \lbrace 0, 1, \ldots, b-1 \rbrace$, we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
-most significant digit).  We let $(x)_b$ be the canonical representation
+most significant digit); when the base is clear we may simply denote
+this by $[x]$.  We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
 The set of all canonical representations in base $b$ is denoted
 $C_b$.
@@ -178,10 +179,26 @@ however the following lemma shows that it is only necessary to check
 the cases $n=0$ and $1$.
 
 \begin{lemma}
-Let $p$ be a prime, let $x$, $z\in L_b$, and let $L\subseteq L_b$.
-Then $p$ divides all numbers of the form $[xL^*z]_b$ if and only if
+Let $p$ be a prime, let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
+Then $p$ divides all numbers of the form $[xL^*z]_b$ if\/ 
 $p$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
 \end{lemma}
+\begin{proof}
+%Case 1. If $p\mid b$ then from $p\mid[xz]=[z_0]+b[xz_{n..1}]$ we have $p\mid[z_0]$,
+%and thus for any $y\in L^*$ we have $p\mid[z_0]+b[xyz_{n..1}]=[xyz]$.
+Let $y=y_n\dotsm y_1\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  By telescoping we have
+%\begin{align*}
+%[xyz]_b &= [xz]_b + \sum_{i=1}^{n}([xy_{i}y_{i-1}\dotsm y_1 z]_b-[xy_{i-1}\dotsm y_1 z]_b) \\
+%&= [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i-1}\dotsm y_1 z}\rvert}([xy_i]_b-[x]_b) \\
+%&= [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i-1}\dotsm y_1}\rvert}([xy_iz]_b-[xz]_b)
+%\end{align*}
+\[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i-1}\dotsm y_1 z]_b-[xy_{i-1}\dotsm y_1 z]_b) . \]
+Cancelling the final base-$b$ digits in the summand difference which are identical, this becomes
+\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i-1}\dotsm y_1 z}\rvert}([xy_i]_b-[x]_b) . \]
+But $b^{\lvert z\rvert}([xy_i]_b-[x]_b)=[xy_iz]_b-[xz]_b$ by adding and subtracting $[z]_b$, so we have
+\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i-1}\dotsm y_1}\rvert}([xy_iz]_b-[xz]_b) . \]
+Since $p\mid[xz]_b$ and $p\mid[xy_iz]_b$ for each $1\leq i\leq n$, it follows that $p\mid[xyz]_b$.
+\end{proof}
 
 \section{Our heuristic algorithm}
 
