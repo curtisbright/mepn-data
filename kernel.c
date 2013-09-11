@@ -827,7 +827,7 @@ int hasdivisor(family p)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
 						mpz_set_ui(temp7, base);
-						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
+						if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
 						{	
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
@@ -838,7 +838,7 @@ int hasdivisor(family p)
 							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
 							return 1;
 						}
-						else if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0)
+						else if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0)
 						{
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
@@ -1820,7 +1820,7 @@ int main(int argc, char** argv)
 		K = temp;
 
 #ifdef PRINTDATA
-		sprintf(filename, "data2/kernel.%d.txt", base);
+		sprintf(filename, "data/kernel.%d.txt", base);
 		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
 			fprintf(kernelfile, "%s\n", K.primes[i]);
@@ -1842,7 +1842,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PRINTDATA
-		sprintf(filename, "data2/unsolved.%d.txt", base);
+		sprintf(filename, "data/unsolved.%d.txt", base);
 		FILE* unsolvedfile = fopen(filename, "w");
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
