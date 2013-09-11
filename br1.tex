@@ -4,6 +4,10 @@
 
 \usepackage{fullpage}
 
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+
 \def\subw{\triangleleft}
 \DeclareMathOperator\supe{sup}
 \DeclareMathOperator\subb{sub}
@@ -13,6 +17,7 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{test}{Test}
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
@@ -22,6 +27,17 @@
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{problem}[theorem]{Problem}
+
+\newcommand{\0}{\mathtt{0}}
+\newcommand{\1}{\mathtt{1}}
+\newcommand{\2}{\mathtt{2}}
+\newcommand{\3}{\mathtt{3}}
+\newcommand{\4}{\mathtt{4}}
+\newcommand{\5}{\mathtt{5}}
+\newcommand{\6}{\mathtt{6}}
+\newcommand{\7}{\mathtt{7}}
+\newcommand{\8}{\mathtt{8}}
+\newcommand{\9}{\mathtt{9}}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -91,10 +107,11 @@ $2 \leq b \leq 16$.   For $17 \leq b \leq 28$, we obtain
 results that allow us to ``almost'' completely characterize this set.
 
 In what follows, if $x$ is a string of symbols over the alphabet
-$\Sigma_b = \lbrace 0, 1, \ldots, b-1 \rbrace$, we let 
+$\Sigma_b = \lbrace \0, \1, \ldots, b-1 \rbrace$\footnote{When
+$b>10$ we supplement the Arabic numerals with the
+alphabetic characters \texttt{A}, \texttt{B}, \texttt{C}, $\dotsc$.}, we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
-most significant digit); when the base is clear we may simply denote
-this by $[x]$.  We let $(x)_b$ be the canonical representation
+most significant digit).  We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
 The set of all canonical representations in base $b$ is denoted
 $C_b$.
@@ -172,33 +189,74 @@ This is discussed in the next section.
 \section{Some useful lemmas}
 It will be necessary for our algorithm to determine if families of the
 form $xL^*z$ contain a prime or not.  One way of showing such families
-do not contain a prime is to show that some prime $p$ nontrivially
+do not contain a prime is to show that some $N>1$ 
 divides every such number.  At first glance, this would require
-checking that $p$ divides $xL^nz$ for $n=0$, $1$, $2$, $\dotsc$,
-however the following lemma shows that it is only necessary to check
+checking that $N$ divides $xL^nz$ for $n=0$, $1$, $2$, $\dotsc$.
+However, the following lemma shows that it is only necessary to check
 the cases $n=0$ and $1$.
 
-\begin{lemma}
-Let $p$ be a prime, let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
-Then $p$ divides all numbers of the form $[xL^*z]_b$ if\/ 
-$p$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
+\begin{lemma}\label{lemone}
+Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
+Then $N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$
+if and only if $N$ divides all numbers of the form $[xL^*z]_b$.
 \end{lemma}
 \begin{proof}
-%Case 1. If $p\mid b$ then from $p\mid[xz]=[z_0]+b[xz_{n..1}]$ we have $p\mid[z_0]$,
-%and thus for any $y\in L^*$ we have $p\mid[z_0]+b[xyz_{n..1}]=[xyz]$.
-Let $y=y_n\dotsm y_1\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  By telescoping we have
-%\begin{align*}
-%[xyz]_b &= [xz]_b + \sum_{i=1}^{n}([xy_{i}y_{i-1}\dotsm y_1 z]_b-[xy_{i-1}\dotsm y_1 z]_b) \\
-%&= [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i-1}\dotsm y_1 z}\rvert}([xy_i]_b-[x]_b) \\
-%&= [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i-1}\dotsm y_1}\rvert}([xy_iz]_b-[xz]_b)
-%\end{align*}
-\[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i-1}\dotsm y_1 z]_b-[xy_{i-1}\dotsm y_1 z]_b) . \]
-Cancelling the final base-$b$ digits in the summand difference which are identical, this becomes
-\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i-1}\dotsm y_1 z}\rvert}([xy_i]_b-[x]_b) . \]
-But $b^{\lvert z\rvert}([xy_i]_b-[x]_b)=[xy_iz]_b-[xz]_b$ by adding and subtracting $[z]_b$, so we have
-\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i-1}\dotsm y_1}\rvert}([xy_iz]_b-[xz]_b) . \]
-Since $p\mid[xz]_b$ and $p\mid[xy_iz]_b$ for each $1\leq i\leq n$, it follows that $p\mid[xyz]_b$.
+Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
+By telescoping we have
+\[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i+1}\dotsm y_n z]_b-[xy_{i+1}\dotsm y_n z]_b) . \]
+Cancelling the final base-$b$ digits in the summand difference 
+which are identical, this becomes
+\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i+1}\dotsm y_n z}\rvert}([xy_i]_b-[x]_b) . \]
+But $b^{\lvert z\rvert}([xy_i]_b-[x]_b)=[xy_iz]_b-[xz]_b$ by 
+adding and subtracting $[z]_b$, so we have
+\[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i+1}\dotsm y_n}\rvert}([xy_iz]_b-[xz]_b) . \]
+Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
+ it follows that $N\mid[xyz]_b$.
 \end{proof}
+
+In practice, our algorithm employs this lemma in the following form.
+\begin{corollary}
+If $[xz]_b>0$ is not prime and $\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$
+ then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
+\end{corollary}
+\begin{proof}
+By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
+If $N<[xz]_b$ then $N$ is a proper divisor of each such number, and if 
+$N=[xz]_b$ then $N$ itself is not prime (and likewise for all multiples of $N$).
+\end{proof}
+
+\begin{example}
+Since $\gcd(49, 469)=7$, every number of the form $\4\6^*\9$ is divisible 
+by $7$ in base~10.  Since $49$ is not prime, no number of the form 
+$\4\6^*\9$ is prime in base 10.
+\end{example}
+
+\begin{lemma}
+Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
+$X:=([y]_b+(b-1)[x]_b)/g$, and $Y:=(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
+If $b$, $X$, and $Y$ are all squares and 
+$\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form
+ $[xy^*z]_b$ are composite.
+\end{lemma}
+\begin{proof}
+Expanding out the base-$b$ expansion of $xy^nz$, one derives
+\begin{align*}
+[xy^nz]_b &= b^{\lvert z\rvert+n}[x]_b + b^{\lvert z\rvert}\frac{b^n-1}{b-1}[y]_b + [z]_b \\
+&= \frac{b^{\lvert z\rvert+n}X-Y}{(b-1)/g} . 
+%= \frac{(\sqrt{Xb^{\lvert z\rvert+n}}+\sqrt{Y})(\sqrt{Xb^{\lvert z\rvert+n}}-\sqrt{Y})}{(b-1)/g}
+\end{align*}
+Since $b$, $X$, and $Y$ are all squares the numerator factors as a 
+difference of squares.  By the size condition both factors are 
+strictly larger than the
+denominator, and so the factorization is nontrivial.
+\end{proof}
+
+\begin{example}
+Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
+\[ [\4\4^n\1]_{16} = \frac{(4^{n+1}\cdot8+7)(4^{n+1}\cdot8-7)}{15} . \]
+Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
+the form $\4\4^*\1$ is prime in base 16.
+\end{example}
 
 \section{Our heuristic algorithm}
 
@@ -247,13 +305,23 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 \label{resultsfig}
 \end{figure}
 
+\subsection{Unsolved families}
+Base 17: $\mathtt{49^*}$, $\mathtt{F19^*}$ \\
+Base 19: $\mathtt{4F0^*6}$, $\mathtt{EE16^*}$, $\mathtt{FG6^*}$ \\
+Base 21: $\mathtt{40^*9G}$, $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
+Base 23: $\mathtt{80^*1}$, $\mathtt{80^*81}$, $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
+Base 25: $\mathtt{4F^*OO}$, $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{E^*FOO}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{LO^*KC}$, $\mathtt{LF^*KI}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
+Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
+Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^*A}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$, $\mathtt{L^*0G}$, $\mathtt{L^*G}$ \\
+Base 28: $\mathtt{O4O^*9}$, $\mathtt{OA^*F}$
+
 \section{Some additional strategies}
 
 \section{Composite numbers}
 
 One can also consider the companion problem of determining the
 minimal elements for the composite numbers
-$\lbrace 4,6,8,9,10, 12, \ldots $.  
+$\lbrace 4,6,8,9,10, 12, \ldots \rbrace $.  
 Here, in contrast with the primes, we have
 
 \begin{theorem}
