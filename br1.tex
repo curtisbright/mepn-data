@@ -214,6 +214,12 @@ Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
  it follows that $N\mid[xyz]_b$.
 \end{proof}
 
+\begin{lemma}\label{lemtwo}
+Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
+Then $N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
+if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
+\end{lemma}
+
 In practice, our algorithm employs this lemma in the following form.
 \begin{corollary}
 If $[xz]_b>0$ is not prime and $\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$
