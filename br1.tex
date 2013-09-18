@@ -197,7 +197,7 @@ the cases $n=0$ and $1$.
 
 \begin{lemma}\label{lemone}
 Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
-Then $N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$
+$N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$
 if and only if $N$ divides all numbers of the form $[xL^*z]_b$.
 \end{lemma}
 \begin{proof}
@@ -213,12 +213,6 @@ adding and subtracting $[z]_b$, so we have
 Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
  it follows that $N\mid[xyz]_b$.
 \end{proof}
-
-\begin{lemma}\label{lemtwo}
-Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
-Then $N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
-if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
-\end{lemma}
 
 In practice, our algorithm employs this lemma in the following form.
 \begin{corollary}
@@ -263,6 +257,21 @@ Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
 Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
 the form $\4\4^*\1$ is prime in base 16.
 \end{example}
+
+\subsection{Advanced tests}
+\begin{lemma}\label{lemtwo}
+Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
+$N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
+if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
+\end{lemma}
+\begin{proof}
+Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exists $y_{i,1}$, $\dotsc$, $y_{i,n_i}\in L_i$ such that
+\[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m} \]
+for $1\leq i\leq m$.
+As in Lemma~\ref{lemone}, we have that
+\[ [w]_b = [x_1\dotsm x_m]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_m]_b-[x_1\dotsm x_m]_b) \]
+from which the claim follows.
+\end{proof}
 
 \section{Our heuristic algorithm}
 
