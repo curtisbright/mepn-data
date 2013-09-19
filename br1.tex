@@ -222,20 +222,32 @@ if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL
 
 In practice, our algorithm employs this lemma in the following form.
 \begin{corollary}
-If $[xz]_b>0$ is not prime and $\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$
+If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
  then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
-By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
-If $N<[xz]_b$ then $N$ is a proper divisor of each such number, and if 
-$N=[xz]_b$ then $N$ itself is not prime (and likewise for all multiples of $N$).
+By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
+By the size condition $N>1$ is strictly less than each such number, and so is a nontrivial divisor.
 \end{proof}
 
 \begin{example}
-Since $\gcd(49, 469)=7$, every number of the form $\4\6^*\9$ is divisible 
-by $7$ in base~10.  Since $49$ is not prime, no number of the form 
-$\4\6^*\9$ is prime in base 10.
+Since $\gcd(49, 469)=7$ is strictly between $1$ and $49$, every number of the form $\4\6^*\9$ is divisible 
+by $7$ in base~10.
 \end{example}
+
+We also generalize this to the following corollary.
+\begin{corollary}
+If \[N_0:=\gcd([xz]_b,[xy_1y_1z]_b,[xy_1y_2z]_b,\dotsc,[xy_ny_nz]_b)\] and 
+\[N_1:=\gcd([xy_1z]_b,\dotsc,[xy_nz]_b,[xy_1y_1y_1z]_b,[xy_1y_1y_2z]_b,\dotsc,[xy_ny_ny_nz]_b)\]
+lie strictly between $1$ and $[xz]_b$, then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
+\end{corollary}
+\begin{proof}
+By Lemma~\ref{lemone}, $N_0$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ of even length and $N_1$ divides all such numbers
+of odd length.  By the size conditions $N_0$ and $N_1$ are nontrivial divisors.
+\end{proof}
+
+We also note that it is simple to generalize this corollary to apply to check if there are divisors $N_0$, $N_1$, $\dotsc$, $N_{k-1}$ such that
+$N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ of length congruent to $i$ mod $k$.
 
 \begin{lemma}
 Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
