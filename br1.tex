@@ -38,6 +38,7 @@
 \newcommand{\7}{\mathtt{7}}
 \newcommand{\8}{\mathtt{8}}
 \newcommand{\9}{\mathtt{9}}
+\newcommand{\A}{\mathtt{A}}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -200,7 +201,7 @@ Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
 $N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$
 if and only if $N$ divides all numbers of the form $[xL^*z]_b$.
 \end{lemma}
-\begin{proof}
+\begin{proof}%($\Rightarrow$)
 Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
 By telescoping we have
 \[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i+1}\dotsm y_n z]_b-[xy_{i+1}\dotsm y_n z]_b) . \]
@@ -212,9 +213,12 @@ adding and subtracting $[z]_b$, so we have
 \[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\vert{y_{i+1}\dotsm y_n}\rvert}([xy_iz]_b-[xz]_b) . \]
 Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
  it follows that $N\mid[xyz]_b$.
+ 
+The other direction is clear since $[xz]_b$ and numbers of the form $[xLz]_b$ and are both of the form $[xL^*z]_b$.
 \end{proof}
 
-In practice, our algorithm employs this lemma in the following form.
+In practice, our algorithm employs this lemma with $L:=\{y_1,\dotsc,y_n\}\subseteq\Sigma_b$, and all numbers of the form
+$[xL^*z]_b$ are shown to be composite with the following corollary.
 \begin{corollary}
 If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
  then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
@@ -236,8 +240,10 @@ If \[N_0:=\gcd([xz]_b,[xy_1y_1z]_b,[xy_1y_2z]_b,\dotsc,[xy_ny_nz]_b)\] and
 lie strictly between $1$ and $[xz]_b$, then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
-By Lemma~\ref{lemone}, $N_0$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ of even length and $N_1$ divides all such numbers
-of odd length.  By the size conditions, $N_0$ and $N_1$ are nontrivial divisors.
+Let $L:=\{y_1,\dotsc,y_n\}^2$.
+By Lemma~\ref{lemone} on $[xL^*z]_b$, $N_0$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which an even number of $y_i$ appear.
+By Lemma~\ref{lemone} on $[xy_iL^*z]_b$ for each $1\leq i\leq n$, $N_1$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ for which an odd number of $y_i$ appear.
+By the size conditions, $N_0$ and $N_1$ are nontrivial divisors.
 \end{proof}
 \begin{example}
 Since $\gcd([\6]_9,[\6\1\1]_9)=2$, every number of the form $\6\1^*$ of even length is divisible by $2$ in base $9$.
@@ -246,7 +252,42 @@ $1$ and $6$, every number of the form $\6\1^*$ is composite in base $9$.
 \end{example}
 
 We also note that it is simple to generalize this corollary to apply to check if there are divisors $N_0$, $N_1$, $\dotsc$, $N_{k-1}$ such that
-$N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ of length congruent to $i$ mod $k$.
+$N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which the number of $y_i$ appearing is congruent to $i\bmod k$.
+\begin{example}
+In base $16$, $7$ divides $\8\A\0\1$ and $\8\A\0\A\A\A\1$, $13$ divides $\8\A\0\A\1$ and $\8\A\0\A\A\A\A\1$, and $3$ divides $\8\A\0\A\A\1$ and $\8\A\0\A\A\A\A\A\1$.
+Thus all numbers of the form $\8\A\0\A^*\1$ are divisible by either $7$, $13$, or $3$ in base $16$, depending on their length mod $3$.
+\end{example}
+
+A version of Lemma~\ref{lemone} which applies to the most general kind of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$)
+is formulated in Lemma~\ref{lemtwo}.
+\begin{lemma}\label{lemtwo}
+Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
+$N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
+if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
+\end{lemma}
+\begin{proof}
+Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exists $y_{i,1}$, $\dotsc$, $y_{i,n_i}\in L_i$ such that
+\[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m} \]
+for $1\leq i\leq m$.
+As in Lemma~\ref{lemone}, we have that
+\[ [w]_b = [x_1\dotsm x_m]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_m]_b-[x_1\dotsm x_m]_b) \]
+from which the claim follows.
+\end{proof}
+Like in Lemma~\ref{lemone}, we typically apply this lemma in the case where each $L_i\subseteq\Sigma_b$ and show that all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$ have a divisor.
+\begin{example}
+Since $9$ divides $981$, $9081$, and $9801$, it follows that $9$ divides every number of the form $\9\0^*\8\0^*\1$ in base $10$.
+\end{example}
+More generally, if a single divisor doesn't work for every number, Lemma~\ref{lemtwo} can also be applied in the case where all numbers of the form $[x_1L_1^*\dotsm x_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have a divisor, and all numbers of the form $[x_1L_1^*\dotsm x_iL_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have another divisor.
+\begin{example}
+Since $3$ divides each of $\4\4\A\1$, $\4\4\A\1\1\1$, $\4\4\0\A\1$ in base $11$, every number of the form $[\4\4\0^*(\1\1)^*\1]_{11}$ is composite.
+Since $2$ divides each of $\4\4\A\1\1$, $\4\4\A\1\1\1\1$, $\4\4\0\A\1\1$ in base~$11$, every number of the form $[\4\4\0^*(\1\1)^*\1\1]_{11}$ is composite.
+It follows that all numbers of the form $[\4\4\0^*\A\1^*\1]_{11}$ are composite.
+\end{example}
+Lemma~\ref{lemtwo} can also be applied to the case when all even-length strings under consideration have one divisor, and all the odd-length strings have another divisor.  For example, if numbers of the form $[x_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ and $[x_1 L_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$ have one divisor, and numbers of the form $[x_1L_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ and $[x_1(L_1)^*x_2L_2(L_2)^*x_3]_b$ have another divisor.
+\begin{example}
+Since $2$ divides each of $\6$, $\1\1\6$, $\6\1\1$, $\1\6\1$, $\1\1\1\6\1$, $\1\6\1\1\1$ in base $9$, every odd-length string of $\1^*\6\1^*$ is composite in base $9$.
+Since $5$ divides each of $\1\6$, $\1\1\1\6$, $\1\6\1\1$, $\6\1$, $\1\1\6\1$, $\6\1\1\1$ in base $9$, every even-length string of $\1^*\6\1^*$ is composite in base $9$.
+\end{example}
 
 \begin{lemma}
 Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
@@ -274,22 +315,6 @@ Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
 Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
 the form $\4\4^*\1$ is prime in base 16.
 \end{example}
-
-A version of Lemma~\ref{lemone} which applies to the most general kind of family $x_1L_1^*\dotsm x_mL_m^*$ is also possible,
-as formulated in Lemma~\ref{lemtwo}.
-\begin{lemma}\label{lemtwo}
-Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
-$N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
-if and only if $N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
-\end{lemma}
-\begin{proof}
-Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exists $y_{i,1}$, $\dotsc$, $y_{i,n_i}\in L_i$ such that
-\[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m} \]
-for $1\leq i\leq m$.
-As in Lemma~\ref{lemone}, we have that
-\[ [w]_b = [x_1\dotsm x_m]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_m]_b-[x_1\dotsm x_m]_b) \]
-from which the claim follows.
-\end{proof}
 
 \section{Our heuristic algorithm}
 
