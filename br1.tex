@@ -220,8 +220,8 @@ If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
  then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
-By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
-By the size condition $N>1$ is strictly less than each such number, and so is a nontrivial divisor.
+By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
+By the size condition $N$ is strictly less than each such number, and so is a nontrivial divisor.
 \end{proof}
 
 \begin{example}
@@ -229,7 +229,7 @@ Since $\gcd(49, 469)=7$, every number of the form $\4\6^*\9$ is divisible by $7$
 Since this is strictly between $1$ and $49$, each such number is composite.
 \end{example}
 
-We also generalize this to the following corollary.
+We also generalize this to the following corollary in the case where a single divisor does not divide each number in the family.
 \begin{corollary}
 If \[N_0:=\gcd([xz]_b,[xy_1y_1z]_b,[xy_1y_2z]_b,\dotsc,[xy_ny_nz]_b)\] and 
 \[N_1:=\gcd([xy_1z]_b,\dotsc,[xy_nz]_b,[xy_1y_1y_1z]_b,[xy_1y_1y_2z]_b,\dotsc,[xy_ny_ny_nz]_b)\]
@@ -241,7 +241,7 @@ of odd length.  By the size conditions, $N_0$ and $N_1$ are nontrivial divisors.
 \end{proof}
 \begin{example}
 Since $\gcd([\6]_9,[\6\1\1]_9)=2$, every number of the form $\6\1^*$ of even length is divisible by $2$ in base $9$.
-Since $\gcd([\6\1]_9,[\6\1\1\1]_9)=5$, every number of the form $\6\1^*$ is divisible by $5$ in base $9$.  Since these numbers lie strictly between
+Since $\gcd([\6\1]_9,[\6\1\1\1]_9)=5$, every number of the form $\6\1^*$ of odd length is divisible by $5$ in base $9$.  Since these numbers lie strictly between
 $1$ and $6$, every number of the form $\6\1^*$ is composite in base $9$.
 \end{example}
 
@@ -275,7 +275,8 @@ Since $4\cdot8-7>15$, this factorization is nontrivial and no number of
 the form $\4\4^*\1$ is prime in base 16.
 \end{example}
 
-\subsection{Advanced tests}
+A version of Lemma~\ref{lemone} which applies to the most general kind of family $x_1L_1^*\dotsm x_mL_m^*$ is also possible,
+as formulated in Lemma~\ref{lemtwo}.
 \begin{lemma}\label{lemtwo}
 Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, $L_m\subseteq\Sigma^*_b$.
 $N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
