@@ -852,15 +852,10 @@ int hasdivisor(family p)
 					}
 
 					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
-					{	mpz_mul(temp5, temp3, temp3);
-						mpz_mul(temp6, temp4, temp4);
-						mpz_add(temp6, temp6, temp5);
-						mpz_mul(temp5, temp3, temp4);
-						mpz_add(temp6, temp6, temp5);
-						mpz_sub(temp5, temp3, temp4);
+					{	mpz_sub(temp5, temp3, temp4);
 						mpz_set_ui(temp10, base);
 						//gmp_printf("%s%s = (%Zd-%Zd)/%d = (%Zd-%Zd)*(%Zd^2+%Zd*%Zd+%Zd^2)/%d\n", start, end, temp, temp2, (base-1)/g, temp3, temp4, temp3, temp3, temp4, temp4, (base-1)/g);
-						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
+						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
 						{	
 #ifdef PRINTDIVISORCUBE
 							familystring(str, p);
@@ -1650,18 +1645,11 @@ int main(int argc, char** argv)
 	family f;
 	familyinit(&f);
 
-	/*base = 27;
+	/*base = 16;
 	char* middles = calloc(base, sizeof(char));
-	middles[0] = 16;
-	adddigit(&f, 9, NULL, 0);
-	adddigit(&f, 16, middles, 1);
-	adddigit(&f, 16, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
-	//middles[0] = 6;
-	//adddigit(&f, 1, middles, 1);
-	//adddigit(&f, 6, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
+	middles[0] = 0;
+	adddigit(&f, 4, middles, 1);
+	adddigit(&f, 1, NULL, 0);
 	char str[MAXSTRING];
 	familystring(str, f);
 	printf("%s: %d\n", str, hasdivisor(f));*/
