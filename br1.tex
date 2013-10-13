@@ -47,18 +47,21 @@ School of Computer Science\\
 University of Waterloo\\
 Waterloo, ON  N2L 3G1\\
 Canada\\
+{\tt cbright@uwaterloo.ca} \\
 \ \\
 Raymond Devillers\\
 D\'epartement d'Informatique, CP 212\\
 Universit\'e Libre de Bruxelles \\
 B-1050 Bruxelles\\
 Belgium\\
+{\tt rdevil@ulb.ac.be} \\
 \ \\
 Jeffrey Shallit \\
 School of Computer Science\\
 University of Waterloo\\
 Waterloo, ON  N2L 3G1\\
-Canada}
+Canada \\
+{\tt shallit@cs.uwaterloo.ca}}
 
 \begin{document}
 
@@ -108,18 +111,22 @@ $2 \leq b \leq 16$.   For $17 \leq b \leq 28$, we obtain
 results that allow us to ``almost'' completely characterize this set.
 
 In what follows, if $x$ is a string of symbols over the alphabet
-$\Sigma_b = \lbrace \0, \1, \ldots, b-1 \rbrace$\footnote{When
-$b>10$ we supplement the Arabic numerals with the
-alphabetic characters \texttt{A}, \texttt{B}, \texttt{C}, $\dotsc$.}, we let 
+$\Sigma_b = \lbrace \0, \1, \ldots, b-1 \rbrace$ we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
-most significant digit).  We let $(x)_b$ be the canonical representation
+most significant digit).  This is extended to languages as follows:
+$[L]_b = \lbrace [x]_b \ : \ x \in L \rbrace$.
+We use the convention that ${\tt A} = 10$, ${\tt B} = 11$, and so forth,
+to conveniently represent strings of symbols in base $b > 10$.
+We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
 The set of all canonical representations in base $b$ is denoted
-$C_b$.
+$C_b$.  Finally, as usual, for a language $L$ we let
+$L^n = \overbrace{LL\cdots L}^n$ and $L^* = \bigcup_{i \geq 0} L^i$.
 
 \section{Why minimal sets are interesting}
 
-The minimal set $M(L)$ of a language $L$ is interesting because it
+One reason why
+the minimal set $M(L)$ of a language $L$ is interesting is because it
 allows us to compute two natural and related languages,
 defined as follows:
 \begin{align*}
@@ -139,7 +146,7 @@ For every language $L$, there are only finitely many minimal strings.
 \end{theorem}
 
 Indeed, we have $\supe(L) = \bigcup_{x \in M(L)} \supe (\lbrace x \rbrace)$
-and $\Sigma^* - \subb(L) = \supe(M(\Sigma^* - \supe(L)))$.
+and $\Sigma^* - \subb(L) = \supe(\Sigma^* - \supe(L))$.
 
 \section{Why the problem is hard}
 
@@ -149,12 +156,15 @@ relatively simple $L$ \cite{GHK07}.
 
 The following is a ``semi-algorithm'' that 
 is guaranteed to produce $M(L)$, but not so easy to implement:
+
 \bigskip
 \noindent (1) $ M := \emptyset$ \\
 \noindent (2) while ($L \not= \emptyset$) do \\
-\quad (3) choose $x$, a shortest string in $L$ \\
-\quad (4) $ M := M \ \cup \ \lbrace  x \rbrace$ \\
-\quad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
+\hphantom{X} \quad\quad (3) choose $x$, a shortest string in $L$ \\
+\hphantom{X} \quad \quad (4) $ M := M \ \cup \ \lbrace  x \rbrace$ \\
+\hphantom{X} \quad \quad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
+
+\smallskip
 
 In practice, for arbitrary $L$,
 we cannot feasibly carry out step (5).  Instead, we work
@@ -189,24 +199,37 @@ This is discussed in the next section.
 
 \section{Some useful lemmas}
 It will be necessary for our algorithm to determine if families of the
-form $xL^*z$ contain a prime or not.  One way of showing such families
-do not contain a prime is to show that some $N>1$ 
-divides every such number.  At first glance, this would require
+form $[xL^*z]_b$ contain a prime or not.  We use two different strategies.
+
+In the first strategy, we mimic the well-known technique of ``covering
+congruences'' \cite{Choi},
+by finding some finite set $S$ of integers $N > 1$ such that
+every number in a given family is divisible by some element of $S$.
+In the second strategy, we attempt to find a
+difference-of-squares or difference-of-cubes factorization.
+
+\subsection{The first strategy}
+
+We start with the simplest version of the idea:  to find 
+an $N > 1$ that divides each element of the family $[xL^*z]_b$.
+At first glance, this would require
 checking that $N$ divides $xL^nz$ for $n=0$, $1$, $2$, $\dotsc$.
 However, the following lemma shows that it is only necessary to check
-the cases $n=0$ and $1$.
+the two cases $n=0$ and $1$.
 
 \begin{lemma}\label{lemone}
 Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
-$N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$
-if and only if $N$ divides all numbers of the form $[xL^*z]_b$.
+Then 
+$N$ divides all numbers of the form $[xL^*z]_b$
+if and only if 
+$N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
 \end{lemma}
 \begin{proof}%($\Rightarrow$)
 Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
 By telescoping we have
 \[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i+1}\dotsm y_n z]_b-[xy_{i+1}\dotsm y_n z]_b) . \]
-Cancelling the final base-$b$ digits in the summand difference 
-which are identical, this becomes
+Cancelling the final $|z|$ base-$b$ digits in the summand difference ---
+which are identical --- this becomes
 \[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i+1}\dotsm y_n z}\rvert}([xy_i]_b-[x]_b) . \]
 But $b^{\lvert z\rvert}([xy_i]_b-[x]_b)=[xy_iz]_b-[xz]_b$ by 
 adding and subtracting $[z]_b$, so we have
@@ -214,7 +237,7 @@ adding and subtracting $[z]_b$, so we have
 Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
  it follows that $N\mid[xyz]_b$.
  
-The other direction is clear since $[xz]_b$ and numbers of the 
+The other direction is clear, since $[xz]_b$ and numbers of the 
 form $[xLz]_b$ and are both of the form $[xL^*z]_b$.
 \end{proof}
 
@@ -226,111 +249,149 @@ If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
  then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
-By Lemma~\ref{lemone}, $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ 
+By Lemma~\ref{lemone}, we know
+that $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ 
 divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
-By the size condition $N$ is strictly less than each such number, and so is a nontrivial divisor.
+By the size condition $N$ is strictly less than each such number, and
+so is a nontrivial divisor.
 \end{proof}
 
 \begin{example}
-Since $\gcd(49, 469)=7$, every number of the form $\4\6^*\9$ is 
-divisible by $7$ in base~10.
-Since this is strictly between $1$ and $49$, each such number is composite.
+Since $\gcd(49, 469)=7$, every number with base-$10$ representation
+of the form $\4\6^*\9$ is 
+divisible by $7$.
+Since $1 < 7 < 49$, each such number is composite.
 \end{example}
 
 We also generalize this to the following corollary in the case where 
 a single divisor does not divide each number in the family.
 \begin{corollary}\label{cortwo}
-If \[N_0:=\gcd([xz]_b,[xy_1y_1z]_b,[xy_1y_2z]_b,\dotsc,[xy_ny_nz]_b)\] and 
-\[N_1:=\gcd([xy_1z]_b,\dotsc,[xy_nz]_b,[xy_1y_1y_1z]_b,[xy_1y_1y_2z]_b,\dotsc,[xy_ny_ny_nz]_b)\]
+Let $L = \lbrace y_1, y_2, \ldots, y_n \rbrace$.
+If \[N_0:=\gcd \left( \{ [xz]_b \} \ \cup \ [xL^2 z]_b \right) \]
+and
+\[N_1:= \gcd  \left( \{ [xLz]_b \} \ \cup \ [xL^3z]_b \right) \]
 lie strictly between $1$ and $[xz]_b$, then all numbers of the form 
-$[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
+$[xL^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
-Let $L:=\{y_1,\dotsc,y_n\}^2$.
-By Lemma~\ref{lemone} on $[xL^*z]_b$, $N_0$ divides all numbers of the 
-form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which an even number of $y_i$ appear.
-By Lemma~\ref{lemone} on $[xy_iL^*z]_b$ for each $1\leq i\leq n$, $N_1$ 
-divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ for which an 
+By Lemma~\ref{lemone} applied
+to $[x(L^2)^*z]_b$, we know that $N_0$ divides all numbers of the 
+form $[x L^* z]_b$ in which an even number of $y_i$ appear.
+By Lemma~\ref{lemone} on $[xy_i(L^2)^*z]_b$ 
+for each $1\leq i\leq n$, we know that $N_1$ 
+divides all numbers of the form $[x L^* z]_b$ for which an 
 odd number of $y_i$ appear.
 By the size conditions, $N_0$ and $N_1$ are nontrivial divisors.
 \end{proof}
+
 \begin{example}
-Since $\gcd([\6]_9,[\6\1\1]_9)=2$, every number of the form $\6\1^*$ of 
-odd length is divisible by $2$ in base $9$.
-Since $\gcd([\6\1]_9,[\6\1\1\1]_9)=5$, every number of the form $\6\1^*$ 
-of even length is divisible by $5$ in base $9$.  Since these numbers lie 
-strictly between $1$ and $6$, every number of the form $\6\1^*$ is 
-composite in base $9$.
+Since $\gcd([\6]_9,[\6\1\1]_9)=2$, every number with
+base-$9$ representation of the form $\6\1^*$ of 
+odd length is divisible by $2$.
+Since $\gcd([\6\1]_9,[\6\1\1\1]_9)=5$,
+every number with base-$9$ representation of the form $\6\1^*$ 
+of even length is divisible by $5$.  Since these numbers lie 
+strictly between $1$ and $6$, every number with base-$9$
+representation of the form $\6\1^*$ is 
+composite.
 \end{example}
 
-We also note that it is simple to generalize this corollary to apply to 
+We also note that it is simple to generalize Corollary~\ref{cortwo}
+to apply to 
 check if there are divisors $N_0$, $N_1$, $\dotsc$, $N_{k-1}$ such that
 $N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which 
 the number of $y_i$ appearing is congruent to $i\bmod k$.
 \begin{example}
-In base $16$, $7$ divides $\8\A\0\1$ and $\8\A\0\A\A\A\1$, $13$ divides 
-$\8\A\0\A\1$ and $\8\A\0\A\A\A\A\1$, and $3$ divides $\8\A\0\A\A\1$ and 
-$\8\A\0\A\A\A\A\A\1$.  Thus all numbers of the form $\8\A\0\A^*\1$ are 
-divisible by either $7$, $13$, or $3$ in base $16$, depending on their 
+Let $b = 16$.
+Then
+$7$ divides $[\8\A\0\1]_b$ and $[\8\A\0\A\A\A\1]_b$.
+Furthermore, $13$ divides 
+$[\8\A\0\A\1]_b$ and $[\8\A\0\A\A\A\A\1]_b$,
+and $3$ divides $[\8\A\0\A\A\1]_b$ and 
+$[\8\A\0\A\A\A\A\A\1]_b$.  Thus all numbers with base-$16$
+representation of the form $\8\A\0\A^*\1$ are 
+divisible by either $7$, $13$, or $3$, depending on their 
 length mod $3$.
 \end{example}
 
 A version of Lemma~\ref{lemone} which applies to the most general kind 
 of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$)
 is formulated in Lemma~\ref{lemtwo}.
+
 \begin{lemma}\label{lemtwo}
 Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, 
-$L_m\subseteq\Sigma^*_b$.
+$L_m\subseteq\Sigma^*_b$.  Then
+$N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$
+if and only if
 $N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form 
-$[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$
-if and only if $N$ divides all numbers of the form 
-$[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$.
+$[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$.
 \end{lemma}
 \begin{proof}
-Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exists 
+Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exist
 $y_{i,1}$, $\dotsc$, $y_{i,n_i}\in L_i$ such that
 \[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m} \]
 for $1\leq i\leq m$.
-As in Lemma~\ref{lemone}, we have that
+As in the proof of Lemma~\ref{lemone}, we have that
 \[ [w]_b = [x_1\dotsm x_m]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_m]_b-[x_1\dotsm x_m]_b) \]
 from which the claim follows.
 \end{proof}
-Like in Lemma~\ref{lemone}, we typically apply this lemma in the case 
+As in Lemma~\ref{lemone}, we typically apply this lemma in the case 
 where each $L_i\subseteq\Sigma_b$ and show that all numbers of the 
 form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$ have a divisor.
 \begin{example}
+Take $L_1 = \{ \0 \}$ and $(x_1,x_2, x_3) = (\9, \8, \1)$.
 Since $9$ divides $981$, $9081$, and $9801$, it follows that $9$ 
-divides every number of the form $\9\0^*\8\0^*\1$ in base $10$.
+divides every number with base-$10$ representation
+of the form $\9\0^*\8\0^*\1$.
 \end{example}
+
 More generally, if a single divisor doesn't work for every number, 
 Lemma~\ref{lemtwo} can also be applied in the case where all numbers 
-of the form $[x_1L_1^*\dotsm x_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have a 
+of the form $[x_1L_1^*\dotsm x_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have one
 divisor, and all numbers of the form 
 $[x_1L_1^*\dotsm x_iL_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have another divisor.
 \begin{example}
-Since $3$ divides each of $\4\4\A\1$, $\4\4\A\1\1\1$, $\4\4\0\A\1$ in 
-base $11$, every number of the form $[\4\4\0^*(\1\1)^*\1]_{11}$ is composite.
-Since $2$ divides each of $\4\4\A\1\1$, $\4\4\A\1\1\1\1$, $\4\4\0\A\1\1$ 
-in base~$11$, every number of the form $[\4\4\0^*(\1\1)^*\1\1]_{11}$ is composite.
-It follows that all numbers of the form $[\4\4\0^*\A\1^*\1]_{11}$ are composite.
+Let $b = 11$.
+Since $3$ divides each of $[\4\4\A\1]_b$,
+$[\4\4\A\1\1\1]_b$,
+$[\4\4\0\A\1]_b$ ,
+it follows that
+every number of the form $[\4\4\0^*(\1\1)^*\1]_b$ is composite.
+Since $2$ divides each of $[\4\4\A\1\1]_b$,
+$[\4\4\A\1\1\1\1]_b$, $[\4\4\0\A\1\1]_b$, we know
+every number of the form $[\4\4\0^*(\1\1)^*\1\1]_b$ is composite.
+It follows that all numbers of the form $[\4\4\0^*\A\1^*\1]_b$ are composite.
 \end{example}
+
 Lemma~\ref{lemtwo} can also be applied to the case when all even-length 
 strings under consideration have one divisor, and all the odd-length 
-strings have another divisor.  For example, if numbers of the form 
+strings have another divisor.  One such case is, for example,
+if numbers of the form 
 $[x_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ and $[x_1 L_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$ 
 have one divisor, and numbers of the form $[x_1L_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ 
 and $[x_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$ have another divisor.
 \begin{example}
-Since $2$ divides each of $\6$, $\1\1\6$, $\6\1\1$, $\1\6\1$, $\1\1\1\6\1$, 
-$\1\6\1\1\1$ in base $9$, every odd-length string of $\1^*\6\1^*$ is 
-composite in base $9$.
-Since $5$ divides each of $\1\6$, $\1\1\1\6$, $\1\6\1\1$, $\6\1$, $\1\1\6\1$, 
-$\6\1\1\1$ in base $9$, every even-length string of $\1^*\6\1^*$ is composite 
-in base $9$.
+Let $b = 9$.
+Since $2$ divides each of $[\6]_b$,
+$[\1\1\6]_b$,
+$[\6\1\1]_b$,
+$[\1\6\1]_b$,
+$[\1\1\1\6\1]_b$, 
+$[\1\6\1\1\1]_b$, every odd-length string of the form $\1^*\6\1^*$ is 
+composite.
+Since $5$ divides each of $[\1\6]_b$,
+$[\1\1\1\6]_b$,
+$[\1\6\1\1]_b$,
+$[\6\1]_b$,
+$[\1\1\6\1]_b$, 
+$[\6\1\1\1]_b$,
+every even-length string of the form $\1^*\6\1^*$ is composite.
 \end{example}
 
+\subsection{The second strategy}
+
 A second way of proving that families of the form $xL^*z$ do not contain a 
-prime is via algebraic factorizations, such as a difference of squares 
+prime is via algebraic factorizations, such as a difference-of-squares 
 factorization.
 
 \begin{lemma}\label{lemsquares}
@@ -341,7 +402,7 @@ $\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form
  $[xy^*z]_b$ are composite.
 \end{lemma}
 \begin{proof}
-Expanding out the base-$b$ expansion of $xy^nz$, one derives
+Evaluating the base-$b$ expansion of $xy^nz$, we get
 \begin{align*}
 [xy^nz]_b &= b^{\lvert z\rvert+n}[x]_b + b^{\lvert z\rvert}\frac{b^n-1}{b-1}[y]_b + [z]_b \\
 &= \frac{b^{\lvert z\rvert+n}X-Y}{(b-1)/g} . 
@@ -357,7 +418,7 @@ denominator, and so the factorization is nontrivial.
 Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
 \[ [\4\4^n\1]_{16} = \frac{(4^{n+1}\cdot8+7)(4^{n+1}\cdot8-7)}{15} . \]
 Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
-the form $\4\4^*\1$ is prime in base 16.
+the form $[\4\4^*\1]_b$ is prime.
 \end{example}
 
 It is also possible to combine Lemma~\ref{lemtwo} with Corollary~\ref{cortwo} 
@@ -383,10 +444,10 @@ $b^{\abs{z}}X=85^2$, $Y=3^2$, and
 \[ [xy^{2n}z]_b = \frac{(17^n\cdot85+3)(17^n\cdot85-3)}{16} . \]
 Since $85-3>16$ this factorization is nontrivial.  Furthermore, all numbers 
 of the form $[xy^{2n+1}z]_b$ are even, so all numbers of the form 
-$\1\9\9^*\9$ are composite in base $17$.
+$[\1\9\9^*\9]_b$ are composite.
 \end{example}
 Finally, we present a variant of Lemma~\ref{lemsquares} which applies to a 
-difference of cubes factorization.
+difference-of-cubes factorization.
 \begin{lemma}\label{lemcubes}
 Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
 $X:=([y]_b+(b-1)[x]_b)/g$, and $Y:=(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
@@ -398,9 +459,9 @@ the form
 \begin{proof}
 As in Lemma~\ref{lemsquares}, we have
 \[ [xy^nz]_b = \frac{\bigl((b^{\abs{z}+n}X)^{1/3}-Y^{1/3}\bigr)\bigl((b^{\abs{z}+n}X)^{2/3}+(b^{\abs{z}+n}XY)^{1/3}+Y^{2/3}\bigr)}{(b-1)/g} . \]
-The second factor is at least as large as the first\footnote{Except in the 
-single case $b^{\abs{z}+n}X=1$ and $Y=-1$ which is not possible by 
-construction of $X$ and~$Y$.},
+The second factor is at least as large as the first (except in the 
+single case $b^{\abs{z}+n}X=1$ and $Y=-1$, which is not possible by 
+construction of $X$ and~$Y$),
 so by the size condition both factors are strictly larger than the 
 denominator, and the factorization is nontrivial.
 \end{proof}
@@ -408,21 +469,30 @@ denominator, and the factorization is nontrivial.
 Let $b:=8$, $x:=\1$, $y:=\0$, and $z:=\1$.  Then $g=7$, $X=1$, $Y=-1$, and
 \[ [\1\0^n\1]_8 = (2^{n+1}+1)(4^{n+1}-2^{n+1}+1) . \]
 Since $2-(-1)>1$, this factorization is nontrivial and no number of the 
-form $\1\0^*\1$ is prime in base $8$.
+form $[\1\0^*\1]_b$ is prime.
 \end{example}
 
 \section{Our heuristic algorithm}
 
-\section{Results}
-A summary of the results of our algorithm is presented in Figure~\ref{resultsfig}.
-For each base $b$ between 2 and 16 the size and width of $M(L_b)$ is given.
-For bases between 17 and 28 a lower bound on the size and width of $M(L_b)$ is given,
-along with the number of families of the form $xy^*z$ for which no prime could be found,
-nor could the family be ruled out as only containing composites.
+A sketch of the algorithm is needed.
 
-The results assume that a number which has passed several Miller--Rabin
-tests is in fact prime, since in some cases (e.g., $b=13$) a candidate element of $M(L_b)$
-is too long to be proven prime rigorously.
+It would also be good to give the tree of decompositions for some
+small base, say $b = 9$.
+
+\section{Results}
+A summary of the results of our algorithm is presented in 
+Figure~\ref{resultsfig}.
+For each base $b$ between 2 and 16,
+we give the size $|M(L_b)|$ and ``width'' $\max_{x \in M(L_b)} |x|$ of
+the corresponding family.
+For bases between 17 and 28 a lower bound on the size and width of
+$M(L_b)$ is given, along with the number of families of the form
+$xy^*z$ for which no prime member could be found, nor could the family be
+ruled out as only containing composites.
+
+Our results assume that a number which has passed several Miller--Rabin
+tests is in fact prime, since in some cases (e.g., $b=13$) a candidate
+element of $M(L_b)$ is too long to be proven prime rigorously.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
 b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
@@ -511,6 +581,48 @@ or $u v^p w$ is composite, where $p = [x]_b$.
 Our bound now follows.
 \end{proof}
 
+Write $S_b = \lbrace (n)_b \ : \ n \geq 4 \text{ is composite} \rbrace$.
+For our purposes, the following theorem gives a better bound.
+
+\begin{theorem}
+Every minimal element of $S_b$ is of length at most $b+2$.
+\label{devi}
+\end{theorem}
+
+\begin{proof}
+Consider any word $w$ of $S_b$ of length $\geq b+3$.   Since there are only
+$b$ distinct digits, some digit $d$ is repeated at least twice,
+so that $dd \subw w$.  If $d > 1$, the number $[dd]_b$ is composite,
+as it is divisible by $[11]_b$ but not equal to it.  If $d = 0$,
+then some nonzero digit $c$ precedes it in $w$, so $c00 \subw w$
+and $[c00]_b$ is divisible by $b^2$, which is composite.
+Finally, if no digit other than $1$ is repeated, then 
+$1111 \subw w$, and $[1111]_b = [11]_b \cdot [101]_b$, and hence
+is composite.
+\end{proof}
+
+Theorem~\ref{devi} turns the computation of the minimal elements for
+$S_b$ into a finite search.  Our results are given in Figure~\ref{ttwo}.
+
+\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c}
+b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert \\ \hline
+2 & 3 & 4 \\
+3 & 4 & 3 \\
+4 & 9 & 3 \\
+5 & 10 & 3 \\
+6 & 19 & 4 \\
+7 & 18 & 3\\
+8 & 26 & 3 \\
+9 & 28 & 2 \\
+10 & 32 & 3 \\
+11 & 32 & 3\\
+12 & 46 & 4 \\
+13 & 43 & 3
+\end{array}\]
+\caption{Summary of results for each base $b$.}
+\label{ttwo}
+\end{figure}
+
 \section{Open problems}
 
 To illustrate once more the difficult of computing $M(L)$, we recall
@@ -530,6 +642,11 @@ $\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
 
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
+
+\bibitem{Choi}  S. L. G. Choi.
+\newblock Covering the set of integers by congruence 
+classes of distinct moduli.
+\newblock {\it Math. Comp.} {\bf 25} (1971), 885--895.
 
 \bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
 \newblock The size of Higman-Haines sets.
