@@ -2,13 +2,16 @@
 
 \usepackage{amsmath,amssymb,amsthm,amscd,amsfonts}
 
+\usepackage{tikz}
+
 \usepackage{fullpage}
 
 \usepackage{mathtools}
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\paren{\lparen}{\rparen}
 
-\def\subw{\triangleleft}
+\def\subw{\mathrel{\triangleleft}}
 \DeclareMathOperator\supe{sup}
 \DeclareMathOperator\subb{sub}
 
@@ -39,6 +42,9 @@
 \newcommand{\8}{\mathtt{8}}
 \newcommand{\9}{\mathtt{9}}
 \newcommand{\A}{\mathtt{A}}
+\newcommand{\B}{\mathtt{B}}
+\newcommand{\union}{\cup}
+\newcommand{\set}[2]{\{\,#1{}:{}#2\,\}}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -84,9 +90,9 @@ Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
 primes, all of whose base-$10$ digits are $1$?  Currently,
 there are only five
-known, corresponding to $(10^p-1)/9$ for $p = 2, 19, 23, 317, $ and
-$1031$.    It seems likely that four more are given by
-$p = 49081, 86453, 109297, 270343$, but this has not yet been
+known, corresponding to $(10^p-1)/9$ for $p = 2$, $19$, $23$, $317$, and
+$1031$.  It seems likely that four more are given by
+$p = 49081$, $86453$, $109297$, $270343$, but this has not yet been
 rigorously proven.
 
 Another problem on the digits of primes was introduced by the
@@ -105,23 +111,23 @@ $x = s$.    The set of all minimal strings of $L$ is denoted $M(L)$.
 In this paper, we describe a heuristic
 technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
-the prime numbers $\lbrace 2, 3, 5, \cdots \rbrace$.  We obtain
+the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
 $2 \leq b \leq 16$.   For $17 \leq b \leq 28$, we obtain
 results that allow us to ``almost'' completely characterize this set.
 
 In what follows, if $x$ is a string of symbols over the alphabet
-$\Sigma_b = \lbrace \0, \1, \ldots, b-1 \rbrace$ we let 
+$\Sigma_b := \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
 most significant digit).  This is extended to languages as follows:
-$[L]_b = \lbrace [x]_b \ : \ x \in L \rbrace$.
-We use the convention that ${\tt A} = 10$, ${\tt B} = 11$, and so forth,
+$[L]_b := \set{ [x]_b }{ x \in L }$.
+We use the convention that $\A = 10$, $\B = 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
 We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
 The set of all canonical representations in base $b$ is denoted
 $C_b$.  Finally, as usual, for a language $L$ we let
-$L^n = \overbrace{LL\cdots L}^n$ and $L^* = \bigcup_{i \geq 0} L^i$.
+$L^n := \underbrace{LL\dotsm L}_n$ and $L^* := \bigcup_{i \geq 0} L^i$.
 
 \section{Why minimal sets are interesting}
 
@@ -130,10 +136,8 @@ the minimal set $M(L)$ of a language $L$ is interesting is because it
 allows us to compute two natural and related languages,
 defined as follows:
 \begin{align*}
-\subb(L) &= \lbrace x \in \Sigma^* \ : \ 
-	\text{ there exists } y \in L \text{ such that } x \subw y \rbrace  ;\\
-\supe(L) &= \lbrace x \in \Sigma^* \ : \ 
-	\text{ there exists } y \in L \text{ such that } y \subw x \rbrace .
+\subb(L) &:= \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $x \subw y$}} ; \\
+\supe(L) &:= \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $y \subw x$}} .
 \end{align*}
 
 An amazing fact is that $\subb(L)$ and $\supe(L)$ are always regular.
@@ -145,24 +149,27 @@ Haines \cite{Ha69}.
 For every language $L$, there are only finitely many minimal strings.
 \end{theorem}
 
-Indeed, we have $\supe(L) = \bigcup_{x \in M(L)} \supe (\lbrace x \rbrace)$
-and $\Sigma^* - \subb(L) = \supe(\Sigma^* - \supe(L))$.
+Indeed, we have $\supe(L) = \supe(M(L))$
+and $\Sigma^* - \subb(L) = \supe(M(\Sigma^* - \subb(L)))$, and
+the superword language of a finite language is regular, since
+\[ \supe\paren[\big]{\{w_1,\dotsc,w_n\}} = \bigcup_{i=1}^n \Sigma^* w_{i,1} \Sigma^* \dotsm \Sigma^* w_{i,\abs{w_i}} \Sigma^* \]
+where $w_i=w_{i,1}\dotsm w_{i,\abs{w_i}}$ with $w_{i,j}\in\Sigma$.
 
 \section{Why the problem is hard}
 
 Determining $M(L)$ for arbitrary $L$
-is in general unsolvable, and can be difficult even for
-relatively simple $L$ \cite{GHK07}.
+is in general unsolvable, and can be difficult even when $L$
+is relatively simple~\cite{GHK07}.
 
 The following is a ``semi-algorithm'' that 
-is guaranteed to produce $M(L)$, but not so easy to implement:
+is guaranteed to produce $M(L)$, but it is not so easy to implement:
 
 \bigskip
 \noindent (1) $ M := \emptyset$ \\
 \noindent (2) while ($L \not= \emptyset$) do \\
-\hphantom{X} \quad\quad (3) choose $x$, a shortest string in $L$ \\
-\hphantom{X} \quad \quad (4) $ M := M \ \cup \ \lbrace  x \rbrace$ \\
-\hphantom{X} \quad \quad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
+\hphantom{} \qquad (3) choose $x$, a shortest string in $L$ \\
+\hphantom{} \qquad (4) $ M := M \union \lbrace  x \rbrace$ \\
+\hphantom{} \qquad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
 
 \smallskip
 
@@ -171,7 +178,7 @@ we cannot feasibly carry out step (5).  Instead, we work
 with $L'$, some regular overapproximation to $L$, until we can show $L' =
 \emptyset$ (which implies $L = \emptyset$).  In practice,
 $L'$ is usually chosen to be a finite union of sets of the form 
-$L_1 L_2^* L_3$, where each of $L_1, L_2, L_3$ is finite.
+$L_1 L_2^* L_3$, where each of $L_1$, $L_2$, $L_3$ is finite.
 In the case we consider in this paper,
 we then have to determine whether such a language contains
 a prime or not.
@@ -183,7 +190,7 @@ recursively solvable:
 
 \begin{problem}
 Given strings $x, y, z$, and a base $b$, does there exist a prime
-number whose base-$b$ expansion is of the form $x \overbrace{yy\cdots y}^n z$
+number whose base-$b$ expansion is of the form $x \underbrace{yy\cdots y}_n z$
 for some $n \geq 0$?
 \end{problem}
 
@@ -191,7 +198,7 @@ for some $n \geq 0$?
 
 An algorithm to solve this problem, for example, would allow us to decide
 if there are any additional Fermat primes (of the form $2^{2^n}+1$)
-other than the known ones (corresponding to $n = 0,1,2,3,4$).
+other than the known ones (corresponding to $n = 0$, $1$, $2$, $3$, $4$).
 
 Therefore, in practice, we are forced to try to rule out prime
 representations based on modular techniques and factorizations.
@@ -199,7 +206,8 @@ This is discussed in the next section.
 
 \section{Some useful lemmas}
 It will be necessary for our algorithm to determine if families of the
-form $[xL^*z]_b$ contain a prime or not.  We use two different strategies.
+form $[xL^*z]_b$ contain a prime or not.  We use two different strategies
+to show that such families contain no primes.
 
 In the first strategy, we mimic the well-known technique of ``covering
 congruences'' \cite{Choi},
@@ -266,10 +274,10 @@ Since $1 < 7 < 49$, each such number is composite.
 We also generalize this to the following corollary in the case where 
 a single divisor does not divide each number in the family.
 \begin{corollary}\label{cortwo}
-Let $L = \lbrace y_1, y_2, \ldots, y_n \rbrace$.
-If \[N_0:=\gcd \left( \{ [xz]_b \} \ \cup \ [xL^2 z]_b \right) \]
+Let $L := \lbrace y_1, y_2, \ldots, y_n \rbrace$.
+If \[N_0:=\gcd \paren[\big]{ \{ [xz]_b \} \union [xL^2 z]_b} \]
 and
-\[N_1:= \gcd  \left( \{ [xLz]_b \} \ \cup \ [xL^3z]_b \right) \]
+\[ N_1:= \gcd \paren[\big]{[xLz]_b \union [xL^3z]_b} \]
 lie strictly between $1$ and $[xz]_b$, then all numbers of the form 
 $[xL^*z]_b$ are composite.
 \end{corollary}
@@ -302,7 +310,7 @@ check if there are divisors $N_0$, $N_1$, $\dotsc$, $N_{k-1}$ such that
 $N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which 
 the number of $y_i$ appearing is congruent to $i\bmod k$.
 \begin{example}
-Let $b = 16$.
+Let $b := 16$.
 Then
 $7$ divides $[\8\A\0\1]_b$ and $[\8\A\0\A\A\A\1]_b$.
 Furthermore, $13$ divides 
@@ -339,7 +347,7 @@ As in Lemma~\ref{lemone}, we typically apply this lemma in the case
 where each $L_i\subseteq\Sigma_b$ and show that all numbers of the 
 form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$ have a divisor.
 \begin{example}
-Take $L_1 = \{ \0 \}$ and $(x_1,x_2, x_3) = (\9, \8, \1)$.
+Take $(L_1, L_2, L_3) := (\{ \0 \},\{\0\},\emptyset)$ and $(x_1,x_2, x_3) := (\9, \8, \1)$.
 Since $9$ divides $981$, $9081$, and $9801$, it follows that $9$ 
 divides every number with base-$10$ representation
 of the form $\9\0^*\8\0^*\1$.
@@ -351,7 +359,7 @@ of the form $[x_1L_1^*\dotsm x_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have one
 divisor, and all numbers of the form 
 $[x_1L_1^*\dotsm x_iL_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have another divisor.
 \begin{example}
-Let $b = 11$.
+Let $b := 11$.
 Since $3$ divides each of $[\4\4\A\1]_b$,
 $[\4\4\A\1\1\1]_b$,
 $[\4\4\0\A\1]_b$ ,
@@ -371,7 +379,7 @@ $[x_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ and $[x_1 L_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$
 have one divisor, and numbers of the form $[x_1L_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ 
 and $[x_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$ have another divisor.
 \begin{example}
-Let $b = 9$.
+Let $b := 9$.
 Since $2$ divides each of $[\6]_b$,
 $[\1\1\6]_b$,
 $[\6\1\1]_b$,
@@ -479,6 +487,18 @@ A sketch of the algorithm is needed.
 It would also be good to give the tree of decompositions for some
 small base, say $b = 9$.
 
+\[ \begin{tikzpicture}
+\node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6cm]
+	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=3cm]
+		child{node{$\1\0\{\0,\1\}^*\1$}}
+		child{node{$\1\0\{\0,\1\}^*\6\{\0\1\}^*\1$}}}
+	child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=3cm]
+		child{node{$\1\1\{\0,\1,\6\}^*\1$}}
+		child{node{$\1\1\{\0,\1\}^*\6\{\0,\1\}^*\1$}}}
+	child{node{$\1\6\{\0,\1,\6\}^*\1$}[sibling distance=1cm]
+		child{node{$\1\6\{\1\}^*\1$}}};
+\end{tikzpicture} \]
+
 \section{Results}
 A summary of the results of our algorithm is presented in 
 Figure~\ref{resultsfig}.
@@ -510,14 +530,14 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 13\mathrlap{^*} & 228 & 32021 & 0 \\ 
 14 & 240 & 86 & 0 \\ 
 15 & 100 & 107 & 0 \\ 
-16\mathrlap{^*} & 483 & 3545 & 0 \\ 
+16 & 483 & 3545 & 0 \\ 
 17\mathrlap{^*} & \geq1278 & \geq7093 & 2 \\ 
 18 & 50 & 33 & 0 \\ 
 19\mathrlap{^*} & \geq3460 & \geq42996 & 3 \\ 
 20 & 651 & 449 & 0 \\ 
 21 & \geq2598 & \geq1634 & 3 \\ 
 22 & 1242 & 764 & 0 \\ 
-23\mathrlap{^*} & \geq6018 & \geq23278 & 4 \\ 
+23\mathrlap{^*} & \geq6019 & \geq119216 & 3 \\ 
 24 & 306 & 100 & 0 \\ 
 25\mathrlap{^*} & \geq17591 & \geq18470 & 18 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
@@ -533,7 +553,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 Base 17: $\mathtt{49^*}$, $\mathtt{F19^*}$ \\
 Base 19: $\mathtt{4F0^*6}$, $\mathtt{EE16^*}$, $\mathtt{FG6^*}$ \\
 Base 21: $\mathtt{40^*9G}$, $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
-Base 23: $\mathtt{80^*1}$, $\mathtt{80^*81}$, $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
+Base 23: $\mathtt{80^*81}$, $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
 Base 25: $\mathtt{4F^*OO}$, $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{E^*FOO}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{LO^*KC}$, $\mathtt{LF^*KI}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
 Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
 Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^*A}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$, $\mathtt{L^*0G}$, $\mathtt{L^*G}$ \\
@@ -605,7 +625,7 @@ Theorem~\ref{devi} turns the computation of the minimal elements for
 $S_b$ into a finite search.  Our results are given in Figure~\ref{ttwo}.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c}
-b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert \\ \hline
+b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 2 & 3 & 4 \\
 3 & 4 & 3 \\
 4 & 9 & 3 \\
