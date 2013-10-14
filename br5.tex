@@ -487,17 +487,34 @@ A sketch of the algorithm is needed.
 It would also be good to give the tree of decompositions for some
 small base, say $b = 9$.
 
-\[ \begin{tikzpicture}
-\node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6cm]
-	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=3cm]
-		child{node{$\1\0\{\0,\1\}^*\1$}}
-		child{node{$\1\0\{\0,\1\}^*\6\{\0\1\}^*\1$}}}
-	child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=3cm]
-		child{node{$\1\1\{\0,\1,\6\}^*\1$}}
-		child{node{$\1\1\{\0,\1\}^*\6\{\0,\1\}^*\1$}}}
-	child{node{$\1\6\{\0,\1,\6\}^*\1$}[sibling distance=1cm]
-		child{node{$\1\6\{\1\}^*\1$}}};
-\end{tikzpicture} \]
+\[ \begin{tiny}\begin{tikzpicture}
+\node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6.75cm]
+	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=2.5cm]
+		child{node{$\1\0\{\0,\1\}^*\1$}[sibling distance=1.75cm]
+			child{node{$\1\0\{\0,\1\}^*\0\1$}
+				child{node[label=below:{divisible by 2}]{$\1\0\0^*\0\1$}}
+				child{node[label=below:{subword $\1\0\1\1$}]{$\1\0\0^*1\0^*\0\1$}}}
+			child{node[label=below:{prime $\1\0\1\1$}]{$\1\0\{\0,\1\}^*\1\1$}}}
+		child{node{$\1\0\{\0,\1\}^*\6\{\0,\1\}^*\1$}[sibling distance=1.75cm]
+			child{node{$\1\0\{\0,\1\}^*\6\1^*\1$}
+				child{node{$\1\0\{\0,\1\}^*\0\6\1^*\1$}
+					child{node[label=below:{divisible by 8}]{$\1\0\0^*\0\6\1$}}}
+				child{node[label=below:{subword $\1\0\1\1$}]{$\1\0\{\0,\1\}^*\1\6\1^*\1$}}}}}
+	child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=4.5cm]
+		child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=1.5cm]
+			child{node{$\1\1\{\0,\1\}^*\1$}
+				child{node[label=below:{prime $\1\1\0\1$}]{$\1\1\{\0,\1\}^*\0\1$}}
+				child{node{$\1\1\{\0,\1\}^*\1\1$}
+					child{node[label=below:{difference of squares}]{$\1\1\1^*\1\1$}}}}}
+		child{node{$\1\1\{\0,\1\}^*\6\{\0,\1\}^*\1$}[sibling distance=2.25cm]
+			child{node[label=below:{subword $\1\1\0\1$}]{$\1\1\{\0,\1\}^*\0\6\{\0,\1\}^*\1$}}
+			child{node{$\1\1\{\0,\1\}^*\1\6\{\0,\1\}^*\1$}
+				child{node[label=below:{divisible by 2, 5}]{$\1\1\1^*\1\6\1^*\1$}}}
+			child{node{$\1\1\6\{\0,\1\}^*\1$}
+				child{node[label=below:{divisible by 2, 5}]{$\1\1\6\1^*\1$}}}}}
+	child{node{$\1\6\{\0,\1,\6\}^*\1$}[sibling distance=5cm]
+		child{node[label=below:{divisible by 2, 5}]{$\1\6\1^*\1$}[sibling distance=3cm]}};
+\end{tikzpicture}\end{tiny} \]
 
 \section{Results}
 A summary of the results of our algorithm is presented in 
