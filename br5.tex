@@ -8,6 +8,8 @@
 
 \usepackage{mathtools}
 
+\usepackage{rotating}
+
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\paren{\lparen}{\rparen}
 
@@ -484,10 +486,9 @@ form $[\1\0^*\1]_b$ is prime.
 
 A sketch of the algorithm is needed.
 
-It would also be good to give the tree of decompositions for some
-small base, say $b = 9$.
+A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
-\[ \begin{tiny}\begin{tikzpicture}
+\begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
 \node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6.75cm]
 	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=2.5cm]
 		child{node{$\1\0\{\0,\1\}^*\1$}[sibling distance=1.75cm]
@@ -514,7 +515,7 @@ small base, say $b = 9$.
 				child{node[label=below:{divisible by 2, 5}]{$\1\1\6\1^*\1$}}}}}
 	child{node{$\1\6\{\0,\1,\6\}^*\1$}[sibling distance=5cm]
 		child{node[label=below:{divisible by 2, 5}]{$\1\6\1^*\1$}[sibling distance=3cm]}};
-\end{tikzpicture}\end{tiny} \]
+\end{tikzpicture} \]\end{tiny}\caption{Tree of decompositions for $\1\{\0,\1,\6\}^*\1$ in base $9$.}\label{decomptree}\end{sidewaysfigure}
 
 \section{Results}
 A summary of the results of our algorithm is presented in 
@@ -666,10 +667,10 @@ To illustrate once more the difficult of computing $M(L)$, we recall
 an open problem from \cite{Sh00}:
 
 \begin{problem} 
-Let $L = \lbrace {\tt 1, 2, 4, 8, 16, 32, 64, } \ldots \rbrace$, the
+Let $L := \lbrace {\tt 1, 2, 4, 8, 16, 32, 64, } \ldots \rbrace$, the
 base-$10$ representation of the powers of $2$.  
 Is it the case that
-$$ M(L) = \lbrace 1, 2, 4, 8, 65536 \rbrace ? $$
+$$ M(L) = \lbrace \1, \2, \4, \8, \6\5\5\3\6 \rbrace ? $$
 \end{problem}
 
 This would follow, for example, if we could prove that every power
