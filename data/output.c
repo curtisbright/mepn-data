@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <gmp.h>
-#define MAXSTRING 50000
+#define MAXSTRING 60000
 
 int compare(const void* a, const void* b)
 {	const char **ia = (const char **)a;
@@ -15,42 +15,6 @@ int compare(const void* a, const void* b)
 		return 1;
 	else
 		return strcmp(*ia, *ib);
-}
-
-int subword(char* prime, char* start, char middle, char* end, int* k)
-{	int i=0, j=0, l=0;
-	*k = 0;
-	while(1)
-	{	if(j!=strlen(start))
-		{	if(prime[i]==start[j])
-				i++;
-			j++;
-		}
-		else if(l==0 && prime[i]==middle)
-		{	(*k)++;
-			i++;
-		}
-		else
-		{	if(prime[i]==end[l])
-				i++;
-			l++;
-		}
-		if(i==strlen(prime))
-			return 1;
-		else if(j==strlen(start) && l==strlen(end))
-			return 0;
-	}
-}
-
-int nosubword(char* prime, char* candidate)
-{	int k=0;
-	for(int i=0; i<strlen(candidate); i++)
-	{	if(candidate[i]==prime[k])
-			k++;
-		if(k==strlen(prime))
-			return 0;
-	}
-	return 1;
 }
 
 int main(int argc, char** argv)
@@ -73,7 +37,7 @@ int main(int argc, char** argv)
 
 				if(n==atoi(argv[1]))
 				{	FILE* in = fopen(ep->d_name, "r");
-					//printf("outputting base %d...\n", n);
+					printf("outputting base %d...\n", n);
 
 					char** lines = NULL;
 					int numlines = 0;
@@ -98,7 +62,12 @@ int main(int argc, char** argv)
 						if(!first)
 							printf(",\n");
 						first = 0;
-						gmp_printf("%s", lines[i], p);
+						//printf("%s", lines[i]);
+						gmp_printf("%Zd", p);
+						FILE* tmp = fopen("tmp", "w");
+						gmp_fprintf(tmp, "%Zd", p);
+						fclose(tmp);
+						fclose(popen("./atkin < tmp >> tmp2", "r"));
 					}
 					printf("]\n");
 				}

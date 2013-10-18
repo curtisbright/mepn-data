@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#define MAXSTRING 50000
+#define MAXSTRING 60000
 
 struct data {
 	int level;

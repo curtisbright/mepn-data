@@ -431,11 +431,12 @@ void copyfamily(family* newf, family f)
 }
 
 int hasdivisor(family p)
-{	mpz_t gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10;
-	mpz_inits(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+{	mpz_t gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty;
+	mpz_inits(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 	char str[MAXSTRING];
 	int numrepeats = 0;
 	emptyinstancestring(str, p);
+	mpz_set_str(empty, str, base);
 	mpz_set_str(gcd, str, base);
 	for(int i=0; i<p.len; i++)
 	{	for(int j=0; j<p.numrepeats[i]; j++)
@@ -453,17 +454,17 @@ int hasdivisor(family p)
 		familystring(str, p);
 		printf("%s is trivial\n", str);
 #endif
-		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 		return 0;
 	}
 
-	if(mpz_cmp_ui(gcd, 1)>0)
+	if(mpz_cmp_ui(gcd, 1)>0 && mpz_cmp(empty, gcd)>0)
 	{	
 #ifdef PRINTDIVISOR
 		familystring(str, p);
 		gmp_printf("%s has a divisor %Zd\n", str, gcd);
 #endif
-		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 		return 1;
 	}
 
@@ -523,13 +524,13 @@ int hasdivisor(family p)
 
 		}
 
-		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0)
 		{	
 #ifdef PRINTDIVISORSPECIAL
 			familystring(str, p);
 			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
 #endif
-			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 			return 1;
 		}
 
@@ -686,13 +687,13 @@ int hasdivisor(family p)
 								mpz_gcd(gcd2, gcd2, temp);
 							}
 
-		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0)
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0)
 		{	
 #ifdef PRINTDIVISOR
 			familystring(str, p);
 			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
 #endif
-			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 			return 1;
 		}
 	}
@@ -730,13 +731,13 @@ int hasdivisor(family p)
 				mpz_gcd(temp2, temp2, temp5);
 				mpz_gcd(temp3, temp3, temp6);
 
-				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0)
+				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp(empty, temp)>0 && mpz_cmp(empty, temp2)>0 && mpz_cmp(empty, temp3)>0)
 				{	
 #ifdef PRINTDIVISOR
 					familystring(str, p);
 					gmp_printf("%s has three divisors %Zd, %Zd, and %Zd\n", str, temp, temp2, temp3);
 #endif
-					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 					return 1;
 				}
 
@@ -762,13 +763,13 @@ int hasdivisor(family p)
 				mpz_gcd(temp3, temp3, temp7);
 				mpz_gcd(temp4, temp4, temp8);
 
-				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp_ui(temp4, 1)>0)
+				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp_ui(temp4, 1)>0 && mpz_cmp(empty, temp)>0 && mpz_cmp(empty, temp2)>0 && mpz_cmp(empty, temp3)>0 && mpz_cmp(empty, temp4)>0)
 				{	
 #ifdef PRINTDIVISORFOUR
 					familystring(str, p);
 					gmp_printf("%s has four divisors %Zd, %Zd, %Zd, and %Zd\n", str, temp, temp2, temp3, temp4);
 #endif
-					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 					return 1;
 				}
 
@@ -799,13 +800,13 @@ int hasdivisor(family p)
 				mpz_gcd(temp4, temp4, temp9);
 				mpz_gcd(temp5, temp5, temp10);
 
-				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp_ui(temp4, 1)>0 && mpz_cmp_ui(temp5, 1)>0)
+				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp_ui(temp4, 1)>0 && mpz_cmp_ui(temp5, 1)>0 && mpz_cmp(empty, temp)>0 && mpz_cmp(empty, temp2)>0 && mpz_cmp(empty, temp3)>0 && mpz_cmp(empty, temp4)>0 && mpz_cmp(empty, temp5)>0)
 				{	
 #ifdef PRINTDIVISORFIVE
 					familystring(str, p);
 					gmp_printf("%s has five divisors %Zd, %Zd, %Zd, %Zd, and %Zd\n", str, temp, temp2, temp3, temp4, temp5);
 #endif
-					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+					mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 					return 1;
 				}
 
@@ -827,7 +828,7 @@ int hasdivisor(family p)
 					{	mpz_add(temp5, temp3, temp4);
 						mpz_sub(temp6, temp3, temp4);
 						mpz_set_ui(temp7, base);
-						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
+						if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
 						{	
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
@@ -835,31 +836,26 @@ int hasdivisor(family p)
 							//gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, base-1, temp3, base, temp4, temp3, base, temp4, (base-1)/g);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*(%Zd*%Zd^n+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, temp7, temp4, temp3, temp7, temp4, (base-1)/g);
 #endif
-							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 							return 1;
 						}
-						else if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0)
+						else if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd2)>0)
 						{
 #ifdef PRINTDIVISORSQUARE
 							familystring(str, p);
 							gmp_printf("%s factors as a difference of squares for even n, and has a factor %Zd for odd n\n", str, gcd2);
 							gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%d^(n/2)-%Zd)*(%Zd*%d^(n/2)+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, base, temp4, temp3, base, temp4, (base-1)/g);
 #endif
-							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 							return 1;
 						}
 					}
 
 					if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
-					{	mpz_mul(temp5, temp3, temp3);
-						mpz_mul(temp6, temp4, temp4);
-						mpz_add(temp6, temp6, temp5);
-						mpz_mul(temp5, temp3, temp4);
-						mpz_add(temp6, temp6, temp5);
-						mpz_sub(temp5, temp3, temp4);
+					{	mpz_sub(temp5, temp3, temp4);
 						mpz_set_ui(temp10, base);
 						//gmp_printf("%s%s = (%Zd-%Zd)/%d = (%Zd-%Zd)*(%Zd^2+%Zd*%Zd+%Zd^2)/%d\n", start, end, temp, temp2, (base-1)/g, temp3, temp4, temp3, temp3, temp4, temp4, (base-1)/g);
-						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
+						if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
 						{	
 #ifdef PRINTDIVISORCUBE
 							familystring(str, p);
@@ -870,7 +866,7 @@ int hasdivisor(family p)
 							else
 								gmp_printf("%s(%s)^n%s = (%Zd*%d^n-(%Zd))/%d = (%Zd*%Zd^n-(%Zd))*((%Zd*%Zd^n)^2+%Zd*%Zd^n*(%Zd)+(%Zd)^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp10, temp4, temp3, temp10, temp3, temp10, temp4, temp4, (base-1)/g);
 #endif
-							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+							mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 							return 1;
 						}
 					}
@@ -934,7 +930,7 @@ int hasdivisor(family p)
 			}
 	}
 
-	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, NULL);
+	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 	return 0;
 }
 
@@ -1649,18 +1645,11 @@ int main(int argc, char** argv)
 	family f;
 	familyinit(&f);
 
-	/*base = 27;
+	/*base = 16;
 	char* middles = calloc(base, sizeof(char));
-	middles[0] = 16;
-	adddigit(&f, 9, NULL, 0);
-	adddigit(&f, 16, middles, 1);
-	adddigit(&f, 16, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
-	//middles[0] = 6;
-	//adddigit(&f, 1, middles, 1);
-	//adddigit(&f, 6, NULL, 0);
-	//adddigit(&f, 6, NULL, 0);
+	middles[0] = 0;
+	adddigit(&f, 4, middles, 1);
+	adddigit(&f, 1, NULL, 0);
 	char str[MAXSTRING];
 	familystring(str, f);
 	printf("%s: %d\n", str, hasdivisor(f));*/
@@ -1820,7 +1809,7 @@ int main(int argc, char** argv)
 		K = temp;
 
 #ifdef PRINTDATA
-		sprintf(filename, "data2/kernel.%d.txt", base);
+		sprintf(filename, "data/kernel.%d.txt", base);
 		FILE* kernelfile = fopen(filename, "w");
 		for(int i=0; i<K.size; i++)
 			fprintf(kernelfile, "%s\n", K.primes[i]);
@@ -1842,7 +1831,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PRINTDATA
-		sprintf(filename, "data2/unsolved.%d.txt", base);
+		sprintf(filename, "data/unsolved.%d.txt", base);
 		FILE* unsolvedfile = fopen(filename, "w");
 		for(int i=0; i<unsolved.size; i++)
 		{	char str[MAXSTRING];
