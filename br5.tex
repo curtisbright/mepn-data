@@ -92,9 +92,9 @@ Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
 primes, all of whose base-$10$ digits are $1$?  Currently,
 there are only five
-known, corresponding to $(10^p-1)/9$ for $p = 2$, $19$, $23$, $317$, and
+known, corresponding to $(10^p-1)/9$ for $p := 2$, $19$, $23$, $317$, and
 $1031$.  It seems likely that four more are given by
-$p = 49081$, $86453$, $109297$, $270343$, but this has not yet been
+$p := 49081$, $86453$, $109297$, and $270343$, but this has not yet been
 rigorously proven.
 
 Another problem on the digits of primes was introduced by the
@@ -426,7 +426,7 @@ denominator, and so the factorization is nontrivial.
 
 \begin{example}
 Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
-\[ [\4\4^n\1]_{16} = \frac{(4^{n+1}\cdot8+7)(4^{n+1}\cdot8-7)}{15} . \]
+\[ [\4\4^n\1]_b = \frac{(4^{n+1}\cdot8+7)(4^{n+1}\cdot8-7)}{15} . \]
 Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
 the form $[\4\4^*\1]_b$ is prime.
 \end{example}
@@ -477,14 +477,13 @@ denominator, and the factorization is nontrivial.
 \end{proof}
 \begin{example}
 Let $b:=8$, $x:=\1$, $y:=\0$, and $z:=\1$.  Then $g=7$, $X=1$, $Y=-1$, and
-\[ [\1\0^n\1]_8 = (2^{n+1}+1)(4^{n+1}-2^{n+1}+1) . \]
+\[ [\1\0^n\1]_b = (2^{n+1}+1)(4^{n+1}-2^{n+1}+1) . \]
 Since $2-(-1)>1$, this factorization is nontrivial and no number of the 
 form $[\1\0^*\1]_b$ is prime.
 \end{example}
 
 \section{Our heuristic algorithm}
 
-A sketch of the algorithm is needed.
 
 A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
@@ -555,7 +554,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 20 & 651 & 449 & 0 \\ 
 21 & \geq2598 & \geq1634 & 3 \\ 
 22 & 1242 & 764 & 0 \\ 
-23\mathrlap{^*} & \geq6019 & \geq119216 & 3 \\ 
+23\mathrlap{^*} & \geq6019 & \geq119216 & 2 \\ 
 24 & 306 & 100 & 0 \\ 
 25\mathrlap{^*} & \geq17591 & \geq18470 & 18 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
@@ -571,7 +570,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 Base 17: $\mathtt{49^*}$, $\mathtt{F19^*}$ \\
 Base 19: $\mathtt{4F0^*6}$, $\mathtt{EE16^*}$, $\mathtt{FG6^*}$ \\
 Base 21: $\mathtt{40^*9G}$, $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
-Base 23: $\mathtt{80^*81}$, $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
+Base 23: $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
 Base 25: $\mathtt{4F^*OO}$, $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{E^*FOO}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{LO^*KC}$, $\mathtt{LF^*KI}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
 Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
 Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^*A}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$, $\mathtt{L^*0G}$, $\mathtt{L^*G}$ \\
@@ -619,7 +618,7 @@ or $u v^p w$ is composite, where $p = [x]_b$.
 Our bound now follows.
 \end{proof}
 
-Write $S_b = \lbrace (n)_b \ : \ n \geq 4 \text{ is composite} \rbrace$.
+Write $S_b := \set{(n)_b}{\text{$n \geq 4$ is composite}}$.
 For our purposes, the following theorem gives a better bound.
 
 \begin{theorem}
