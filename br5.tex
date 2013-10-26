@@ -484,9 +484,47 @@ form $[\1\0^*\1]_b$ is prime.
 
 \section{Our heuristic algorithm}
 
-A sketch of the algorithm is needed.
+As previously mentioned, in practice to compute $M(L_b)$ one works with an underapproximation
+$M$ of $M(L_b)$ and an overapproximation $L$ of $L_b-\sup(M)$.
+One then refines such approximations until $L=\emptyset$ from which it follows that $M=M(L_b)$.
 
-A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
+For the initial approximation, note that every minimal prime in base $b$ with at least 4
+digits is of the form $x Y^* z$, where $x\in\Sigma_b-\{\0\}$, $z\in\Sigma_b$, and
+\[ Y := \Sigma_b - \set{y}{\text{$(p)_b\subw xyz$ for some prime $p$}} . \]
+Making use of this, our algorithm sets $M$ to be the set of base-$b$ representations
+of the minimal primes with at most $3$ digits (which can be found simply by brute force)
+and $L$ to be $\bigcup_{x,z}xY^*z$, as described above.
+
+All remaining minimal primes are members of $L$, so to find them we explore the families in~$L$.
+During this process, each family will be decomposed into possibly multiple other families.
+For example, a simple way of exploring the family $xY^*z$ where $Y:=\{y_1,\dotsc,y_n\}$ is to decompose it
+into the families $xY^*y_1z$, $\dotsc$, $xY^*y_nz$.  If the smallest member (say $xy_iz$)
+of any such family happens to be prime, it can be added to $M$ and the family
+$xY^*y_iz$ removed from consideration.  Furthermore, once $M$ has been updated it may be possible
+to simplify some families in $L$.  In this case, $xY^*y_jz$ (for $j\neq i$) can be simplified to
+$x(Y-\{y_i\})^*y_jz$ since no minimal prime contains $xy_iz$ as a proper subword.
+
+Another way of decomposing %families 
+the family $xY^*z$ is possible if one knows that a digit of $Y$ can only occur a certain number
+of times.  For example, if $xy_iy_iz$ has a proper prime subword then the digit $y_i$
+can occur at most once in any minimal prime of the form $xY^*z$, and we can split $xY^*z$ into
+the two families
+\[ x(Y-\{y_i\})^*z \qquad\text{and}\qquad x(Y-\{y_i\})^*y_i(Y-\{y_i\})^*z .\]
+
+Lastly, the family $xY^*z$ can be decomposed by considering digits of $Y$ which are mutually incompatible,
+i.e., they cannot occur simultaneously in a minimal prime.  For example, if $xy_iy_jz$ and $xy_jy_iz$ ($i\neq j$)
+both have proper prime subwords then the digits $y_i$ and $y_j$ cannot occur simultaneously in any minimal
+prime of the form $xY^*z$, and we can split $xY^*z$ into the two families
+\[ x(Y-\{y_i\})^*z \qquad\text{and}\qquad x(Y-\{y_j\})^*z . \]
+Sometimes it is not possible to show two digits are mutually incompatible, but it is possible to know that
+one digit must appear before the other.  For example, if $xy_iy_jz$ has a proper prime subword then the digit
+$y_j$ must appear before $y_i$ in any minimal prime of the form $xY^*z$, and we can replace $xY^*z$
+with the family
+\[ x(Y-\{y_i\})^*(Y-\{y_j\})^*z . \]
+Similarly, if $xy_jyy_iz$ has a proper prime subword then we can split $xY^*yY^*z$ into the two families
+\[ x(Y-\{y_i\})^*yY^*z \qquad\text{and}\qquad xY^*y(Y-\{y_j\})^*z . \]
+
+%A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
 \node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6.75cm]
