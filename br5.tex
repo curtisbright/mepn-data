@@ -4,6 +4,8 @@
 
 \usepackage{tikz}
 
+\usepackage{url}
+
 \usepackage{fullpage}
 
 \usepackage{mathtools}
@@ -524,6 +526,70 @@ with the family
 Similarly, if $xy_jyy_iz$ has a proper prime subword then we can split $xY^*yY^*z$ into the two families
 \[ x(Y-\{y_i\})^*yY^*z \qquad\text{and}\qquad xY^*y(Y-\{y_j\})^*z . \]
 
+We now formulate these arguments for the most general kind of family we need to consider, namely
+$x_1L_1^*\dotsm x_mL_m^*$.  For simplicity, we only specify the decompositions as applying to
+$L_1:=\{y_1,\dotsc,y_n\}$, but it is straightforward to generalize these decompositions
+to also apply to $L_i$ for any $1\leq i\leq m$.
+
+\begin{lemma}\label{lemexplore}
+Every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
+$x_1x_2L_2^*\dotsm x_mL_m^*$ or $x_1y_iL_1^*\dotsm x_mL_m^*$ for some $1\leq i\leq n$.
+\end{lemma}
+\begin{proof}
+Follows from the fact that $L_1^*=\{\epsilon\}\cup\bigcup_{i=1}^n y_iL_1^*$.
+\end{proof}
+Similarly, one can generalize Lemma~\ref{lemexplore} to apply to adding characters to the right of $L_i$ rather than
+to the left.
+
+\begin{lemma}\label{lemsplit1}
+If $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some $k>0$) then every minimal prime of the form
+$x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(y_i(L_1-\{y_i\})^*)^jx_2L_2^*\dotsm x_mL_m^*\]
+for some $0\leq j<k$.
+\end{lemma}
+\begin{proof}
+If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.
+If $y$ contains $k$ or more instances of $y_i$ then by assumption it follows that $w$ contains a proper prime subword,
+and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ must contain less than $k$
+instances of $y_i$, i.e., $y$ must be of the form $(L_1-\{y_i\})^*(y_i(L_1-\{y_i\})^*)^j$ for some $0\leq j<k$,
+from which the claim follows.
+\end{proof}
+
+\begin{lemma}\label{lemsplit2}
+If $x_1y_iy_jx_2\dotsm x_m$ and $x_1y_iy_jx_2\dotsm x_m$ contain prime proper subwords (where $i\neq j$) then 
+every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ is of the form
+\[x_1(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* \qquad\text{or}\qquad x_1(L_1-\{y_j\})^*x_2L_2^*\dotsm x_mL_m^* . \]
+\end{lemma}
+\begin{proof}
+If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.
+If $y$ contains both $y_i$ and $y_j$ then by assumption it follows that $w$ contains a proper prime subword,
+and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ cannot contain $y_i$ and $y_j$
+simultaneously, i.e., $y$ must be of the form $(L-\{y_i\})^*$ or $(L-\{y_j\})^*$, from which the claim follows.
+\end{proof}
+
+\begin{lemma}\label{lemsplit2b}
+If $x_1y_iy_jx_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$) then every minimal prime of the form
+$x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(L_1-\{y_j\})^*x_2L_2^*\dotsm x_mL_m^* . \]
+\end{lemma}
+\begin{proof}
+If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.
+If $y$ contains $y_i$ before $y_j$ then by assumption it follows that $w$ contains a proper prime subword,
+and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ cannot contain $y_i$ before~$y_j$,
+i.e., $y$ must be of the form $(L-\{y_i\})^*(L-\{y_j\})^*$, from which the claim follows.
+\end{proof}
+
+\begin{lemma}\label{lemsplit2c}
+If $x_1y_ix_2y_{2,j}x_3\dotsm x_m$ contains a prime proper subword (where $y_{2,j}\in L_2$) then every minimal prime of the form
+$x_1L_1^*\dotsm x_mL_m^*$ is of the form
+\[x_1(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* \qquad\text{or}\qquad x_1L_1x_2(L_2-\{y_{2,j}\})^*x_3L_3^*\dotsm x_mL_m^* . \]
+\end{lemma}
+\begin{proof}
+If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2y'x_3L_3^*\dotsm x_mL_m^*$ for some $y\in L_1^*$ and $y'\in L_2^*$.
+If $y$ contains $y_i$ and $y'$ contains $y_{2,j}$ then by assumption it follows that $w$ contains a proper prime subword,
+and therefore is not a minimal prime.  So if $w$ is a minimal prime then either $y$ cannot contain $y_i$ or $y'$ cannot
+contain $y_{2,j}$, i.e., $y$ is of the form $(L_1-\{y_i\})^*$ and $y'$ is of the form $L_2^*$, or $y$ is of the form
+$L_1^*$ and $y'$ is of the form $(L_2-\{y_{2,j}\})^*$, from which the claim follows.
+\end{proof}
+
 %A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
@@ -566,9 +632,17 @@ $M(L_b)$ is given, along with the number of families of the form
 $xy^*z$ for which no prime member could be found, nor could the family be
 ruled out as only containing composites.
 
-Our results assume that a number which has passed several Miller--Rabin
+Some of our results assume that a number which has passed several Miller--Rabin
 tests is in fact prime, since in some cases (e.g., $b=13$) a candidate
 element of $M(L_b)$ is too long to be proven prime rigorously.
+In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
+we employed PRIMO~\cite{primo}, an elliptic curve primality proving implementation.
+
+The 41 unsolved families have all been tested to at least length 60000 without
+a prime being found.  The family $\8\0^*\1$ in base 23, corresponding to the
+generalized Sierpinski numbers $8\cdot23^n+1$, was found to be prime
+for minimal $n=119215$ in the process
+of solving the generalized Sierpinski conjecture in base 23~\cite{crus}.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
 b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
@@ -593,7 +667,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 20 & 651 & 449 & 0 \\ 
 21 & \geq2598 & \geq1634 & 3 \\ 
 22 & 1242 & 764 & 0 \\ 
-23\mathrlap{^*} & \geq6019 & \geq119216 & 3 \\ 
+23\mathrlap{^*} & \geq6019 & \geq119216 & 2 \\ 
 24 & 306 & 100 & 0 \\ 
 25\mathrlap{^*} & \geq17591 & \geq18470 & 18 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
@@ -744,9 +818,17 @@ classes of distinct moduli.
 \newblock {\it Introduction to Automata Theory, Languages, and Computation},
 Addison-Wesley, 1979.
 
+\bibitem{primo}  M. Martin.
+\newblock {\it PRIMO - Primality Proving},
+\url{http://www.ellipsa.eu/index.html}.
+
 \bibitem{Sh00}  J. Shallit.
 \newblock Minimal primes.
 \newblock {\it J. Recreational Math.} {\bf 30} (2) (200), 113--117.
+
+\bibitem{crus}  M. Martin.
+\newblock {\it PRIMO - Primality Proving},
+\url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
 
 \end{thebibliography}
 
