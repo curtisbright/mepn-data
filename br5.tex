@@ -540,6 +540,10 @@ Follows from the fact that $L_1^*=\{\epsilon\}\cup\bigcup_{i=1}^n y_iL_1^*$.
 \end{proof}
 Similarly, one can generalize Lemma~\ref{lemexplore} to apply to adding characters to the right of $L_i$ rather than
 to the left.
+\begin{example}
+The family $\1\0\{\0,\1\}^*\6\1^*\1$ splits into the three families $\1\0\6\1^*\1$, $\1\0\{\0,\1\}^*\0\6\1^*\1$, and $\1\0\{\0,\1\}^*\1\6\1^*\1$
+by exploring $\{\0,\1\}^*$ on the right.
+\end{example}
 
 \begin{lemma}\label{lemsplit1}
 If $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some $k>0$) then every minimal prime of the form
@@ -553,6 +557,11 @@ and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ mus
 instances of $y_i$, i.e., $y$ must be of the form $(L_1-\{y_i\})^*(y_i(L_1-\{y_i\})^*)^j$ for some $0\leq j<k$,
 from which the claim follows.
 \end{proof}
+\begin{example}
+The string $\6\6\1$ represents a prime in base 9, and is a proper subword of $\1\0\6\6\1$.  It follows that
+the family $\1\0\{\0,\1,\6\}^*\1$ splits into the families
+$\1\0\{\0,\1\}^*\1$ and $\1\0\{\0,\1\}^*\6\{\0,\1\}^*\1$ in base 9.
+\end{example}
 
 \begin{lemma}\label{lemsplit2}
 If $x_1y_iy_jx_2\dotsm x_m$ and $x_1y_iy_jx_2\dotsm x_m$ contain prime proper subwords (where $i\neq j$) then 
@@ -565,6 +574,11 @@ If $y$ contains both $y_i$ and $y_j$ then by assumption it follows that $w$ cont
 and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ cannot contain $y_i$ and $y_j$
 simultaneously, i.e., $y$ must be of the form $(L-\{y_i\})^*$ or $(L-\{y_j\})^*$, from which the claim follows.
 \end{proof}
+\begin{example}
+The string $\4\6\1\1$ represents a prime in base 8, and is a proper subword of $\4\4\6\4\1\1$ and $\4\4\4\6\1\1$.
+It follows that the family $\4\4\{\4,\6\}^*\1\1$ splits into the families
+$\4\4\4^*\1\1$ and $\4\4\6^*\1\1$ in base 8.
+\end{example}
 
 \begin{lemma}\label{lemsplit2b}
 If $x_1y_iy_jx_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$) then every minimal prime of the form
@@ -576,6 +590,14 @@ If $y$ contains $y_i$ before $y_j$ then by assumption it follows that $w$ contai
 and therefore is not a minimal prime.  So if $w$ is a minimal prime then $y$ cannot contain $y_i$ before~$y_j$,
 i.e., $y$ must be of the form $(L-\{y_i\})^*(L-\{y_j\})^*$, from which the claim follows.
 \end{proof}
+%\begin{example}
+%The string $\1\0$ represents a prime in base 11, and is a proper subword of $\9\1\0\1$.
+%It follows that the family $\9\{\0,\1\}^*\1$ splits into the family $\9\0^*\1^*\1$ in base 11.
+%\end{example}
+\begin{example}
+The string $\1\0$ represents a prime in base 11, and is a proper subword of $\9\0\1\0\1$.
+It follows that the family $\9\0\{\0,\1,\9\}^*\1$ splits into the family $\9\0\{\0,\9\}^*\{\1,\9\}^*\1$ in base 11.
+\end{example}
 
 \begin{lemma}\label{lemsplit2c}
 If $x_1y_ix_2y_{2,j}x_3\dotsm x_m$ contains a prime proper subword (where $y_{2,j}\in L_2$) then every minimal prime of the form
@@ -589,6 +611,11 @@ and therefore is not a minimal prime.  So if $w$ is a minimal prime then either 
 contain $y_{2,j}$, i.e., $y$ is of the form $(L_1-\{y_i\})^*$ and $y'$ is of the form $L_2^*$, or $y$ is of the form
 $L_1^*$ and $y'$ is of the form $(L_2-\{y_{2,j}\})^*$, from which the claim follows.
 \end{proof}
+\begin{example}
+The string $\6\0\4\1\1$ represents a prime in base 8, and is a proper subword of $\6\0\4\1\0\1$.
+It follows that the family $\6\0\{\0,\4\}^*\1\0^*\1$ splits into the families
+$\6\0\0^*\1\0^*\1$ and $\6\0\{\0,\4\}^*\1\1$ in base 8.
+\end{example}
 
 %A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
