@@ -538,7 +538,7 @@ $x_1x_2L_2^*\dotsm x_mL_m^*$ or $x_1y_iL_1^*\dotsm x_mL_m^*$ for some $1\leq i\l
 \begin{proof}
 Follows from the fact that $L_1^*=\{\epsilon\}\cup\bigcup_{i=1}^n y_iL_1^*$.
 \end{proof}
-Similarly, one can generalize Lemma~\ref{lemexplore} to apply to adding characters to the right of $L_i$ rather than
+Similarly, one can generalize Lemma~\ref{lemexplore} to apply to adding characters to the right of $L_1$ rather than
 to the left.
 \begin{example}
 The family $\1\0\{\0,\1\}^*\6\1^*\1$ splits into the three families $\1\0\6\1^*\1$, $\1\0\{\0,\1\}^*\0\6\1^*\1$, and $\1\0\{\0,\1\}^*\1\6\1^*\1$
@@ -634,11 +634,35 @@ If $w$ represents a prime, then add $w$ to $M$ and remove the family from $L$.
 composites, and if so then remove the family from $L$.
 \end{enumerate}
 \item Apply Lemmas~\ref{lemsplit1}, \ref{lemsplit2}, \ref{lemsplit2b}, and~\ref{lemsplit2c} to the families of $L$ as much
-as possible; after each split examine the new families as in~(b).
+as possible and update $L$; after each split examine the new families as in~(b).
 \end{enumerate}
 \end{enumerate}
 
-%A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
+When exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
+characters to the left of $L_1$; in our implementation we alternate (with period 4) between adding characters
+to the left/right of the first/last nonempty $L_i$.  Also, applying Lemma~\ref{lemsplit2b} whenever possible tended to
+produce a lot of duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$.
+While it would be possible to detect and remove such families, we found it was sufficient to only apply
+Lemma~\ref{lemsplit2b} in the case $\abs{L_1}=2$, or to wait a sufficient number of iterations before applying it.
+
+The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
+A sample tree of decompositions, for the family $\1\{\0,\1,\6\}^*\1$ in base~9, is displayed in Figure~\ref{decomptree}.
+When applying Lemma~\ref{lemexplore} on a family with only one nonempty $L_i$ we don't show the first decomposition
+(simply removing $L_i^*$) since that results in the shortest word in the family, which is always implicitly
+checked for primality/minimal subwords at each step anyway.
+
+At the conclusion of the algorithm described, $L$ will consist of simple families (of the form $xy^*z$) which have not yet
+yielded a prime, but for which there is no obvious reason why there can't be a prime of such a form.
+In such a case, the only way to proceed is to test the primality of larger and larger numbers of such form and hope
+a prime is eventually discovered.
+
+Simple families correspond to numbers of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
+Unless $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large, so one
+must resort to a pseudoprimality test like Miller--Rabin.  Since even this can be expensive, it is advantageous to perform
+some trial divisions first, to quickly rule out composites.  In fact, since we will need to test divisibility by $p$ for many
+different values of $n$, it is more efficient to solve the discrete log problem $b^n\equiv-c/a\pmod{p}$ instead.
+If it has a solution then one can sieve out all the numbers under consideration divisible by $p$ after also computing
+the order of $b\pmod{p}$. [Reference for this?]
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
 \node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=8cm]
@@ -733,7 +757,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 Base 17: $\mathtt{49^*}$, $\mathtt{F19^*}$ \\
 Base 19: $\mathtt{4F0^*6}$, $\mathtt{EE16^*}$, $\mathtt{FG6^*}$ \\
 Base 21: $\mathtt{40^*9G}$, $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
-Base 23: $\mathtt{80^*81}$, $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
+Base 23: $\mathtt{96E^*}$, $\mathtt{9E^*}$ \\
 Base 25: $\mathtt{4F^*OO}$, $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{E^*FOO}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{LO^*KC}$, $\mathtt{LF^*KI}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
 Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
 Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^*A}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$, $\mathtt{L^*0G}$, $\mathtt{L^*G}$ \\
