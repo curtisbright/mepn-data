@@ -208,7 +208,7 @@ Therefore, in practice, we are forced to try to rule out prime
 representations based on modular techniques and factorizations.
 This is discussed in the next section.
 
-\section{Some useful lemmas}
+\section{Some useful lemmas}\label{seclemmas}
 It will be necessary for our algorithm to determine if families of the
 form $[xL^*z]_b$ contain a prime or not.  We use two different strategies
 to show that such families contain no primes.
@@ -616,6 +616,27 @@ The string $\6\0\4\1\1$ represents a prime in base 8, and is a proper subword of
 It follows that the family $\6\0\{\0,\4\}^*\1\0^*\1$ splits into the families
 $\6\0\0^*\1\0^*\1$ and $\6\0\{\0,\4\}^*\1\1$ in base 8.
 \end{example}
+
+We call families of the form $xy^*z$ (where $x$, $z\in\Sigma_b^*$ and $y\in\Sigma_b$) \emph{simple} families.
+Our algorithm then proceeds as follows:
+\begin{enumerate}
+\item $M:=\{\text{minimal primes in base $b$ of length $\leq3$}\}$ \\
+$L:=\bigcup_{x,z\in\Sigma_b}xY^*z$, where $x\neq\0$ and $Y$ is the set of digits $y$ such that $xyz$ has no subword in $M$
+\item While $L$ contains non-simple families:
+\begin{enumerate}
+\item Explore each family of $L$ by applying Lemma~\ref{lemexplore}, and update $L$.
+\item Examine each family of $L$:
+\begin{enumerate}
+\item Let $w$ be the shortest string in the family.  If $w$ has a subword in $M$, then remove the family from $L$.
+If $w$ represents a prime, then add $w$ to $M$ and remove the family from $L$.
+\item If possible, simplify the family by applying Lemma~\ref{lemsplit1} with $k=1$.
+\item Using the techniques of Section~\ref{seclemmas}, check if the family can be proven to only contain
+composites, and if so then remove the family from $L$.
+\end{enumerate}
+\item Apply Lemmas~\ref{lemsplit1}, \ref{lemsplit2}, \ref{lemsplit2b}, and~\ref{lemsplit2c} to the families of $L$ as much
+as possible; after each split examine the new families as in~(b).
+\end{enumerate}
+\end{enumerate}
 
 %A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
