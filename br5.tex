@@ -620,8 +620,8 @@ $\6\0\0^*\1\0^*\1$ and $\6\0\{\0,\4\}^*\1\1$ in base 8.
 %A sample tree of decompositions is displayed in Figure~\ref{decomptree}.
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
-\node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=6.75cm]
-	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=2.5cm]
+\node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=8cm]
+	child{node{$\1\0\{\0,\1,\6\}^*\1$}[sibling distance=3.5cm]
 		child{node{$\1\0\{\0,\1\}^*\1$}[sibling distance=1.75cm]
 			child{node{$\1\0\{\0,\1\}^*\0\1$}
 				child{node[label=below:{divisible by 2}]{$\1\0\0^*\0\1$}}
@@ -631,9 +631,11 @@ $\6\0\0^*\1\0^*\1$ and $\6\0\{\0,\4\}^*\1\1$ in base 8.
 			child{node{$\1\0\{\0,\1\}^*\6\1^*\1$}
 				child{node{$\1\0\{\0,\1\}^*\0\6\1^*\1$}
 					child{node[label=below:{divisible by 8}]{$\1\0\0^*\0\6\1$}}}
-				child{node[label=below:{subword $\1\0\1\1$}]{$\1\0\{\0,\1\}^*\1\6\1^*\1$}}}}}
+				child{node[label=below:{subword $\1\0\1\1$}]{$\1\0\{\0,\1\}^*\1\6\1^*\1$}}
+				child{node{$\1\0\6\1^*\1$}
+					child{node[label=below:{not prime}]{$\1\0\6\1$}}}}}}
 	child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=4.5cm]
-		child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=1.5cm]
+		child{node{$\1\1\{\0,\1,\6\}^*\1$}[sibling distance=1.75cm]
 			child{node{$\1\1\{\0,\1\}^*\1$}
 				child{node[label=below:{prime $\1\1\0\1$}]{$\1\1\{\0,\1\}^*\0\1$}}
 				child{node{$\1\1\{\0,\1\}^*\1\1$}
