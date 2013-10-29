@@ -1028,6 +1028,27 @@ int examine(family* f)
 			trivial = 0;
 	}
 
+	// simplify y*y^ny*
+	char lastdigit = 0;
+	int dosimplify = 0;
+	for(int i=0; i<f->len; i++)
+	{	if(dosimplify==1 && f->numrepeats[i]==1 && f->repeats[i][0]==lastdigit && (lastdigit==f->digit[i] || (unsigned char)f->digit[i]==255))
+		{	f->repeats[i] = NULL;
+			f->numrepeats[i] = 0;
+		}
+		if((unsigned char)f->digit[i]!=255)
+		{	if(f->digit[i] != lastdigit)
+				dosimplify = 0;
+			lastdigit = f->digit[i];
+		}
+		if(f->numrepeats[i]==1)
+		{	dosimplify = 1;
+			lastdigit = f->repeats[i][0];
+		}
+		else if(f->numrepeats[i]>1)
+			dosimplify = 0;
+	}
+
 	if(trivial)
 	{	
 #ifdef PRINTTRIVIAL
@@ -1394,7 +1415,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str1)) && f->numrepeats[i]==2)
+					else if(m==i && (!nosubword(str1)))
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1437,7 +1458,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str2)) && f->numrepeats[i]==2)
+					else if(m==i && (!nosubword(str2)))
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
