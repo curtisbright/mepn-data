@@ -25,6 +25,8 @@ int main(int argc, char** argv)
 			{	strcpy(strchr(filename+9, '.'), "\0");
 				int n = atoi(filename+9);
 				int base = n;
+				if(n>28)
+					continue;
 				//printf("base %d:\n", n);
 				FILE* in = fopen(ep->d_name, "r");
 				char line[100];

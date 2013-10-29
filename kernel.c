@@ -1368,7 +1368,7 @@ int split2(family* f, list* unsolved, char insplit)
 	#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("%s splits into ", str);
+						printf("1 - %s splits into ", str);
 						familystring(str, copyf);
 						printf("%s and ", str);
 	#endif
@@ -1387,14 +1387,14 @@ int split2(family* f, list* unsolved, char insplit)
 
 	#ifdef PRINTSPLIT
 						familystring(str, copyf);
-						printf("%s\n", str);
+						printf("%s [%s, %s]\n", str, str1, str2);
 	#endif
 
 						clearfamily(&copyf);
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str1)) /*&& nonzerorepeats==1 && f->numrepeats[i]<=4*/ && f->len>10)
+					else if(m==i && (!nosubword(str1)) && f->numrepeats[i]==2)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1428,16 +1428,16 @@ int split2(family* f, list* unsolved, char insplit)
 	#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("%s splits into ", str);
+						printf("2 - %s splits into ", str);
 						familystring(str, newf);
-						printf("%s\n", str);
+						printf("%s [%s]\n", str, str1);
 	#endif
 
 						clearfamily(&newf);
 
 						return 1;
 					}
-					else if(m==i && (!nosubword(str2)) /*&& nonzerorepeats==1 && f->numrepeats[i]<=4*/ && f->len>10)
+					else if(m==i && (!nosubword(str2)) && f->numrepeats[i]==2)
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1471,9 +1471,9 @@ int split2(family* f, list* unsolved, char insplit)
 	#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("%s splits into ", str);
+						printf("3 - %s splits into ", str);
 						familystring(str, newf);
-						printf("%s\n", str);
+						printf("%s [%s]\n", str, str2);
 	#endif
 
 						clearfamily(&newf);
@@ -1495,7 +1495,7 @@ int split2(family* f, list* unsolved, char insplit)
 	#ifdef PRINTSPLITSPECIAL
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("%s splits into ", str);
+						printf("4 - %s splits into ", str);
 						familystring(str, copyf);
 						printf("%s and ", str);
 	#endif
@@ -1514,7 +1514,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 	#ifdef PRINTSPLITSPECIAL
 						familystring(str, copyf);
-						printf("%s\n", str);
+						printf("%s [%s]\n", str, str1);
 	#endif
 
 						clearfamily(&copyf);
@@ -1630,7 +1630,7 @@ int main(int argc, char** argv)
 	pr[0] &= 252;
 
 	char filename[100];
-	sprintf(filename, "summary.txt", base);
+	sprintf(filename, "summary.txt");
 	FILE* summaryfile;
 #ifdef CLEARSUMMARY
 	summaryfile = fopen(filename, "w");
