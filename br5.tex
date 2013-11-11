@@ -117,7 +117,9 @@ technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
 the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
-$2 \leq b \leq 16$.   For $17 \leq b \leq 28$, we obtain
+$2 \leq b \leq 16$ and $b = 18,20,22,24$.   For the remaining
+bases $b = 17,19,21,23,25,26,27,28$,
+we obtain
 results that allow us to ``almost'' completely characterize this set.
 
 In what follows, if $x$ is a string of symbols over the alphabet
@@ -227,7 +229,9 @@ an $N > 1$ that divides each element of the family $[xL^*z]_b$.
 At first glance, this would require
 checking that $N$ divides $xL^nz$ for $n=0$, $1$, $2$, $\dotsc$.
 However, the following lemma shows that it is only necessary to check
-the two cases $n=0$ and $1$.
+the two cases $n=0$ and $1$.  Although divisibility based on digital
+considerations has a long history (e.g., \cite[Chap.~XII]{Dick}),
+we could not find these kinds of results in the literature.
 
 \begin{lemma}\label{lemone}
 Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
@@ -749,7 +753,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 28\mathrlap{^*} & \geq5782 & \geq4242 & 2 
 \end{array}\]
 \begin{center}$^*$Data based on results of Miller--Rabin pseudoprimality tests.\end{center}
-\caption{Summary of results for each base $b$.}
+\caption{Summary of results for the prime numbers for each base $b$.}
 \label{resultsfig}
 \end{figure}
 
@@ -843,7 +847,7 @@ b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 12 & 46 & 4 \\
 13 & 43 & 3
 \end{array}\]
-\caption{Summary of results for each base $b$.}
+\caption{Summary of results for the composite numbers for each base $b$.}
 \label{ttwo}
 \end{figure}
 
@@ -865,12 +869,18 @@ $\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
 
 
 \bibliographystyle{plain}
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 
 \bibitem{Choi}  S. L. G. Choi.
 \newblock Covering the set of integers by congruence 
 classes of distinct moduli.
 \newblock {\it Math. Comp.} {\bf 25} (1971), 885--895.
+
+\bibitem{Dick}  
+L. E. Dickson.
+\newblock {\it History of the Theory of Numbers}.
+\newblock Volume I:  Divisibility and Primality.
+\newblock Chelsea Publishing Company, New York, 1952.
 
 \bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
 \newblock The size of Higman-Haines sets.
