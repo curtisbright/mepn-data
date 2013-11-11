@@ -640,10 +640,10 @@ as possible and update $L$; after each split examine the new families as in~(b).
 
 When exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
 characters to the left of $L_1$; in our implementation we alternate (with period 4) between adding characters
-to the left/right of the first/last nonempty $L_i$.  Also, applying Lemma~\ref{lemsplit2b} whenever possible tended to
-produce a lot of duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$.
-While it would be possible to detect and remove such families, we found it was sufficient to only apply
-Lemma~\ref{lemsplit2b} in the case $\abs{L_1}=2$, or to wait a sufficient number of iterations before applying it.
+to the left/right of the first/last nonempty $L_i$.  Also, the application of Lemma~\ref{lemsplit2b} tended to initially
+produce an excess number of cases, so it was useful to only apply it following a certain number of iterations.  It also led to
+duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
+but these could be detected and removed.
 
 The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
 A sample tree of decompositions, for the family $\1\{\0,\1,\6\}^*\1$ in base~9, is displayed in Figure~\ref{decomptree}.
@@ -714,9 +714,9 @@ we employed PRIMO~\cite{primo}, an elliptic curve primality proving implementati
 
 The 41 unsolved families have all been tested to at least length 60000 without
 a prime being found.  The family $\8\0^*\1$ in base 23, corresponding to the
-generalized Sierpinski numbers $8\cdot23^n+1$, was found to be prime
+numbers $8\cdot23^n+1$, was found to be prime
 for minimal $n=119215$ in the process
-of solving the generalized Sierpinski conjecture in base 23~\cite{crus}.
+of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
 b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
