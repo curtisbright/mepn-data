@@ -244,7 +244,7 @@ $N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
 Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
 By telescoping we have
 \[ [xyz]_b - [xz]_b = \sum_{i=1}^{n}([xy_{i}y_{i+1}\dotsm y_n z]_b-[xy_{i+1}\dotsm y_n z]_b) . \]
-Cancelling the final $|z|$ base-$b$ digits in the summand difference ---
+Cancelling the final $\abs{y_{i+1}\dotsm y_nz}$ base-$b$ digits in the summand difference ---
 which are identical --- this becomes
 \[ [xyz]_b = [xz]_b + \sum_{i=1}^{n}b^{\lvert{y_{i+1}\dotsm y_n z}\rvert}([xy_i]_b-[x]_b) . \]
 But $b^{\lvert z\rvert}([xy_i]_b-[x]_b)=[xy_iz]_b-[xz]_b$ by 
@@ -254,7 +254,7 @@ Since $N\mid[xz]_b$ and $N\mid[xy_iz]_b$ for each $1\leq i\leq n$,
  it follows that $N\mid[xyz]_b$.
  
 The other direction is clear, since $[xz]_b$ and numbers of the 
-form $[xLz]_b$ and are both of the form $[xL^*z]_b$.
+form $[xLz]_b$ are both of the form $[xL^*z]_b$.
 \end{proof}
 
 In practice, our algorithm employs this lemma with 
@@ -660,7 +660,7 @@ yielded a prime, but for which there is no obvious reason why there can't be a p
 In such a case, the only way to proceed is to test the primality of larger and larger numbers of such form and hope
 a prime is eventually discovered.
 
-Simple families correspond to numbers of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
+Simple families contain numbers of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
 Unless $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large, so one
 must resort to a pseudoprimality test like Miller--Rabin.  Since even this can be expensive, it is advantageous to perform
 some trial divisions first, to quickly rule out composites.  In fact, since we will need to test divisibility by $p$ for many
@@ -708,7 +708,9 @@ the corresponding family.
 For bases between 17 and 28 a lower bound on the size and width of
 $M(L_b)$ is given, along with the number of families of the form
 $xy^*z$ for which no prime member could be found, nor could the family be
-ruled out as only containing composites.
+ruled out as only containing composites.  Since simple families can contain at
+most one minimal prime, an upper bound on $\abs{M(L_b)}$ is given by the
+sum of the lower bound for $\abs{M(L_b)}$ and the number of unsolved families.
 
 Some of our results assume that a number which has passed several Miller--Rabin
 tests is in fact prime, since in some cases (e.g., $b=13$) a candidate
@@ -799,7 +801,7 @@ at most $n-1$ digits, and $n-1 < n(b^{2n} + 1)$.
 
 Otherwise $L$ is infinite.  Then $M$ accepts a string of length
 $\ell$ with $n < \ell \leq 2n$ that can be pumped (as in the
-pumping lemma.  That is, there exists $x \in L$ such that
+pumping lemma).  That is, there exists $x \in L$ such that
 $x = uvw$ with $|uv| \leq n$.  Then a classical proof of the
 non-regularity of the prime numbers 
 (e.g., \cite[Example 3.2, p.\ 57]{HU79})
@@ -853,7 +855,7 @@ b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 
 \section{Open problems}
 
-To illustrate once more the difficult of computing $M(L)$, we recall
+To illustrate once more the difficulty of computing $M(L)$, we recall
 an open problem from \cite{Sh00}:
 
 \begin{problem} 
