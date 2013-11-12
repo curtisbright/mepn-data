@@ -1838,7 +1838,7 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PRINTSUMMARY
-		sprintf(filename, "summary.txt", base);
+		sprintf(filename, "summary.txt");
 		summaryfile = fopen(filename, "a");
 		fprintf(summaryfile, "BASE %d:\n", base);
 		fprintf(summaryfile, "\tSize:\t%d\n", K.size);
