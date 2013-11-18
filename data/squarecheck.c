@@ -21,7 +21,8 @@ int main(int argc, char** argv)
 	gmp_printf("x: %Zd\n", y);
 	gettimeofday(&start, 0);
 	mpz_powm_ui(y, y, 2L, num);
-	//mpz_powm_ui(y, y, 2L, num);
+	gmp_printf("y: %Zd\n", y);
+	mpz_powm_ui(y, y, 2L, num);
 	gettimeofday(&end, 0);
 	gmp_printf("y: %Zd\n", y);
 	elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_usec - start.tv_usec)/1000000.0F);
