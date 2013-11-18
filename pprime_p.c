@@ -134,11 +134,12 @@ int mpz_probab_prime_p_mod(mpz_srcptr n, int reps, char** pr, long* m, double* m
 	}
 
 	/* Perform a number of Miller-Rabin tests. */
+	printf("starting miller rabin...\n");
 	begin = clock();
 	result = mpz_millerrabin(n, reps);
 	end = clock();
 	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-	//printf("miller rabin time:    %f sec\n", time_spent);
+	printf("miller rabin time:    %f sec\n", time_spent);
 
 	*mrtime = time_spent;
 	return result;

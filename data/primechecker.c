@@ -5,7 +5,7 @@
 #include <string.h>
 #include <gmp.h>
 #include "../pprime_p.c"
-#define MAXSTRING 60000
+#define MAXSTRING 200000
 
 int subword(char* prime, char* start, char middle, char* end, int* k)
 {	int i=0, j=0, l=0;
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 		fclose(in);
 	}
 
-	for(int num=atoi(numline)+1; num<59950; num++)
+	for(int num=atoi(numline)+1; num<119215; num++)
 	{	begin = clock();
 		dp = opendir("./");
 		int count=0;
@@ -97,6 +97,8 @@ int main(int argc, char** argv)
 					strcat(tmpmrfilename, mrfilename);
 					strcpy(strchr(filename+9, '.'), "\0");
 					int n = atoi(filename+9);
+					if(n!=23)
+						continue;
 					//printf("base %d:\n", n);
 					FILE* in = fopen(ep->d_name, "r");
 					FILE* mrin = fopen(mrfilename, "r");
@@ -124,7 +126,7 @@ int main(int argc, char** argv)
 						line[l-1] = '\0';
 						strcpy(start, line);
 						strcpy(end, line+l+1);
-						//printf("base: %d start: %s middle: %c end: %s\n", n, start, middle, end);
+						printf("base: %d start: %s middle: %c end: %s\n", n, start, middle, end);
 						strcpy(candidate, start);
 						for(int j=0; j<num; j++)
 							sprintf(candidate, "%s%c", candidate, middle);
@@ -137,7 +139,7 @@ int main(int argc, char** argv)
 						FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						//printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
+						printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
 						while(fgets(prime, MAXSTRING, kernel)!=NULL)
 						{	prime[strlen(prime)-1] = '\0';
 							int k;
