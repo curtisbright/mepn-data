@@ -8,16 +8,19 @@
 #define MAXSTRING 200
 
 #ifdef PRINTALL
+#define PRINTDATA
+#define PRINTITER
 #define PRINTDIVISOR
-#define PRINTDIVISORSPECIAL
-#define PRINTDIVISORSQUARE
-#define PRINTDIVISORCUBE
+#define PRINTDIVISORTWO
+#define PRINTDIVISORTHREE
 #define PRINTDIVISORFOUR
 #define PRINTDIVISORFIVE
+#define PRINTDIVISORSQUARE
+#define PRINTDIVISORCUBE
 #define PRINTSTATS
 #define PRINTUNSOLVED
 #define PRINTSPLIT
-#define PRINTSPLITSPECIAL
+#define PRINTSPLITDOUBLE
 #define PRINTSPLITTRIPLE
 #define PRINTSPLITQUAD
 #define PRINTSPLITQUINT
@@ -529,7 +532,7 @@ int hasdivisor(family p)
 
 		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0)
 		{	
-#ifdef PRINTDIVISORSPECIAL
+#ifdef PRINTDIVISORTWO
 			familystring(str, p);
 			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
 #endif
@@ -579,7 +582,7 @@ int hasdivisor(family p)
 
 		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0)
 		{	
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORTWO
 			familystring(str, p);
 			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
 #endif
@@ -622,7 +625,7 @@ int hasdivisor(family p)
 
 				if(mpz_cmp_ui(temp, 1)>0 && mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp(empty, temp)>0 && mpz_cmp(empty, temp2)>0 && mpz_cmp(empty, temp3)>0)
 				{	
-#ifdef PRINTDIVISOR
+#ifdef PRINTDIVISORTHREE
 					familystring(str, p);
 					gmp_printf("%s has three divisors %Zd, %Zd, and %Zd\n", str, temp, temp2, temp3);
 #endif
@@ -918,7 +921,7 @@ int split(family* f, list* unsolved, char insplit)
 				addtolist(unsolved, copyf, 2);
 				addtolist(unsolved, newf, 2);
 
-#ifdef PRINTSPLIT
+#ifdef PRINTSPLITDOUBLE
 				char str[MAXSTRING];
 				familystring(str, *f);
 				printf("%s splits into ", str);
@@ -1178,13 +1181,13 @@ int split2(family* f, list* unsolved, char insplit)
 						copyf.numrepeats[i] = newnumrepeats;
 						addtolist(unsolved, copyf, 1);
 
-	#ifdef PRINTSPLIT
+#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("1 - %s splits into ", str);
+						printf("%s splits into ", str);
 						familystring(str, copyf);
 						printf("%s and ", str);
-	#endif
+#endif
 
 						clearfamily(&copyf);
 
@@ -1198,10 +1201,10 @@ int split2(family* f, list* unsolved, char insplit)
 						copyf.numrepeats[i] = newnumrepeats;
 						addtolist(unsolved, copyf, 1);
 
-	#ifdef PRINTSPLIT
+#ifdef PRINTSPLIT
 						familystring(str, copyf);
-						printf("%s [%s, %s]\n", str, str1, str2);
-	#endif
+						printf("%s [because of %s, %s]\n", str, str1, str2);
+#endif
 
 						clearfamily(&copyf);
 
@@ -1238,13 +1241,13 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-	#ifdef PRINTSPLIT
+#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("2 - %s splits into ", str);
+						printf("%s splits into ", str);
 						familystring(str, newf);
-						printf("%s [%s]\n", str, str1);
-	#endif
+						printf("%s [because of %s]\n", str, str1);
+#endif
 
 						clearfamily(&newf);
 
@@ -1281,13 +1284,13 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-	#ifdef PRINTSPLIT
+#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("3 - %s splits into ", str);
+						printf("%s splits into ", str);
 						familystring(str, newf);
-						printf("%s [%s]\n", str, str2);
-	#endif
+						printf("%s [because of %s]\n", str, str2);
+#endif
 
 						clearfamily(&newf);
 
@@ -1305,13 +1308,13 @@ int split2(family* f, list* unsolved, char insplit)
 						copyf.numrepeats[i] = newnumrepeats;
 						addtolist(unsolved, copyf, 1);
 
-	#ifdef PRINTSPLITSPECIAL
+#ifdef PRINTSPLIT
 						char str[MAXSTRING];
 						familystring(str, *f);
-						printf("4 - %s splits into ", str);
+						printf("%s splits into ", str);
 						familystring(str, copyf);
 						printf("%s and ", str);
-	#endif
+#endif
 
 						clearfamily(&copyf);
 
@@ -1325,10 +1328,10 @@ int split2(family* f, list* unsolved, char insplit)
 						copyf.numrepeats[m] = newnumrepeats;
 						addtolist(unsolved, copyf, 1);
 
-	#ifdef PRINTSPLITSPECIAL
+#ifdef PRINTSPLIT
 						familystring(str, copyf);
-						printf("%s [%s]\n", str, str1);
-	#endif
+						printf("%s [because of %s]\n", str, str1);
+#endif
 
 						clearfamily(&copyf);
 
