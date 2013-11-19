@@ -43,9 +43,9 @@ BASE 12:
 	Width:	6
 	Remain:	2
 BASE 13:
-	Size:	214
-	Width:	14
-	Remain:	31
+	Size:	216
+	Width:	15
+	Remain:	28
 BASE 14:
 	Size:	233
 	Width:	28
@@ -53,56 +53,56 @@ BASE 14:
 BASE 15:
 	Size:	98
 	Width:	10
-	Remain:	2
+	Remain:	17
 BASE 16:
-	Size:	452
+	Size:	451
 	Width:	16
-	Remain:	48
+	Remain:	49
 BASE 17:
-	Size:	1204
-	Width:	21
-	Remain:	152
+	Size:	1197
+	Width:	20
+	Remain:	159
 BASE 18:
 	Size:	44
 	Width:	7
 	Remain:	17
 BASE 19:
-	Size:	3318
+	Size:	3314
 	Width:	23
-	Remain:	254
+	Remain:	262
 BASE 20:
-	Size:	631
-	Width:	17
-	Remain:	23
+	Size:	633
+	Width:	20
+	Remain:	21
 BASE 21:
-	Size:	2525
+	Size:	2522
 	Width:	26
-	Remain:	118
+	Remain:	121
 BASE 22:
-	Size:	1177
+	Size:	1175
 	Width:	16
-	Remain:	110
+	Remain:	113
 BASE 23:
 	Size:	5825
-	Width:	26
-	Remain:	348
+	Width:	27
+	Remain:	342
 BASE 24:
-	Size:	286
-	Width:	8
-	Remain:	59
+	Size:	292
+	Width:	10
+	Remain:	40
 BASE 25:
-	Size:	17003
+	Size:	16966
 	Width:	23
-	Remain:	1031
+	Remain:	1119
 BASE 26:
-	Size:	5497
-	Width:	24
-	Remain:	302
+	Size:	5495
+	Width:	25
+	Remain:	290
 BASE 27:
-	Size:	17013
-	Width:	68
-	Remain:	320
+	Size:	17003
+	Width:	67
+	Remain:	323
 BASE 28:
-	Size:	5608
+	Size:	5585
 	Width:	16
-	Remain:	320
+	Remain:	367
