@@ -710,20 +710,19 @@ int hasdivisor(family p)
 				mpz_submul_ui(temp2, z, (base-1)/g);
 
 				if(mpz_root(temp3, temp, 2)!=0 && mpz_sgn(temp2)>=0 && mpz_root(temp4, temp2, 2)!=0)
-				{	mpz_add(temp5, temp3, temp4);
-					mpz_sub(temp6, temp3, temp4);
-					mpz_set_ui(temp7, base);
-					if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_root(temp7, temp7, 2)!=0)
+				{	mpz_sub(temp5, temp3, temp4);
+					mpz_set_ui(temp6, base);
+					if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_root(temp6, temp6, 2)!=0)
 					{	
 #ifdef PRINTDIVISORSQUARE
 						familystring(str, p);
 						gmp_printf("%s factors as a difference of squares\n", str);
-						gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*(%Zd*%Zd^n+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, temp7, temp4, temp3, temp7, temp4, (base-1)/g);
+						gmp_printf("%s(%s)^n%s = %Zd + %d^%d*%Zd*(%d^n-1)/%d + %d^(n+%d)*%Zd = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*(%Zd*%Zd^n+%Zd)/%d\n", start, middle, end, z, base, zlen, y, base, base-1, base, zlen, x, temp, base, temp2, (base-1)/g, temp3, temp6, temp4, temp3, temp6, temp4, (base-1)/g);
 #endif
 						mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 						return 1;
 					}
-					else if(mpz_cmp_ui(temp6, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd2)>0)
+					else if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd2)>0)
 					{
 #ifdef PRINTDIVISORSQUARE
 						familystring(str, p);
@@ -737,16 +736,16 @@ int hasdivisor(family p)
 
 				if(mpz_root(temp3, temp, 3)!=0 && mpz_root(temp4, temp2, 3)!=0)
 				{	mpz_sub(temp5, temp3, temp4);
-					mpz_set_ui(temp10, base);
-					if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_root(temp10, temp10, 3)!=0)
+					mpz_set_ui(temp6, base);
+					if(mpz_cmp_ui(temp5, (base-1)/g)>0 && mpz_root(temp6, temp6, 3)!=0)
 					{	
 #ifdef PRINTDIVISORCUBE
 						familystring(str, p);
 						gmp_printf("%s factors as a difference of cubes\n", str);
 						if(mpz_sgn(temp2)>=0)
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*((%Zd*%Zd^n)^2+%Zd*%Zd^n*%Zd+%Zd^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp10, temp4, temp3, temp10, temp3, temp10, temp4, temp4, (base-1)/g);
+							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d = (%Zd*%Zd^n-%Zd)*((%Zd*%Zd^n)^2+%Zd*%Zd^n*%Zd+%Zd^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp6, temp4, temp3, temp6, temp3, temp6, temp4, temp4, (base-1)/g);
 						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-(%Zd))/%d = (%Zd*%Zd^n-(%Zd))*((%Zd*%Zd^n)^2+%Zd*%Zd^n*(%Zd)+(%Zd)^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp10, temp4, temp3, temp10, temp3, temp10, temp4, temp4, (base-1)/g);
+							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-(%Zd))/%d = (%Zd*%Zd^n-(%Zd))*((%Zd*%Zd^n)^2+%Zd*%Zd^n*(%Zd)+(%Zd)^2)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g, temp3, temp6, temp4, temp3, temp6, temp3, temp6, temp4, temp4, (base-1)/g);
 #endif
 						mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 						return 1;
