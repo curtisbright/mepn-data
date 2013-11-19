@@ -1,9 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <string.h>
 #include <gmp.h>
+
+// Compute smallest n>=0 such that (a*b^n+c)/d = 0 (mod p)
+// returns -1 if no such n exists
+int naivediscretelog(mpz_t a, int b, mpz_t c, int d, mpz_t p)
+{	int n;
+	mpz_t first, cur, pd, base;
+	mpz_inits(first, cur, pd, base, NULL);
+
+	mpz_set_ui(base, b);
+	mpz_mul_ui(pd, p, d);
+	mpz_add(first, a, c);
+	mpz_mod(first, first, pd);
+	
+	for(n=0; ; n++)
+	{	mpz_powm_ui(cur, base, n, pd);
+		mpz_mul(cur, cur, a);
+		mpz_add(cur, cur, c);
+		mpz_mod(cur, cur, pd);
+		if(mpz_sgn(cur)==0)
+			break;
+		if(mpz_cmp(cur, first)==0)
+		{	n = -1;
+			break;
+		}
+	}
+
+	mpz_clears(first, cur, pd, base, NULL);
+
+	return n;
+}
 
 // Compute smallest n>=0 such that (a*b^n+c)/d = 0 (mod p)
 // returns -1 if no such n exists
@@ -103,6 +134,8 @@ int main(int argc, char** argv)
 {
 	DIR *dp;
 	struct dirent *ep;
+
+	mkdir("work");
 
 	mpz_t p, one;
 	mpz_inits(p, one, NULL);
