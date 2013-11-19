@@ -9,18 +9,25 @@
 // returns -1 if no such n exists
 int discretelog(mpz_t a, int b, mpz_t c, int d, mpz_t p)
 {	int n;
-	mpz_t first, cur, temp;
-	mpz_inits(first, cur, temp, NULL);
+	mpz_t first, cur, pd;
+	mpz_inits(first, cur, pd, NULL);
 
+	mpz_set_ui(cur, b);
+	mpz_mod(cur, cur, p);
+	if(mpz_sgn(cur)==0)
+	{	mpz_clears(first, cur, pd, NULL);
+		return -1;
+	}
+
+	mpz_mul_ui(pd, p, d);
 	mpz_add(first, a, c);
-	mpz_divexact_ui(first, first, d);
-	mpz_mod(first, first, p);
+	mpz_mod(first, first, pd);
 	mpz_set(cur, first);
 	
 	for(n=1; ; n++)
 	{	mpz_mul_ui(cur, cur, b);
 		mpz_submul_ui(cur, c, b-1);
-		mpz_mod(cur, cur, p);
+		mpz_mod(cur, cur, pd);
 		if(mpz_sgn(cur)==0)
 			break;
 		if(mpz_cmp(cur, first)==0)
@@ -29,31 +36,65 @@ int discretelog(mpz_t a, int b, mpz_t c, int d, mpz_t p)
 		}
 	}
 
-	mpz_clears(first, cur, temp, NULL);
+	mpz_clears(first, cur, pd, NULL);
+
+	return n;
+}
+
+// Compute smallest n>0 such that b^n = 1 (mod p)
+// returns -1 if no such n exists
+int order(int b, mpz_t p)
+{	int n;
+	mpz_t one, cur;
+	mpz_inits(one, cur, NULL);
+
+	mpz_set_ui(one, 1);
+	mpz_set_ui(cur, 1);
+	
+	for(n=1; ; n++)
+	{	mpz_mul_ui(cur, cur, b);
+		mpz_mod(cur, cur, p);
+		if(mpz_cmp(cur, one)==0)
+			break;
+		if(mpz_sgn(cur)==0)
+		{	n = -1;
+			break;
+		}
+	}
+
+	mpz_clears(one, cur, NULL);
 
 	return n;
 }
 
 // Compute smallest n>0 such that (a*b^n+c)/d = (a+c)/d (mod p)
-int order(mpz_t a, int b, mpz_t c, int d, mpz_t p)
+// returns -1 if no such n exists
+int genorder(mpz_t a, int b, mpz_t c, int d, mpz_t p)
 {	int n;
-	mpz_t first, cur, temp;
-	mpz_inits(first, cur, temp, NULL);
+	mpz_t first, cur, pd;
+	mpz_inits(first, cur, pd, NULL);
 
+	mpz_set_ui(cur, b);
+	mpz_mod(cur, cur, p);
+	if(mpz_sgn(cur)==0)
+	{	mpz_clears(first, cur, pd, NULL);
+		return -1;
+	}
+
+	mpz_mul_ui(pd, p, d);
 	mpz_add(first, a, c);
-	mpz_divexact_ui(first, first, d);
-	mpz_mod(first, first, p);
+	mpz_mod(first, first, pd);
 	mpz_set(cur, first);
-	
+
 	for(n=1; ; n++)
 	{	mpz_mul_ui(cur, cur, b);
 		mpz_submul_ui(cur, c, b-1);
-		mpz_mod(cur, cur, p);
+		mpz_mod(cur, cur, pd);
 		if(mpz_cmp(cur, first)==0)
 			break;
 	}
 
-	mpz_clears(first, cur, temp, NULL);
+	mpz_clears(first, cur, pd, NULL);
 
 	return n;
 }
@@ -63,15 +104,10 @@ int main(int argc, char** argv)
 	DIR *dp;
 	struct dirent *ep;
 
-	mpz_t one;
-	mpz_init_set_ui(one, 1);
-
-	mpz_t p;
-	mpz_init(p);
-	mpz_set_ui(p, 31337);
+	mpz_t p, one;
+	mpz_inits(p, one, NULL);
 
 	dp = opendir("./data");
-	int count=0;
 	if(dp != NULL)
 	{	while(ep = readdir(dp))
 		{	char filename[100];
@@ -82,25 +118,23 @@ int main(int argc, char** argv)
 				int base = atoi(filename+9);
 				if(base!=23)
 					continue;
-				printf("base %d: [%d]\n", base, order(one, base, one, 1, p));
+				//printf("base %d: [%d]\n", base, order(base, p));
 				sprintf(filename, "data/%s", ep->d_name);
 				FILE* in = fopen(filename, "r");
 				char line[100];
 				char start[100];
 				char middle[2];
 				char end[100];
-				//char candidate[MAXSTRING];
+				int count = 0;
 				while(fgets(line, 100, in)!=NULL)
 				{	count++;
 					int l = (int)(strchr(line, '*')-line);
 					middle[0] = line[l-1];
 					middle[1] = '\0';
-					//printf("%s", line);
 					line[strlen(line)-1] = '\0';
 					line[l-1] = '\0';
 					strcpy(start, line);
 					strcpy(end, line+l+1);
-					//printf("%d - base: %d start: %s middle: %s end: %s\n", count, n, start, middle, end);
 
 					int zlen = strlen(end);
 					mpz_t x, y, z, temp, temp2, temp3, temp10;
@@ -118,24 +152,41 @@ int main(int argc, char** argv)
 					mpz_mul(temp2, temp2, temp3);
 					mpz_submul_ui(temp2, z, (base-1)/g);
 					mpz_neg(temp3, temp2);
-					int n = discretelog(temp, base, temp3, (base-1)/g, p);
-					int k = order(temp, base, temp3, (base-1)/g, p);
 					if(mpz_sgn(temp2)>=0)
 						if((base-1)/g==1)
-							gmp_printf("%s(%s)^n%s = %Zd*%d^n-%Zd [%d, %d]\n", start, middle, end, temp, base, temp2, n, k);
+							gmp_printf("%s(%s)^n%s = %Zd*%d^n-%Zd\n", start, middle, end, temp, base, temp2);
 						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d [%d, %d]\n", start, middle, end, temp, base, temp2, (base-1)/g, n, k);
+							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g);
 					else
 						if((base-1)/g==1)
-							gmp_printf("%s(%s)^n%s = %Zd*%d^n+%Zd [%d, %d]\n", start, middle, end, temp, base, temp3, n, k);
+							gmp_printf("%s(%s)^n%s = %Zd*%d^n+%Zd\n", start, middle, end, temp, base, temp3);
 						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d [%d, %d]\n", start, middle, end, temp, base, temp3, (base-1)/g, n, k);
+							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
+
+					char exponents[60000];
+					for(int i=0; i<60000; i++)
+						exponents[i] = 1;
+					for(mpz_set_ui(p, 2); mpz_cmp_ui(p, 101)<=0; mpz_nextprime(p, p))
+					{	int n = discretelog(temp, base, temp3, (base-1)/g, p);
+						//int ord = order(base, p);
+						int ord = genorder(temp, base, temp3, (base-1)/g, p);
+						//gmp_printf("%Zd %d %d\n", p, n, ord);
+						if(n!=-1 && ord!=-1)
+							for(int j=n; j<60000; j+=ord)
+								exponents[j] = 0;
+						//else
+						//	printf("%d %d\n", n, ord);
+					}
+
+					sprintf(filename, "work/%d-%d.txt", base, count);
+					FILE* out = fopen(filename, "w");
+					gmp_fprintf(out, "%Zd %Zd %d\n", temp, temp3, (base-1)/g);
+					for(int i=0; i<60000; i++)
+						if(exponents[i]==1)
+							fprintf(out, "%d\n", i);
+					fclose(out);
+
 					mpz_clears(x, y, z, temp, temp2, temp3, temp10, NULL);
-					//strcpy(candidate, start);
-					//for(int j=0; j<10; j++)
-					//	sprintf(candidate, "%s%c", candidate, middle);
-					//strcat(candidate, end);
-					//printf("candidate: %s\n", candidate);
 				}
 				fclose(in);
 			}
@@ -145,8 +196,7 @@ int main(int argc, char** argv)
 	else
 		perror("Couldn't open the directory");
 
-	mpz_clear(p);
-	mpz_clear(one);
+	mpz_clears(p, one);
 
 	return 0;
 }
