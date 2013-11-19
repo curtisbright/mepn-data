@@ -63,7 +63,6 @@ int depth;
 kernel K;
 int prsize;
 char* pr;
-FILE* distinct;
 
 void listinit(list* l)
 {	l->size = 0;
@@ -141,12 +140,6 @@ void removedupes(list* unsolved)
 		else
 			free(str);
 	}
-
-#ifdef DISTINCT
-	fprintf(distinct, "Distinct unsolved list:\n");
-	for(int i=0; i<n; i++)
-		fprintf(distinct, "%s\n", strlist[i]);
-#endif
 
 	clearlist(unsolved);
 	copylist(unsolved, newlist);
@@ -1443,11 +1436,6 @@ int main(int argc, char** argv)
 	fclose(summaryfile);
 #endif
 
-#ifdef DISTINCT
-	distinct = fopen("distinct.txt", "w");
-#endif
-	FILE* out = stdout;
-
 	family f;
 	familyinit(&f);
 
@@ -1596,7 +1584,7 @@ int main(int argc, char** argv)
 			fclose(out);
 
 			filename[100];
-			sprintf(filename, "kernel-base%d-iter%d.txt", base, i);
+			sprintf(filename, "minimal-base%d-iter%d.txt", base, i);
 			out = fopen(filename, "w");
 			for(int j=0; j<K.size; j++)
 			{	fprintf(out, "%s\n", K.primes[j]);
@@ -1661,9 +1649,6 @@ int main(int argc, char** argv)
 		clearlist(&unsolved);
 	}
 
-#ifdef DISTINCT
-	fclose(distinct);
-#endif
 	free(pr);
 	return 0;
 }
