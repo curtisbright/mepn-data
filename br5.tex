@@ -131,8 +131,9 @@ We use the convention that $\A = 10$, $\B = 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
 We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
-The set of all canonical representations in base $b$ is denoted
-$C_b$.  Finally, as usual, for a language $L$ we let
+%The set of all canonical representations in base $b$ is denoted
+%$C_b$.
+Finally, as usual, for a language $L$ we let
 $L^n := \underbrace{LL\dotsm L}_n$ and $L^* := \bigcup_{i \geq 0} L^i$.
 
 \section{Why minimal sets are interesting}
@@ -780,8 +781,9 @@ Here, in contrast with the primes, we have
 
 \begin{theorem}
 The following decision problem is recursively solvable:  given
-a base $b$ and a DFA $M$ accepting a language $L \subseteq 
-C_b$, does $M$ accept the base-$b$ representation of a composite 
+a base $b$ and a DFA $M$ accepting a language $L$ of
+strings in a base-$b$ canonical representation,
+does $M$ accept the base-$b$ representation of a composite 
 number?
 \end{theorem}
 
@@ -915,6 +917,10 @@ Addison-Wesley, 1979.
 \bibitem{crus}  G. Barnes.
 \newblock {\it Sierpinski conjectures and proofs},
 \url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
+
+\bibitem{crus}  T. Granlund et al.
+\newblock {\it The GNU Multiple Precision Arithmetic Library},
+\url{http://gmplib.org/}.
 
 \end{thebibliography}
 
