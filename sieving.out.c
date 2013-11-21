@@ -45,8 +45,11 @@ int main(int argc, char** argv)
 	mpz_init(p);
 
 	for(int i=0; i<60000; i++)
-	{	dp = opendir("./data");
+	{	begin = clock();
+		dp = opendir("./data");
 		int count=0;
+		int minnum=60000;
+		int maxnum=0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -67,8 +70,7 @@ int main(int argc, char** argv)
 					char end[100];
 					char candidate[MAXSTRING];
 					while(fgets(line, 100, in)!=NULL)
-					{	count++;
-						int l = (int)(strchr(line, '*')-line);
+					{	int l = (int)(strchr(line, '*')-line);
 						middle[0] = line[l-1];
 						middle[1] = '\0';
 						line[strlen(line)-1] = '\0';
@@ -107,7 +109,7 @@ int main(int argc, char** argv)
 						{	while(fgets(line, 100, sieve)!=NULL)
 							{	if(strcmp(line, family)==0)
 								{	fgets(line, 100, sieve);
-									if(strchr(line, '*')==NULL)
+									if(line!=NULL && strchr(line, '*')==NULL)
 										num	= atoi(line);
 									break;
 								}
@@ -117,6 +119,12 @@ int main(int argc, char** argv)
 
 						if(num==-1)
 							continue;
+
+						if(num>maxnum)
+							maxnum = num;
+
+						if(num<minnum)
+							minnum = num;
 
 						//printf("base: %d start: %s middle: %c end: %s\n", base, start, middle[0], end);
 						strcpy(candidate, start);
@@ -227,6 +235,8 @@ int main(int argc, char** argv)
 		}
 		else
 			perror ("Couldn't open the directory");
+
+		printf("FINISHED LEVEL %d-%d, COUNT REMAINING %d, TIME %f\n", minnum, maxnum, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
 
 	mpz_clear(p);
