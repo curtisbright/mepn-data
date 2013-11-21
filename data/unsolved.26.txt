@@ -1,12 +1,4 @@
 A*6F
-A*06F
 AM*P
-F*PCF
-G*9
-G*OO9
-G*O9
-IG*9
 I*GL
-KIA*F
-KKIA*F
 M*P
