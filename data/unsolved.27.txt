@@ -10,8 +10,6 @@ CL*E
 EI*F8
 F*9FM
 ICL*G
-IL*0G
-IL*G
 KKL*G
 KL*G
 L*0G
