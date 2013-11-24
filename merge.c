@@ -1,23 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 int main(int argc, char** argv)
 {
 	for(int base=2; base<29; base++)
-	{	char filename[100], filename2[100];
-		sprintf(filename2, "data/sieve.%d.out.txt", base);
-		FILE* in1 = fopen(filename2, "r");
-		sprintf(filename, "srsieve/sieve.%d.out.txt", base);
-		FILE* in2 = fopen(filename, "r");
-		if(in1==NULL || in2==NULL)
+	{	char filenamein1[100], filenamein2[100], filenameout[100];
+		sprintf(filenamein1, "data/sieve.%d.out.txt", base);
+		FILE* in1 = fopen(filenamein1, "r");
+		if(in1==NULL)
 			continue;
-		sprintf(filename, "srsieve/tmp-sieve.%d.out.txt", base);
-		FILE* out = fopen(filename, "w");
+		sprintf(filenamein2, "srsieve/sieve.%d.out.txt", base);
+		FILE* in2 = fopen(filenamein2, "r");
+		if(in2==NULL)
+		{	fclose(in1);
+			continue;
+		}
+		sprintf(filenameout, "srsieve/tmp-sieve.%d.out.txt", base);
+		FILE* out = fopen(filenameout, "w");
 		int min, cur;
 		char line1[100], line2[100];
-		fgets(line2, 100, in2);
-		fprintf(out, "%s", line2);
 		while(fgets(line2, 100, in2)!=NULL)
 		{	if(strchr(line2, '*')!=NULL)
 			{	min = -1;
@@ -26,7 +29,8 @@ int main(int argc, char** argv)
 				{	if(strcmp(line1, line2)==0)
 					{	fprintf(out, "%s", line2);
 						fgets(line1, 100, in1);
-						min = atoi(line1);
+						if(line1!=NULL && strchr(line1, '*')==NULL)
+							min = atoi(line1);
 						break;
 					}
 				}
@@ -42,8 +46,10 @@ int main(int argc, char** argv)
 		fclose(in2);
 		fclose(out);
 
-		remove(filename2);
-		rename(filename, filename2);
+		remove(filenamein1);
+		remove(filenamein2);
+		rename(filenameout, filenamein1);
+		execl("cp", "cp", filenamein1, filenamein2);
 	}
 
 	return 0;
