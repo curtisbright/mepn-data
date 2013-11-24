@@ -44,10 +44,11 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	for(int i=0; i<60000; i++)
+	int count = -1;
+	while(count!=0)
 	{	begin = clock();
 		dp = opendir("./data");
-		int count=0;
+		count = 0;
 		int minnum=60000;
 		int maxnum=0;
 		if(dp != NULL)
@@ -101,10 +102,12 @@ int main(int argc, char** argv)
 						else
 							gmp_sprintf(family, "%Zd*%d^n+%Zd\n", temp, base, temp3);
 
+						// Find an exponent to test
 						int num = -1;
-						char sieveout[100];
-						sprintf(sieveout, "data/sieve.%d.out.txt", base);
-						FILE* sieve = fopen(sieveout, "r");
+						char sievefilename[100], sievetmpfilename[100];
+						sprintf(sievefilename, "data/sieve.%d.out.txt", base);
+						sprintf(sievetmpfilename, "data/tmp-sieve.%d.out.txt", base);
+						FILE* sieve = fopen(sievefilename, "r");
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)
 							{	if(strcmp(line, family)==0)
@@ -155,23 +158,23 @@ int main(int argc, char** argv)
 						if(hassubword)
 						{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
 
-							char sieveoutw[100];
-							sieve = fopen(sieveout, "r");
-							sprintf(sieveoutw, "data/tmp-sieve.%d.out.txt", base);
-							FILE* sievew = fopen(sieveoutw, "w");
+							// Remove the family from the sieve file
+							sieve = fopen(sievefilename, "r");
+							FILE* sieveout = fopen(sievetmpfilename, "w");
+							char sieveline[100];
 							int removed = 0;
-							while(fgets(line, 100, sieve)!=NULL)
-							{	if(strchr(line, '*')!=NULL)
+							while(fgets(sieveline, 100, sieve)!=NULL)
+							{	if(strchr(sieveline, '*')!=NULL)
 									removed = 0;
-								if(strcmp(line, family)==0)
+								if(strcmp(sieveline, family)==0)
 									removed = 1;
 								if(removed==0)
-									fprintf(sievew, "%s", line);
+									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
-							fclose(sievew);
-							remove(sieveout);
-							rename(sieveoutw, sieveout);
+							fclose(sieveout);
+							remove(sievefilename);
+							rename(sievetmpfilename, sievefilename);
 
 							continue;
 						}
@@ -180,49 +183,54 @@ int main(int argc, char** argv)
 						result = mpz_probab_prime_p(p, 1);
 						if(result>0)
 						{	printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle[0], num, end, base);
+							
+							// Add prime to set of minimal primes
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
 
-							char sieveoutw[100];
-							sieve = fopen(sieveout, "r");
-							sprintf(sieveoutw, "data/tmp-sieve.%d.out.txt", base);
-							FILE* sievew = fopen(sieveoutw, "w");
+							// Remove the family from the sieve file
+							sieve = fopen(sievefilename, "r");
+							FILE* sieveout = fopen(sievetmpfilename, "w");
+							char sieveline[100];
 							int removed = 0;
-							while(fgets(line, 100, sieve)!=NULL)
-							{	if(strchr(line, '*')!=NULL)
+							while(fgets(sieveline, 100, sieve)!=NULL)
+							{	if(strchr(sieveline, '*')!=NULL)
 									removed = 0;
-								if(strcmp(line, family)==0)
+								if(strcmp(sieveline, family)==0)
 									removed = 1;
 								if(removed==0)
-									fprintf(sievew, "%s", line);
+									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
-							fclose(sievew);
-							remove(sieveout);
-							rename(sieveoutw, sieveout);
+							fclose(sieveout);
+							remove(sievefilename);
+							rename(sievetmpfilename, sievefilename);
 						}
 						else
 						{	//printf("%s%c^(%d)%s (base %d) not prime\n", start, middle[0], num, end, base);
+							// Family is still unsolved
 							fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							count++;
 
-							char sieveoutw[100];
-							sieve = fopen(sieveout, "r");
-							sprintf(sieveoutw, "data/tmp-sieve.%d.out.txt", base);
-							FILE* sievew = fopen(sieveoutw, "w");
-							while(fgets(line, 100, sieve)!=NULL)
-							{	if(strcmp(line, family)==0)
-								{	fprintf(sievew, "%s", line);
-									fgets(line, 100, sieve);
+							// Remove the exponent just tested from the sieve file
+							sieve = fopen(sievefilename, "r");
+							FILE* sieveout = fopen(sievetmpfilename, "w");
+							char sieveline[100];
+							while(fgets(sieveline, 100, sieve)!=NULL)
+							{	if(strcmp(sieveline, family)==0)
+								{	fprintf(sieveout, "%s", sieveline);
+									fgets(sieveline, 100, sieve);
+									if(strcmp(line, sieveline)!=0)
+										fprintf(sieveout, "%s", sieveline);
 								}
 								else
-									fprintf(sievew, "%s", line);
+									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
-							fclose(sievew);
-							remove(sieveout);
-							rename(sieveoutw, sieveout);
+							fclose(sieveout);
+							remove(sievefilename);
+							rename(sievetmpfilename, sievefilename);
 						}
 					}
 					fclose(out);
@@ -234,7 +242,7 @@ int main(int argc, char** argv)
 			(void)closedir(dp);
 		}
 		else
-			perror ("Couldn't open the directory");
+			perror("Couldn't open the directory");
 
 		printf("FINISHED LEVEL %d-%d, COUNT REMAINING %d, TIME %f\n", minnum, maxnum, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
