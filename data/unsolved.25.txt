@@ -1,10 +1,8 @@
-1*8
 4F*OO
 6MF*9
 80*1KO
 96*M
 CM1*
-C1*8
 EE1*
 E1*E
 E*FOO
