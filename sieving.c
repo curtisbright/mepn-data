@@ -111,9 +111,8 @@ int main(int argc, char** argv)
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)
 							{	if(strcmp(line, family)==0)
-								{	fgets(line, 100, sieve);
-									if(line!=NULL && strchr(line, '*')==NULL)
-										num	= atoi(line);
+								{	if(fgets(line, 100, sieve)!=NULL && strchr(line, '*')==NULL)
+										num = atoi(line);
 									break;
 								}
 							}
