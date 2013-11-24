@@ -9,6 +9,8 @@ simple: simple.c
 	gcc simple.c -o simple -O3 -lgmp -std=c99
 sieving: sieving.c
 	gcc sieving.c -o sieving -O3 -lgmp -std=c99
+merge: merge.c
+	gcc merge.c -o merge -O3 -lgmp -std=c99
 debug: FLAGS = -g -pg
 debug: kernel
 clean:
