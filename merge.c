@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 int main(int argc, char** argv)
 {
@@ -21,6 +20,8 @@ int main(int argc, char** argv)
 		FILE* out = fopen(filenameout, "w");
 		int min, cur;
 		char line1[100], line2[100];
+		fgets(line2, 100, in2);
+		fprintf(out, "%s", line2);
 		while(fgets(line2, 100, in2)!=NULL)
 		{	if(strchr(line2, '*')!=NULL)
 			{	min = -1;
@@ -49,7 +50,9 @@ int main(int argc, char** argv)
 		remove(filenamein1);
 		remove(filenamein2);
 		rename(filenameout, filenamein1);
-		execl("cp", "cp", filenamein1, filenamein2);
+		char copy[100];
+		sprintf(copy, "/bin/cp %s %s", filenamein1, filenamein2);
+		system(copy);
 	}
 
 	return 0;
