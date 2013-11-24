@@ -162,13 +162,13 @@ int main(int argc, char** argv)
 							sieve = fopen(sievefilename, "r");
 							FILE* sieveout = fopen(sievetmpfilename, "w");
 							char sieveline[100];
-							int removed = 0;
+							int thisfamily = 0;
 							while(fgets(sieveline, 100, sieve)!=NULL)
 							{	if(strchr(sieveline, '*')!=NULL)
-									removed = 0;
+									thisfamily = 0;
 								if(strcmp(sieveline, family)==0)
-									removed = 1;
-								if(removed==0)
+									thisfamily = 1;
+								if(thisfamily==0)
 									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
@@ -193,13 +193,13 @@ int main(int argc, char** argv)
 							sieve = fopen(sievefilename, "r");
 							FILE* sieveout = fopen(sievetmpfilename, "w");
 							char sieveline[100];
-							int removed = 0;
+							int thisfamily = 0;
 							while(fgets(sieveline, 100, sieve)!=NULL)
 							{	if(strchr(sieveline, '*')!=NULL)
-									removed = 0;
+									thisfamily = 0;
 								if(strcmp(sieveline, family)==0)
-									removed = 1;
-								if(removed==0)
+									thisfamily = 1;
+								if(thisfamily==0)
 									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
@@ -217,14 +217,13 @@ int main(int argc, char** argv)
 							sieve = fopen(sievefilename, "r");
 							FILE* sieveout = fopen(sievetmpfilename, "w");
 							char sieveline[100];
+							int thisfamily = 0;
 							while(fgets(sieveline, 100, sieve)!=NULL)
-							{	if(strcmp(sieveline, family)==0)
-								{	fprintf(sieveout, "%s", sieveline);
-									fgets(sieveline, 100, sieve);
-									if(strcmp(line, sieveline)!=0)
-										fprintf(sieveout, "%s", sieveline);
-								}
-								else
+							{	if(strchr(sieveline, '*')!=NULL)
+									thisfamily = 0;
+								if(strcmp(sieveline, family)==0)
+									thisfamily = 1;
+								if(!(thisfamily==1 && strcmp(line, sieveline)==0))
 									fprintf(sieveout, "%s", sieveline);
 							}
 							fclose(sieve);
