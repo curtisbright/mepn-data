@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 					mpz_submul_ui(temp2, z, (base-1)/g);
 					mpz_neg(temp3, temp2);
 					// Print family
-					/*if(mpz_sgn(temp2)>=0)
+					if(mpz_sgn(temp2)>=0)
 						if((base-1)/g==1)
 							gmp_printf("%s(%s)^n%s = %Zd*%d^n-%Zd\n", start, middle, end, temp, base, temp2);
 						else
@@ -72,8 +72,7 @@ int main(int argc, char** argv)
 						if((base-1)/g==1)
 							gmp_printf("%s(%s)^n%s = %Zd*%d^n+%Zd\n", start, middle, end, temp, base, temp3);
 						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);*/
-					//gmp_printf("%Zd\t%d\t%Zd\t%d\n", temp, base, temp3, (base-1)/g);
+							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
 
 					if(mpz_sgn(temp2)>=0)
 						gmp_fprintf(out, "%Zd*%d^n-%Zd\n", temp, base, temp2);
