@@ -105,8 +105,8 @@ int main(int argc, char** argv)
 						// Find an exponent to test
 						int num = -1;
 						char sievefilename[100], sievetmpfilename[100];
-						sprintf(sievefilename, "data/sieve.%d.out.txt", base);
-						sprintf(sievetmpfilename, "data/tmp-sieve.%d.out.txt", base);
+						sprintf(sievefilename, "data/sieve.%d.txt", base);
+						sprintf(sievetmpfilename, "data/tmp-sieve.%d.txt", base);
 						FILE* sieve = fopen(sievefilename, "r");
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)
@@ -141,7 +141,7 @@ int main(int argc, char** argv)
 						FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						//printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
+						printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
 						while(fgets(prime, MAXSTRING, kernel)!=NULL)
 						{	prime[strlen(prime)-1] = '\0';
 							int k;

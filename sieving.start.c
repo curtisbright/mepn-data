@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 				int outopen = 0;
 				if(fgets(line, 100, in)!=NULL)
 				{	outopen = 1;
-					sprintf(outfilename, "data/sieve.%d.in.txt", base);
+					sprintf(outfilename, "srsieve/sieve.%d.txt", base);
 					out = fopen(outfilename, "w");
 					rewind(in);
 				}
@@ -74,6 +74,7 @@ int main(int argc, char** argv)
 						else
 							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
 
+					//printf(out, "pmin=29\n");
 					if(mpz_sgn(temp2)>=0)
 						gmp_fprintf(out, "%Zd*%d^n-%Zd\n", temp, base, temp2);
 					else

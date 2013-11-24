@@ -9,8 +9,8 @@ simple: simple.c
 	gcc simple.c -o simple -Ofast -lgmp -std=c99
 sieving: sieving.c
 	gcc sieving.c -o sieving -Ofast -lgmp -std=c99
-sieving.in: sieving.in.c
-	gcc sieving.in.c -o sieving.in -Ofast -lgmp -std=c99
+sieving.start: sieving.start.c
+	gcc sieving.start.c -o sieving.start -Ofast -lgmp -std=c99
 merge: merge.c
 	gcc merge.c -o merge -Ofast -lgmp -std=c99
 debug: FLAGS = -g -pg
