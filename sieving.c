@@ -142,7 +142,7 @@ int main(int argc, char** argv)
 						FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						//printf("Checking %s%c*%s (base %d)...\n", start, middle, end, n);
+						//printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
 						while(fgets(prime, MAXSTRING, kernel)!=NULL)
 						{	prime[strlen(prime)-1] = '\0';
 							int k;
