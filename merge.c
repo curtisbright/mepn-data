@@ -24,12 +24,14 @@ int main(int argc, char** argv)
 		fprintf(out, "%s", line2);
 		while(fgets(line2, 100, in2)!=NULL)
 		{	if(strchr(line2, '*')!=NULL)
-			{	rewind(in1);
+			{	long pos = ftell(in2);
+				rewind(in1);
 				while(fgets(line1, 100, in1)!=NULL)
 				{	if(strcmp(line1, line2)==0)
 					{	fprintf(out, "%s", line2);
 						if(fgets(line1, 100, in1)==NULL)
 							break;
+						pos = ftell(in2);
 						if(fgets(line2, 100, in2)==NULL)
 							break;
 						while(1)
@@ -45,12 +47,15 @@ int main(int argc, char** argv)
 							{	fprintf(out, "%s", line2);
 								if(fgets(line1, 100, in1)==NULL)
 									break;
+								pos = ftell(in2);
 								if(fgets(line2, 100, in2)==NULL)
 									break;
 							}
 							else if(n1>n2)
+							{	pos = ftell(in2);
 								if(fgets(line2, 100, in2)==NULL)
 									break;
+							}
 							else if(n1<n2)
 								if(fgets(line1, 100, in1)==NULL)
 									break;
@@ -58,6 +63,7 @@ int main(int argc, char** argv)
 						break;
 					}
 				}
+				fseek(in2, pos, SEEK_SET);
 			}
 		}
 
