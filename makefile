@@ -7,8 +7,8 @@ minimal: minimal.c
 	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA $(FLAGS)
 simple: simple.c
 	gcc simple.c -o simple -Ofast -lgmp -std=c99
-sieving: sieving.c
-	gcc sieving.c -o sieving -Ofast -lgmp -std=c99
+search: search.c
+	gcc search.c -o search -Ofast -lgmp -std=c99
 sieving.start: sieving.start.c
 	gcc sieving.start.c -o sieving.start -Ofast -lgmp -std=c99
 merge: merge.c

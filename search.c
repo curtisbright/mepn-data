@@ -44,13 +44,13 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	int count = -1;
-	while(count!=0)
-	{	begin = clock();
-		dp = opendir("./data");
-		count = 0;
-		int minnum=60000;
-		int maxnum=0;
+	//int count = -1;
+	//while(count!=0)
+	for(int i=9000; i<60000; i++)
+	{	dp = opendir("./data");
+		int count = 0;
+		//int minnum=60000;
+		//int maxnum=0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -119,14 +119,17 @@ int main(int argc, char** argv)
 							fclose(sieve);
 						}
 
-						if(num==-1)
+						if(num!=i)
+						{	if(num!=-1)
+								fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							continue;
+						}
 
-						if(num>maxnum)
-							maxnum = num;
+						//if(num>maxnum)
+						//	maxnum = num;
 
-						if(num<minnum)
-							minnum = num;
+						//if(num<minnum)
+						//	minnum = num;
 
 						//printf("base: %d start: %s middle: %c end: %s\n", base, start, middle[0], end);
 						strcpy(candidate, start);
@@ -179,6 +182,7 @@ int main(int argc, char** argv)
 						}
 
 						mpz_set_str(p, candidate, base);
+						begin = clock();
 						result = mpz_probab_prime_p(p, 1);
 						if(result>0)
 						{	printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle[0], num, end, base);
@@ -209,6 +213,7 @@ int main(int argc, char** argv)
 						else
 						{	//printf("%s%c^(%d)%s (base %d) not prime\n", start, middle[0], num, end, base);
 							// Family is still unsolved
+							printf("[%f seconds]\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
 							fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							count++;
 
@@ -242,7 +247,7 @@ int main(int argc, char** argv)
 		else
 			perror("Couldn't open the directory");
 
-		printf("FINISHED LEVEL %d-%d, COUNT REMAINING %d, TIME %f\n", minnum, maxnum, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
+		//printf("FINISHED LEVEL %d, COUNT REMAINING %d, TIME %f\n", i, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
 
 	mpz_clear(p);
