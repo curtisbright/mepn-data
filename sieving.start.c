@@ -11,6 +11,9 @@ int main(int argc, char** argv)
 	DIR *dp;
 	struct dirent *ep;
 
+	mpz_t p;
+	mpz_init(p);
+
 	dp = opendir("./data");
 	if(dp != NULL)
 	{	while(ep = readdir(dp))
@@ -36,6 +39,7 @@ int main(int argc, char** argv)
 				char middle[2];
 				char end[100];
 				int count = 0;
+				fprintf(out, "pmin=29\n");
 				while(fgets(line, 100, in)!=NULL)
 				{	count++;
 					int l = (int)(strchr(line, '*')-line);
@@ -74,11 +78,24 @@ int main(int argc, char** argv)
 						else
 							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
 
-					//printf(out, "pmin=29\n");
 					if(mpz_sgn(temp2)>=0)
 						gmp_fprintf(out, "%Zd*%d^n-%Zd\n", temp, base, temp2);
 					else
 						gmp_fprintf(out, "%Zd*%d^n+%Zd\n", temp, base, temp3);
+
+					for(int num=0; num<=60000; num++)
+					{	mpz_ui_pow_ui(p, base, num);
+						mpz_mul(p, p, temp);
+						mpz_add(p, p, temp3);
+						mpz_divexact_ui(p, p, (base-1)/g);
+						// Check for factors the slow and easy way...
+						if(mpz_divisible_ui_p(p, 2)!=0 || mpz_divisible_ui_p(p, 3)!=0 || mpz_divisible_ui_p(p, 5)!=0 ||
+						mpz_divisible_ui_p(p, 7)!=0 || mpz_divisible_ui_p(p, 11)!=0 || mpz_divisible_ui_p(p, 13)!=0 ||
+						mpz_divisible_ui_p(p, 17)!=0 || mpz_divisible_ui_p(p, 19)!=0 || mpz_divisible_ui_p(p, 23)!=0 ||
+						mpz_divisible_ui_p(p, 27)!=0)
+							continue;
+						fprintf(out, "%d\n", num);
+					}
 
 					mpz_clears(x, y, z, temp, temp2, temp3, temp10, NULL);
 				}
@@ -91,6 +108,8 @@ int main(int argc, char** argv)
 	}
 	else
 		perror("Couldn't open the directory");
+
+	mpz_clear(p);
 
 	return 0;
 }
