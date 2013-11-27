@@ -1445,6 +1445,7 @@ int main(int argc, char** argv)
 	{	printf("Computes minimal primes for bases between l and h,\n");
 		printf("possibly along with a set of unsolved families.\n");
 		printf("Usage: minimal l h\n");
+		return 0;
 	}
 	else if(argc==2)
 		l = h = atoi(argv[1]);
