@@ -1,14 +1,18 @@
 report: br5.pdf
 %.pdf: %.tex
 	pdflatex $<
-	if grep "LaTeX Warning: There were undefined references." $*.log || grep '^\\nocite{\*}$$' $*.tex; then bibtex $*; pdflatex $*; fi
 	if grep "LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." $*.log; then pdflatex $*; fi
+	rm $*.log $*.aux
 minimal: minimal.c
-	gcc minimal.c -o minimal -O3 -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA $(FLAGS)
+	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA $(FLAGS)
 simple: simple.c
-	gcc simple.c -o simple -O3 -lgmp -std=c99
-sieving: sieving.c
-	gcc sieving.c -o sieving -O3 -lgmp -std=c99
+	gcc simple.c -o simple -Ofast -lgmp -std=c99
+search: search.c
+	gcc search.c -o search -Ofast -lgmp -std=c99
+sieving.start: sieving.start.c
+	gcc sieving.start.c -o sieving.start -Ofast -lgmp -std=c99
+merge: merge.c
+	gcc merge.c -o merge -Ofast -lgmp -std=c99
 debug: FLAGS = -g -pg
 debug: kernel
 clean:
