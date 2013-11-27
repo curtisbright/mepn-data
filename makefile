@@ -13,6 +13,8 @@ sieving.start: sieving.start.c
 	gcc sieving.start.c -o sieving.start -Ofast -lgmp -std=c99
 merge: merge.c
 	gcc merge.c -o merge -Ofast -lgmp -std=c99
+organize: organize.c
+	gcc organize.c -o organize -Ofast -lgmp -std=c99
 debug: FLAGS = -g -pg
 debug: kernel
 clean:
