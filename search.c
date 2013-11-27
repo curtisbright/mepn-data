@@ -44,9 +44,16 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
+	if(argc==1)
+	{	printf("After sieving has been done, this program\n");
+		printf("searches for prime candidates starting from exponent n\n");
+		printf("where n is given as a command-line argument\n");
+		return 0;
+	}
+
 	//int count = -1;
 	//while(count!=0)
-	for(int i=9000; i<60000; i++)
+	for(int i=atoi(argv[1]); i<60000; i++)
 	{	dp = opendir("./data");
 		int count = 0;
 		//int minnum=60000;
