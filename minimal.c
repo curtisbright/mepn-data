@@ -248,7 +248,7 @@ int isprime(char* p)
 {	mpz_t temp;
 	mpz_init(temp);
 	mpz_set_str(temp, p, base);
-	if(mpz_probab_prime_p(temp, 1) > 0)
+	if(mpz_probab_prime_p(temp, 25) > 0)
 	{	//gmp_printf("%Zd is prime\n", temp);
 		mpz_clear(temp);
 		return 1;
@@ -1445,6 +1445,7 @@ int main(int argc, char** argv)
 	{	printf("Computes minimal primes for bases between l and h,\n");
 		printf("possibly along with a set of unsolved families.\n");
 		printf("Usage: minimal l h\n");
+		return 0;
 	}
 	else if(argc==2)
 		l = h = atoi(argv[1]);
