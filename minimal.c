@@ -97,12 +97,14 @@ void removedupes(list* unsolved)
 	listinit(&newlist);
 	int n = 1;
 	char** strlist = malloc(n*sizeof(char*));
+	int* listpos = malloc(n*sizeof(int));
 	char* str = malloc(MAXSTRING*sizeof(char));
 	if(issimple(unsolved->fam[0]))
 		simplefamilystring(str, unsolved->fam[0]);
 	else
 		familystring(str, unsolved->fam[0]);
 	strlist[0] = str;
+	listpos[0] = 0;
 	addtolist(&newlist, unsolved->fam[0], unsolved->split[0]);
 	for(int i=1; i<unsolved->size; i++)
 	{	str = malloc(MAXSTRING*sizeof(char));
@@ -113,23 +115,41 @@ void removedupes(list* unsolved)
 		int addedtolist = 0;
 		char* temp;
 		char* last;
+		int inttemp;
+		int intlast;
 		for(int j=0; j<n; j++)
 		{	if(addedtolist)
 			{	temp = strlist[j];
 				strlist[j] = last;
 				last = temp;
+				inttemp = listpos[j];
+				listpos[j] = intlast;
+				intlast = inttemp;
 			}
 			else if(strcmp(str,strlist[j])>0)
 			{	addedtolist = 1;
 				last = strlist[j];
 				strlist[j] = str;
+				intlast = listpos[j];
+				listpos[j] = n;
 				addtolist(&newlist, unsolved->fam[i], unsolved->split[i]);
 			}
 			else if(strcmp(str,strlist[j])==0)
+			{	if(issimple(unsolved->fam[i]))
+				{	char str1[MAXSTRING], str2[MAXSTRING];
+					familystring(str1, unsolved->fam[i]);
+					familystring(str2, newlist.fam[listpos[j]]);
+					if(strlen(str1)<strlen(str2))
+					{	clearfamily(&(newlist.fam[listpos[j]]));
+						copyfamily(&(newlist.fam[listpos[j]]), unsolved->fam[i]);
+					}
+				}
 				break;
+			}
 			else if(j==n-1)
 			{	addedtolist = 1;
 				last = str;
+				intlast = n;
 				addtolist(&newlist, unsolved->fam[i], unsolved->split[i]);
 			}
 		}
@@ -137,6 +157,8 @@ void removedupes(list* unsolved)
 		{	n++;
 			strlist = realloc(strlist, n*sizeof(char*));
 			strlist[n-1] = last;
+			listpos = realloc(listpos, n*sizeof(int));
+			listpos[n-1] = intlast;
 		}
 		else
 			free(str);
@@ -149,6 +171,7 @@ void removedupes(list* unsolved)
 	for(int i=0; i<n; i++)
 		free(strlist[i]);
 	free(strlist);
+	free(listpos);
 }
 
 int issimple(family f)
