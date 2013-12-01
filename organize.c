@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	dp = opendir("./data");
 	if(dp != NULL)
 	{	while(ep = readdir(dp))
-		{	char filename[100];
+		{	char filename[100], tmpfilename[100];
 			strcpy(filename, ep->d_name);
 			filename[7] = '\0';
 			if(strcmp(filename, "minimal")==0)
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 				int n = atoi(filename+8);
 				sprintf(filename, "data/%s", ep->d_name);
 				FILE* in = fopen(filename, "r");
-				sprintf(filename, "data/org-%s", ep->d_name);
+				sprintf(tmpfilename, "data/org-%s", ep->d_name);
 
 				printf("organizing base %d...\n", n);
 
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 
 				qsort(lines, numlines, sizeof(char*), compare);
 
-				FILE* out = fopen(filename, "w");
+				FILE* out = fopen(tmpfilename, "w");
 
 				for(int i=0; i<numlines; i++)
 				{	int hassubword = 0;
@@ -80,8 +80,11 @@ int main(int argc, char** argv)
 
 				fclose(out);
 
-				//remove(ep->d_name);
-				//rename(filename, ep->d_name);
+				for(int i=0; i<numlines; i++)
+					free(lines[i]);
+
+				remove(filename);
+				rename(tmpfilename, filename);
 			}
 		}
 		(void)closedir(dp);
