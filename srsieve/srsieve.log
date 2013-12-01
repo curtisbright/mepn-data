@@ -202,3 +202,21 @@ Fri Nov 29 06:25:40 2013 srsieve stopped: at p=143407382257 because SIGINT was r
 Fri Nov 29 06:25:40 2013 srsieve stopped: at p=513637024567 because SIGINT was received.
 Fri Nov 29 06:25:41 2013 srsieve stopped: at p=160310497493 because SIGINT was received.
 Fri Nov 29 06:25:42 2013 srsieve stopped: at p=736578952933 because SIGINT was received.
+Fri Nov 29 18:10:48 2013 srsieve started: 15889 <= n <= 59949, 899278379833 <= p <= 4899278379833
+Fri Nov 29 18:10:49 2013 srsieve started: 15831 <= n <= 59997, 574784903867 <= p <= 4574784903867
+Fri Nov 29 18:10:50 2013 srsieve started: 15826 <= n <= 59992, 317584451167 <= p <= 4317584451167
+Fri Nov 29 18:10:50 2013 srsieve started: 15827 <= n <= 59999, 351469703251 <= p <= 4351469703251
+Fri Nov 29 18:10:51 2013 srsieve started: 15863 <= n <= 59993, 288753861251 <= p <= 4288753861251
+Fri Nov 29 18:10:52 2013 srsieve started: 15824 <= n <= 59998, 143407382257 <= p <= 4143407382257
+Fri Nov 29 18:10:53 2013 srsieve started: 15848 <= n <= 59999, 513637024567 <= p <= 4513637024567
+Fri Nov 29 18:10:54 2013 srsieve started: 15817 <= n <= 59998, 160310497493 <= p <= 4160310497493
+Fri Nov 29 18:10:55 2013 srsieve started: 25915 <= n <= 59983, 736578952933 <= p <= 4736578952933
+Sat Nov 30 21:26:31 2013 srsieve stopped: at p=1159863213967 because SIGINT was received.
+Sat Nov 30 21:26:31 2013 srsieve stopped: at p=767193271987 because SIGINT was received.
+Sat Nov 30 21:26:32 2013 srsieve stopped: at p=406994626697 because SIGINT was received.
+Sat Nov 30 21:26:32 2013 srsieve stopped: at p=480736435987 because SIGINT was received.
+Sat Nov 30 21:26:33 2013 srsieve stopped: at p=371940302497 because SIGINT was received.
+Sat Nov 30 21:26:33 2013 srsieve stopped: at p=184970636737 because SIGINT was received.
+Sat Nov 30 21:26:34 2013 srsieve stopped: at p=663208763731 because SIGINT was received.
+Sat Nov 30 21:26:35 2013 srsieve stopped: at p=206645901971 because SIGINT was received.
+Sat Nov 30 21:26:35 2013 srsieve stopped: at p=910873950307 because SIGINT was received.
