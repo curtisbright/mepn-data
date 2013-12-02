@@ -61,6 +61,7 @@ int issimple(family f);
 
 int base;
 int depth;
+int iter;
 kernel K;
 int prsize;
 char* pr;
@@ -1227,7 +1228,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && f->numrepeats[i]<=4 && (!nosubword(str1)))
+					else if(m==i && iter>5 && (!nosubword(str1)))
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1270,7 +1271,7 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && f->numrepeats[i]<=4 && (!nosubword(str2)))
+					else if(m==i && iter>5 && (!nosubword(str2)))
 					{	family newf;
 						familyinit(&newf);
 						for(int l=0; l<f->len; l++)
@@ -1530,7 +1531,7 @@ int main(int argc, char** argv)
 					free(middles);
 			}
 
-		for(int i=0; ; i++)
+		for(iter=0; ; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
@@ -1575,7 +1576,7 @@ int main(int argc, char** argv)
 
 					splititer++;
 #ifdef PRINTSTATS
-					printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, i, splititer, K.size, unsolved.size);
+					printf("base %d\titeration %d\tsplit %d\tsize %d\tremain %d\n", base, iter, splititer, K.size, unsolved.size);
 #endif
 				}
 			}
@@ -1587,7 +1588,7 @@ int main(int argc, char** argv)
 			clearlist(&unsolved);
 
 			for(int j=0; j<oldlist.size; j++)
-				explore(oldlist.fam[j], i%2, (i/2)%2, &unsolved);
+				explore(oldlist.fam[j], iter%2, (iter/2)%2, &unsolved);
 
 			clearlist(&oldlist);
 			removedupes(&unsolved);
@@ -1599,7 +1600,7 @@ int main(int argc, char** argv)
 
 #ifdef PRINTITER
 			char filename[100];
-			sprintf(filename, "unsolved-base%d-iter%d.txt", base, i);
+			sprintf(filename, "unsolved-base%d-iter%d.txt", base, iter);
 			FILE* out = fopen(filename, "w");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
@@ -1609,7 +1610,7 @@ int main(int argc, char** argv)
 			fclose(out);
 
 			filename[100];
-			sprintf(filename, "minimal-base%d-iter%d.txt", base, i);
+			sprintf(filename, "minimal-base%d-iter%d.txt", base, iter);
 			out = fopen(filename, "w");
 			for(int j=0; j<K.size; j++)
 			{	fprintf(out, "%s\n", K.primes[j]);
