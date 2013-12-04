@@ -1165,6 +1165,47 @@ int split(family* f, list* unsolved, char insplit)
 				return 1;
 			}
 
+			mpz_t gcd, empty, temp;
+			mpz_inits(gcd, empty, temp, NULL);
+			emptyinstancestring(str, *f);
+			mpz_set_str(empty, str, base);
+			mpz_set_str(gcd, str, base);
+			for(int ii=0; ii<f->len; ii++)
+			{	for(int jj=0; jj<f->numrepeats[ii]; jj++)
+				{	instancestring(str, *f, ii, jj);
+					mpz_set_str(temp, str, base);
+					if(i!=ii || j!=jj)
+						mpz_gcd(gcd, gcd, temp);
+				}
+			}
+
+			if(mpz_cmp_ui(gcd, 1)>0 && mpz_cmp(empty, gcd)>0)
+			{	mpz_clears(gcd, empty, temp, NULL);
+
+				family copyf;
+				familyinit(&copyf);
+				for(int ii=0; ii<f->len; ii++)
+					{	char* repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
+						memcpy(repeatscopy, f->repeats[ii], f->numrepeats[ii]*sizeof(char));
+						adddigit(&copyf, f->digit[ii], repeatscopy, f->numrepeats[ii]);
+						if(i==ii)
+						{	repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
+							memcpy(repeatscopy, f->repeats[ii], f->numrepeats[ii]*sizeof(char));
+							adddigit(&copyf, f->repeats[i][j], repeatscopy, f->numrepeats[i]);
+						}	
+					}
+				addtolist(unsolved, copyf, 2);
+#ifdef PRINTSPLITNEW
+				familystring(str, *f);
+				printf("%s splits into ", str);
+				familystring(str, copyf);
+				printf("%s\n", str);
+#endif
+				clearfamily(&copyf);
+
+				return 1;
+			}
+
 		}
 	}
 	addtolist(unsolved, *f, 1);
