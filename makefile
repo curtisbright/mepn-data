@@ -4,7 +4,7 @@ report: br5.pdf
 	if grep "LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." $*.log; then pdflatex $*; fi
 	rm $*.log $*.aux
 minimal: minimal.c
-	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA $(FLAGS)
+	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA
 simple: simple.c
 	gcc simple.c -o simple -Ofast -lgmp -std=c99
 search: search.c
@@ -15,7 +15,7 @@ merge: merge.c
 	gcc merge.c -o merge -Ofast -lgmp -std=c99
 organize: organize.c
 	gcc organize.c -o organize -Ofast -lgmp -std=c99
-debug: FLAGS = -g -pg
-debug: kernel
+summary: summary.c
+	gcc summary.c -o summary -Ofast -lgmp -std=c99
 clean:
 	rm kernel
