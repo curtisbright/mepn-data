@@ -661,13 +661,21 @@ yielded a prime, but for which there is no obvious reason why there can't be a p
 In such a case, the only way to proceed is to test the primality of larger and larger numbers of such form and hope
 a prime is eventually discovered.
 
-Simple families contain numbers of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
-Unless $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large, so one
-must resort to a pseudoprimality test like Miller--Rabin.  Since even this can be expensive, it is advantageous to perform
-some trial divisions first, to quickly rule out composites.  In fact, since we will need to test divisibility by $p$ for many
-different values of $n$, it is more efficient to solve the discrete log problem $b^n\equiv-c/a\pmod{p}$ instead.
-If it has a solution then one can sieve out all the numbers under consideration divisible by $p$ after also computing
-the order of $b\pmod{p}$. [Reference for this?]
+The numbers in simple families are of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
+Except when $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large.
+In this case one must resort to a pseudoprimality test such as a Miller--Rabin test, unless a divisor of the number can be found.
+Since we are testing many numbers in an exponential sequence, it is possible to use a sieving process to find divisors
+rather than using trial division.
+
+To do this, we made use of Geoffrey Reynolds' srsieve software~\cite{srsieve}.  This program uses the baby-step giant-step
+algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
+handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and manually
+removed those numbers for which $p\mid(ab^n+c)/d$.
+
+After the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
+In the case $d=1$ we used the software LLR by Jean Penn\'e~\cite{llr}, and when $d>1$ we used custom software written using GMP~\cite{gmp}.
+In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
+we employed PRIMO by Marcel Martin~\cite{primo}, an elliptic curve primality proving implementation.
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
 \node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=8cm]
@@ -709,19 +717,13 @@ the corresponding family.
 For bases between 17 and 28 a lower bound on the size and width of
 $M(L_b)$ is given, along with the number of families of the form
 $xy^*z$ for which no prime member could be found, nor could the family be
-ruled out as only containing composites.  Since simple families can contain at
+ruled out as only containing composites.  Since such simple families can contain at
 most one minimal prime, an upper bound on $\abs{M(L_b)}$ is given by the
 sum of the lower bound for $\abs{M(L_b)}$ and the number of unsolved families.
 
-Some of our results assume that a number which has passed several Miller--Rabin
-tests is in fact prime, since in some cases (e.g., $b=13$) a candidate
-element of $M(L_b)$ is too long to be proven prime rigorously.
-In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
-we employed PRIMO~\cite{primo}, an elliptic curve primality proving implementation.
-
-The 41 unsolved families have all been tested to at least length 60000 without
+The 41 unsolved families have all been tested to at least length 25000 without
 a prime being found.  The family $\8\0^*\1$ in base 23, corresponding to the
-numbers $8\cdot23^n+1$, was found to be prime
+generalized Proth numbers $8\cdot23^n+1$, was found to be prime
 for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
 
@@ -752,10 +754,10 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 24 & 306 & 100 & 0 \\ 
 25\mathrlap{^*} & \geq17591 & \geq18470 & 18 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
-27\mathrlap{^*} & \geq17207 & \geq50632 & 9 \\ 
+27\mathrlap{^*} & \geq17207 & \geq49643 & 9 \\ 
 28\mathrlap{^*} & \geq5782 & \geq4242 & 2 
 \end{array}\]
-\begin{center}$^*$Data based on results of Miller--Rabin pseudoprimality tests.\end{center}
+\begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
 \caption{Summary of results for the prime numbers for each base $b$.}
 \label{resultsfig}
 \end{figure}
@@ -771,6 +773,10 @@ Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^
 Base 28: $\mathtt{O4O^*9}$, $\mathtt{OA^*F}$
 
 \section{Some additional strategies}
+
+The strategies discussed so far suffice to simplify the possible forms of minimal primes to a finite number of simple families in all bases $2\leq b\leq 28$.
+However, as $b$ increased, in addition to the calculations becoming more costly, 
+it was found to be necessary to use increasingly complicated strategies.  We describe one which was found to be helpful in base 29.
 
 \section{Composite numbers}
 
@@ -849,7 +855,22 @@ b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 10 & 32 & 3 \\
 11 & 32 & 3\\
 12 & 46 & 4 \\
-13 & 43 & 3
+13 & 43 & 3 \\
+14 & 52 & \\
+15 & 54 & \\
+16 & 60 & \\
+17 & 60 & \\
+18 & 95 & \\
+19 & 77 & \\
+20 & 87 & \\
+21 & 90 & \\
+22 & 94 & \\
+23 & 97 & \\
+24 & 137 & \\
+25 & 117 & \\
+26 & 111 & \\
+27 & 115 & \\
+28 & 131
 \end{array}\]
 \caption{Summary of results for the composite numbers for each base $b$.}
 \label{ttwo}
@@ -918,9 +939,17 @@ Addison-Wesley, 1979.
 \newblock {\it Sierpinski conjectures and proofs},
 \url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
 
-\bibitem{crus}  T. Granlund et al.
+\bibitem{gmp}  T. Granlund et al.
 \newblock {\it The GNU Multiple Precision Arithmetic Library},
 \url{http://gmplib.org/}.
+
+\bibitem{llr}  J. Penn\'e.
+\newblock {\it LLR Version 3.8.9},
+\url{http://jpenne.free.fr/index2.html}.
+
+\bibitem{srsieve}  G. Reynolds.
+\newblock {\it Sierpinski/Riesel Sieve Version 0.6.17},
+\url{https://sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
 
 \end{thebibliography}
 
