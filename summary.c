@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#define MAXSTRING 200000
+#define MAXSTRING 120000
 
 struct data {
 	int level;
@@ -45,7 +45,15 @@ int main(int argc, char** argv)
 				while(fgets(line, MAXSTRING, in)!=NULL)
 				{	numlines++;
 					lines = realloc(lines, sizeof(char*)*numlines);
-					lines[numlines-1] = malloc(MAXSTRING);
+					if(lines==NULL)
+					{	printf("couldn't allocate %d bytes\n", sizeof(char*)*numlines);
+						exit(1);
+					}
+					lines[numlines-1] = malloc(strlen(line)+1);
+					if(lines[numlines-1]==NULL)
+					{	printf("couldn't allocate %d bytes\n", strlen(line)+1);
+						exit(1);
+					}
 					strcpy(lines[numlines-1], line);
 					lines[numlines-1][strlen(line)-1] = '\0';
 					if(strlen(lines[numlines-1])>maxsize)
@@ -54,6 +62,10 @@ int main(int argc, char** argv)
 
 				//printf("%d\t size %d\tlength %d\n", n, numlines, maxsize);
 				levels = realloc(levels, sizeof(struct data)*count);
+				if(levels==NULL)
+				{	printf("couldn't allocate %d bytes\n", sizeof(struct data)*count);
+					exit(1);
+				}
 				levels[count-1].level = n;
 				levels[count-1].size = numlines;
 				levels[count-1].width = maxsize;
