@@ -5,49 +5,16 @@
 #include <string.h>
 #include <time.h>
 #include <gmp.h>
-#define MAXSTRING 60100
-
-int subword(char* prime, char* start, char middle, char* end, int* k)
-{	int i=0, j=0, l=0;
-	*k = 0;
-	while(1)
-	{	if(j!=strlen(start))
-		{	if(prime[i]==start[j])
-				i++;
-			j++;
-		}
-		else if(l==0 && prime[i]==middle)
-		{	(*k)++;
-			i++;
-		}
-		else
-		{	if(prime[i]==end[l])
-				i++;
-			l++;
-		}
-		if(i==strlen(prime))
-			return 1;
-		else if(l==strlen(end)+1)
-			return 0;
-	}
-}
 
 int main(int argc, char** argv)
 {
 	DIR *dp;
-	struct dirent *ep;     
-
-	int result;
-	clock_t begin, end;	
-	double time_spent;
-
-	mpz_t p;
-	mpz_init(p);
+	struct dirent *ep;
 
 	if(argc==1)
 	{	printf("After sieving has been done, this program\n");
-		printf("searches for prime candidates starting from exponent n\n");
-		printf("where n is given as a command-line argument\n");
+		printf("converts the sieve data for sequences with no\n");
+		printf("denominator into ABC format (suitable for LLR)\n");
 		return 0;
 	}
 
@@ -74,7 +41,6 @@ int main(int argc, char** argv)
 					char start[100];
 					char middle[2];
 					char end[100];
-					char candidate[MAXSTRING];
 					while(fgets(line, 100, in)!=NULL)
 					{	int l = (int)(strchr(line, '*')-line);
 						middle[0] = line[l-1];
@@ -164,13 +130,9 @@ int main(int argc, char** argv)
 		}
 		else
 			perror("Couldn't open the directory");
-
-		//printf("FINISHED LEVEL %d, COUNT REMAINING %d, TIME %f\n", i, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
 
 	fclose(abc);
-
-	mpz_clear(p);
 
 	return 0;
 }
