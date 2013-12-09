@@ -51,13 +51,9 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	//int count = -1;
-	//while(count!=0)
 	for(int i=atoi(argv[1]); i<60000; i++)
 	{	dp = opendir("./data");
 		int count = 0;
-		//int minnum=60000;
-		//int maxnum=0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -127,16 +123,9 @@ int main(int argc, char** argv)
 						}
 
 						if(num!=i)
-						{	if(num!=-1)
-								fprintf(out, "%s%c*%s\n", start, middle[0], end);
+						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							continue;
 						}
-
-						//if(num>maxnum)
-						//	maxnum = num;
-
-						//if(num<minnum)
-						//	minnum = num;
 
 						//printf("base: %d start: %s middle: %c end: %s\n", base, start, middle[0], end);
 						strcpy(candidate, start);
@@ -253,8 +242,6 @@ int main(int argc, char** argv)
 		}
 		else
 			perror("Couldn't open the directory");
-
-		//printf("FINISHED LEVEL %d, COUNT REMAINING %d, TIME %f\n", i, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
 
 	mpz_clear(p);
