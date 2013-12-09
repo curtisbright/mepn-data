@@ -12,5 +12,7 @@ organize: organize.c
 	gcc organize.c -o organize -Ofast -lgmp -std=c99
 summary: summary.c
 	gcc summary.c -o summary -Ofast -lgmp -std=c99
+toabc: toabc.c
+	gcc toabc.c -o toabc -Ofast -lgmp -std=c99
 clean:
 	rm -f minimal simple search sieving.start merge organize summary
