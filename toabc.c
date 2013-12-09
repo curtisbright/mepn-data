@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 							fclose(sieve);
 						}
 
-						if(num==-1)
+						if(num!=i)
 							continue;
 
 						if(mpz_sgn(temp2)>=0)
