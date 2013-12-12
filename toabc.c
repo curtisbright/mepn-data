@@ -13,15 +13,15 @@ int main(int argc, char** argv)
 
 	if(argc==1)
 	{	printf("After sieving has been done, this program\n");
-		printf("converts the sieve data for sequences with no\n");
-		printf("denominator into ABC format (suitable for LLR)\n");
+		printf("converts the sieve data into ABC format\n");
+		printf("which is suitable for testing with LLR\n");
 		return 0;
 	}
 
 	FILE* abc = fopen("data/sieve.abc", "w");
 
-	printf("ABC $a*$b^$c$d\n");
-	fprintf(abc, "ABC $a*$b^$c$d\n");
+	printf("ABC ($a*$b^$c$d)/$e\n");
+	fprintf(abc, "ABC ($a*$b^$c$d)/$e\n");
 
 	for(int i=atoi(argv[1]); i<60000; i++)
 	{	dp = opendir("./data");
@@ -67,9 +67,6 @@ int main(int argc, char** argv)
 						mpz_submul_ui(temp2, z, (base-1)/g);
 						mpz_neg(temp3, temp2);
 
-						if((base-1)/g!=1)
-							continue;
-
 						char family[100];
 						if(mpz_sgn(temp2)>=0)
 							gmp_sprintf(family, "%Zd*%d^n-%Zd\n", temp, base, temp2);
@@ -96,12 +93,12 @@ int main(int argc, char** argv)
 							continue;
 
 						if(mpz_sgn(temp2)>=0)
-						{	gmp_printf("%Zd %d %d -%Zd\n", temp, base, num, temp2);
-							gmp_fprintf(abc, "%Zd %d %d -%Zd\n", temp, base, num, temp2);
+						{	gmp_printf("%Zd %d %d -%Zd %d\n", temp, base, num, temp2, (base-1)/g);
+							gmp_fprintf(abc, "%Zd %d %d -%Zd %d\n", temp, base, num, temp2, (base-1)/g);
 						}
 						else
-						{	gmp_printf("%Zd %d %d +%Zd\n", temp, base, num, temp3);
-							gmp_fprintf(abc, "%Zd %d %d +%Zd\n", temp, base, num, temp3);
+						{	gmp_printf("%Zd %d %d +%Zd %d\n", temp, base, num, temp3, (base-1)/g);
+							gmp_fprintf(abc, "%Zd %d %d +%Zd %d\n", temp, base, num, temp3, (base-1)/g);
 						}
 
 						// Remove the exponent from the sieve file
