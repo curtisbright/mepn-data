@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <dirent.h>
 #include <string.h>
 #include <gmp.h>
@@ -10,6 +11,7 @@ int count = 0;
 
 int main(int argc, char** argv)
 {
+	struct timeval start, end;
 	DIR *dp;
 	struct dirent *ep;
 	mpz_t p;
@@ -27,13 +29,19 @@ int main(int argc, char** argv)
 				sprintf(filename, "data/%s", ep->d_name);
 				FILE* in = fopen(filename, "r");
 				printf("Checking base %d...\n", n);
+				int count = 0;
+				gettimeofday(&start, 0);
 				char line[MAXSTRING];
 				while(fgets(line, MAXSTRING, in)!=NULL)
-				{	mpz_set_str(p, line, n);
+				{	count++;
+					mpz_set_str(p, line, n);
 					if(mpz_probab_prime_p(p, 1)==0)
 						gmp_printf("%s (base %d) not prime!\n", line, n);
 				}
 				fclose(in);
+				gettimeofday(&end, 0);
+				double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_usec - start.tv_usec)/1000000.0F);
+				printf("Completed base %d: %d minimal elements checked for pseudoprimality in %.2f sec\n", n, count, elapsed);
 			}
 		}
 		(void)closedir(dp);
