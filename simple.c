@@ -40,7 +40,13 @@ int main(int argc, char** argv)
 	int result;
 	clock_t begin, end;	
 	double time_spent;
-	long i, j, m=1000000;
+
+	if(argc==1)
+	{	printf("This program searches unsolved simple families\n");
+		printf("for prime candidates starting from exponent n\n");
+		printf("where n is given as a command-line argument\n");
+		return 0;
+	}
 
 	mpz_t p;
 	mpz_init(p);
@@ -130,7 +136,7 @@ int main(int argc, char** argv)
 			(void)closedir(dp);
 		}
 		else
-			perror ("Couldn't open the directory");
+			perror("Couldn't open the directory");
 
 		printf("FINISHED LEVEL %d, COUNT REMAINING %d, TIME %f\n", num, count, (double)(clock()-begin)/CLOCKS_PER_SEC);
 	}
