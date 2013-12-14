@@ -562,21 +562,21 @@ int hasdivisor(family p)
 		mpz_set_ui(gcd2, 0);
 	}
 
-	if(numrepeats<3)
+	if(numrepeats==2)
 	{	emptyinstancestring(str, p);
 		mpz_set_str(gcd1, str, base);
 		for(int i=0; i<p.len; i++)
 			for(int j=0; j<p.numrepeats[i]; j++)
-				for(int k=0; k<p.len; k++)
-					for(int l=0; l<p.numrepeats[k]; l++)
-					{	doubleinstancestring(str, p, i, j, k, l);
-						mpz_set_str(temp, str, base);
-						mpz_gcd(gcd1, gcd1, temp);
-					}
+				for(int l=0; l<p.numrepeats[i]; l++)
+				{	doubleinstancestring(str, p, i, j, i, l);
+					mpz_set_str(temp, str, base);
+					mpz_gcd(gcd1, gcd1, temp);
+				}
 
+		int i;
 		int gcdbeenset = 0;
-		for(int i=0; i<p.len; i++)
-			for(int j=0; j<p.numrepeats[i]; j++)
+		for(i=0; i<p.len; i++)
+		{	for(int j=0; j<p.numrepeats[i]; j++)
 			{	instancestring(str, p, i, j);
 				mpz_set_str(temp, str, base);
 				if(gcdbeenset)
@@ -585,24 +585,80 @@ int hasdivisor(family p)
 				{	gcdbeenset = 1;
 					mpz_set(gcd2, temp);
 				}
-			}
-
-		for(int i=0; i<p.len; i++)
-			for(int j=0; j<p.numrepeats[i]; j++)
 				for(int k=0; k<p.len; k++)
 					for(int l=0; l<p.numrepeats[k]; l++)
-						for(int m=0; m<p.len; m++)
-							for(int n=0; n<p.numrepeats[m]; n++)
-							{	tripleinstancestring(str, p, i, j, k, l, m, n);
-								mpz_set_str(temp, str, base);
-								mpz_gcd(gcd2, gcd2, temp);
-							}
+						for(int n=0; n<p.numrepeats[k]; n++)
+						{	tripleinstancestring(str, p, i, j, k, l, k, n);
+							mpz_set_str(temp, str, base);
+							mpz_gcd(gcd2, gcd2, temp);
+						}
+			}
+			if(p.numrepeats[i]>0)
+				break;
+		}
+		int firstrepeat = i;
 
-		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0)
+		gcdbeenset = 0;
+		for(i=firstrepeat+1; i<p.len; i++)
+		{	for(int j=0; j<p.numrepeats[i]; j++)
+			{	instancestring(str, p, i, j);
+				mpz_set_str(temp, str, base);
+				if(gcdbeenset)
+					mpz_gcd(temp2, temp2, temp);
+				else
+				{	gcdbeenset = 1;
+					mpz_set(temp2, temp);
+				}
+				for(int k=0; k<p.len; k++)
+					for(int l=0; l<p.numrepeats[k]; l++)
+						for(int n=0; n<p.numrepeats[k]; n++)
+						{	tripleinstancestring(str, p, i, j, k, l, k, n);
+							mpz_set_str(temp, str, base);
+							mpz_gcd(temp2, temp2, temp);
+						}
+			}
+			if(p.numrepeats[i]>0)
+				break;
+		}
+		int secondrepeat = i;
+
+		gcdbeenset = 0;
+		for(int j=0; j<p.numrepeats[firstrepeat]; j++)
+			for(int l=0; l<p.numrepeats[secondrepeat]; l++)
+			{	doubleinstancestring(str, p, firstrepeat, j, secondrepeat, l);
+				mpz_set_str(temp, str, base);
+				if(gcdbeenset)
+					mpz_gcd(temp3, temp3, temp);
+				else
+				{	gcdbeenset = 1;
+					mpz_set(temp3, temp);
+				}
+			}
+
+		for(i=0; i<p.numrepeats[firstrepeat]; i++)
+			for(int j=0; j<p.numrepeats[firstrepeat]; j++)
+				for(int k=0; k<p.numrepeats[firstrepeat]; k++)
+					for(int l=0; l<p.numrepeats[secondrepeat]; l++)
+					{	quadinstancestring(str, p, firstrepeat, i, firstrepeat, j, firstrepeat, k, secondrepeat, l);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(temp3, temp3, temp);
+					}
+
+		for(i=0; i<p.numrepeats[firstrepeat]; i++)
+			for(int j=0; j<p.numrepeats[secondrepeat]; j++)
+				for(int k=0; k<p.numrepeats[secondrepeat]; k++)
+					for(int l=0; l<p.numrepeats[secondrepeat]; l++)
+					{	quadinstancestring(str, p, firstrepeat, i, secondrepeat, j, secondrepeat, k, secondrepeat, l);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(temp3, temp3, temp);
+					}
+
+		if(mpz_cmp_ui(gcd1, 1)>0 && mpz_cmp_ui(gcd2, 1)>0 && mpz_cmp(empty, gcd1)>0 && mpz_cmp(empty, gcd2)>0 &&
+			mpz_cmp_ui(temp2, 1)>0 && mpz_cmp_ui(temp3, 1)>0 && mpz_cmp(empty, temp2)>0 && mpz_cmp(empty, temp3)>0)
 		{	
-#ifdef PRINTDIVISORTWO
+#ifdef PRINTDIVISORTWONEW
 			familystring(str, p);
-			gmp_printf("%s has two divisors %Zd and %Zd\n", str, gcd1, gcd2);
+			gmp_printf("%s has four divisors %Zd, %Zd, %Zd, and %Zd\n", str, gcd1, gcd2, temp2, temp3);
 #endif
 			mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 			return 1;
