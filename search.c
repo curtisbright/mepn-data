@@ -5,7 +5,10 @@
 #include <string.h>
 #include <time.h>
 #include <gmp.h>
-#define MAXSTRING 60100
+#define MAXSTRING 120000
+
+FILE *popen(const char *command, const char *type);
+int pclose(FILE *stream);
 
 int subword(char* prime, char* start, char middle, char* end, int* k)
 {	int i=0, j=0, l=0;
@@ -35,11 +38,7 @@ int subword(char* prime, char* start, char middle, char* end, int* k)
 int main(int argc, char** argv)
 {
 	DIR *dp;
-	struct dirent *ep;     
-
-	int result;
-	clock_t begin, end;	
-	double time_spent;
+	struct dirent *ep;
 
 	mpz_t p;
 	mpz_init(p);
@@ -53,7 +52,6 @@ int main(int argc, char** argv)
 
 	for(int i=atoi(argv[1]); i<60000; i++)
 	{	dp = opendir("./data");
-		int count = 0;
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -100,10 +98,7 @@ int main(int argc, char** argv)
 						mpz_neg(temp3, temp2);
 
 						char family[100];
-						if(mpz_sgn(temp2)>=0)
-							gmp_sprintf(family, "%Zd*%d^n-%Zd\n", temp, base, temp2);
-						else
-							gmp_sprintf(family, "%Zd*%d^n+%Zd\n", temp, base, temp3);
+						gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp3);
 
 						// Find an exponent to test
 						int num = -1;
@@ -127,12 +122,10 @@ int main(int argc, char** argv)
 							continue;
 						}
 
-						//printf("base: %d start: %s middle: %c end: %s\n", base, start, middle[0], end);
 						strcpy(candidate, start);
 						for(int j=0; j<num; j++)
 							sprintf(candidate, "%s%c", candidate, middle[0]);
 						strcat(candidate, end);
-						//printf("candidate: %s\n", candidate);
 
 						char kernelfilename[100];
 						sprintf(kernelfilename, "data/minimal.%d.txt", base);
@@ -177,13 +170,20 @@ int main(int argc, char** argv)
 							continue;
 						}
 
-						mpz_set_str(p, candidate, base);
-						begin = clock();
-						result = mpz_probab_prime_p(p, 1);
-						if(result>0)
-						{	printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle[0], num, end, base);
-							
-							// Add prime to set of minimal primes
+						FILE* llrfile = fopen("llr.in", "w");
+						fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
+						gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
+						fclose(llrfile);
+
+						char output[1000000];
+						FILE* llrprocess = popen("./llr llr.in -d -oOutputIterations=1000000", "r");
+						int n = fread(output, 1, 999999, llrprocess);
+						output[n] = '\0';
+						pclose(llrprocess);
+						printf("%s", strstr(output, "\r("));
+
+						if(strstr(output, "PRP")!=NULL)
+						{	// Add prime to set of minimal primes
 							FILE* append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
@@ -206,12 +206,9 @@ int main(int argc, char** argv)
 							remove(sievefilename);
 							rename(sievetmpfilename, sievefilename);
 						}
-						else
-						{	//printf("%s%c^(%d)%s (base %d) not prime\n", start, middle[0], num, end, base);
-							// Family is still unsolved
-							printf("[%f seconds]\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
+						else if(strstr(output, "is not prime")!=NULL)
+						{	// Family is still unsolved
 							fprintf(out, "%s%c*%s\n", start, middle[0], end);
-							count++;
 
 							// Remove the exponent just tested from the sieve file
 							sieve = fopen(sievefilename, "r");
@@ -230,6 +227,9 @@ int main(int argc, char** argv)
 							fclose(sieveout);
 							remove(sievefilename);
 							rename(sievetmpfilename, sievefilename);
+						}
+						else
+						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 						}
 					}
 					fclose(out);
