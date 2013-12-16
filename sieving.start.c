@@ -11,6 +11,13 @@ int main(int argc, char** argv)
 	DIR *dp;
 	struct dirent *ep;
 
+	if(argc==1)
+	{	printf("Initializes sieve files for all unsolved families\n");
+		printf("between exponents m and n, given on the command-line\n");
+		printf("which may then be processed by srsieve\n");
+		printf("Current unsolved families:\n");
+	}
+
 	mpz_t p;
 	mpz_init(p);
 
@@ -78,7 +85,7 @@ int main(int argc, char** argv)
 					if(outopen)
 					{	gmp_fprintf(out, "%Zd*%d^n%+Zd\n", temp, base, temp3);
 
-						for(int num=0; num<=atoi(argv[1]); num++)
+						for(int num=atoi(argv[1]); num<=atoi(argv[2]); num++)
 						{	mpz_ui_pow_ui(p, base, num);
 							mpz_mul(p, p, temp);
 							mpz_add(p, p, temp3);
