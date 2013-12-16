@@ -11,6 +11,13 @@ int main(int argc, char** argv)
 	DIR *dp;
 	struct dirent *ep;
 
+	if(argc==1)
+	{	printf("Initializes sieve files for all unsolved families\n");
+		printf("between exponents m and n, given on the command-line\n");
+		printf("which may then be processed by srsieve\n");
+		printf("Current unsolved families:\n");
+	}
+
 	mpz_t p;
 	mpz_init(p);
 
@@ -70,24 +77,15 @@ int main(int argc, char** argv)
 					mpz_submul_ui(temp2, z, (base-1)/g);
 					mpz_neg(temp3, temp2);
 					// Print family
-					if(mpz_sgn(temp2)>=0)
-						if((base-1)/g==1)
-							gmp_printf("%s(%s)^n%s = %Zd*%d^n-%Zd\n", start, middle, end, temp, base, temp2);
-						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n-%Zd)/%d\n", start, middle, end, temp, base, temp2, (base-1)/g);
+					if((base-1)/g==1)
+						gmp_printf("%s(%s)^n%s = %Zd*%d^n%+Zd\n", start, middle, end, temp, base, temp3);
 					else
-						if((base-1)/g==1)
-							gmp_printf("%s(%s)^n%s = %Zd*%d^n+%Zd\n", start, middle, end, temp, base, temp3);
-						else
-							gmp_printf("%s(%s)^n%s = (%Zd*%d^n+%Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
+						gmp_printf("%s(%s)^n%s = (%Zd*%d^n%+Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
 					
 					if(outopen)
-					{	if(mpz_sgn(temp2)>=0)
-							gmp_fprintf(out, "%Zd*%d^n-%Zd\n", temp, base, temp2);
-						else
-							gmp_fprintf(out, "%Zd*%d^n+%Zd\n", temp, base, temp3);
+					{	gmp_fprintf(out, "%Zd*%d^n%+Zd\n", temp, base, temp3);
 
-						for(int num=0; num<=atoi(argv[1]); num++)
+						for(int num=atoi(argv[1]); num<=atoi(argv[2]); num++)
 						{	mpz_ui_pow_ui(p, base, num);
 							mpz_mul(p, p, temp);
 							mpz_add(p, p, temp3);
