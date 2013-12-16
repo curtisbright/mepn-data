@@ -45,12 +45,12 @@ int main(int argc, char** argv)
 
 	if(argc==1)
 	{	printf("After sieving has been done, this program\n");
-		printf("searches for prime candidates starting from exponent n\n");
-		printf("where n is given as a command-line argument\n");
+		printf("searches for prime candidates between exponents\n");
+		printf("m and n, given on the command-line\n");
 		return 0;
 	}
 
-	for(int i=atoi(argv[1]); i<60000; i++)
+	for(int i=atoi(argv[1]); i<=atoi(argv[2]); i++)
 	{	dp = opendir("./data");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
