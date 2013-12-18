@@ -29,7 +29,7 @@
 #define PRINTSUBWORD
 #define PRINTEXPLORE
 #define PRINTTRIVIAL
-#define PRINTSIMPLE
+#define PRINTRESUME
 #endif
 
 typedef struct
@@ -323,6 +323,13 @@ char digitchar(unsigned char digit)
 		return digit+'A'-10;
 	else
 		return digit+'0';
+}
+
+char invdigitchar(char input)
+{	if(input>='0' && input<='9')
+		return input-'0';
+	else if(input>='A' && input<='Z')
+		return input-'A'+10;
 }
 
 void familystring(char* str, family p)
@@ -1676,12 +1683,18 @@ int main(int argc, char** argv)
 	family f;
 	familyinit(&f);
 
-	int l, h;
+	int l, h, resume = 0;
 	if(argc==1)
 	{	printf("Computes minimal primes for bases between l and h,\n");
 		printf("possibly along with a set of unsolved families.\n");
 		printf("Usage: minimal l h\n");
+		printf("To resume base b from iter i: minimal resume b i\n");
 		return 0;
+	}
+	else if(strcmp(argv[1], "resume")==0)
+	{	l = h = atoi(argv[2]);
+		resume = 1;
+		iter = atoi(argv[3]);
 	}
 	else if(argc==2)
 		l = h = atoi(argv[1]);
@@ -1703,47 +1716,94 @@ int main(int argc, char** argv)
 		list unsolved;
 		listinit(&unsolved);
 
-		for(int i=0; i<base; i++)
-			for(int j=0; j<base; j++)
-				for(int k=0; k<base; k++)
-				{	char str[4];
-					if(i==0 && j==0)
-						sprintf(str, "%c", digitchar(k));
-					else if(i==0)
-						sprintf(str, "%c%c", digitchar(j), digitchar(k));
+		if(!resume)
+		{	for(int i=0; i<base; i++)
+				for(int j=0; j<base; j++)
+					for(int k=0; k<base; k++)
+					{	char str[4];
+						if(i==0 && j==0)
+							sprintf(str, "%c", digitchar(k));
+						else if(i==0)
+							sprintf(str, "%c%c", digitchar(j), digitchar(k));
+						else
+							sprintf(str, "%c%c%c", digitchar(i), digitchar(j), digitchar(k));
+						if(newminimal(str))
+						{	char* newstr = malloc(4);
+							memcpy(newstr, str, 4);
+							addtokernel(newstr);
+						}
+					}
+
+			for(int i=1; i<base; i++)
+				for(int j=0; j<base; j++)
+				{	char* middles = calloc(base, sizeof(char));
+					int middlesize = 0;
+					for(int k=0; k<base; k++)
+					{	char str[4];
+						sprintf(str, "%c%c%c", digitchar(i), digitchar(k), digitchar(j));
+						if(nosubword(str))
+							middles[middlesize++] = k;
+					}
+					if(middlesize>0)
+					{	family f;
+						familyinit(&f);
+						adddigit(&f, i, middles, middlesize);
+						adddigit(&f, j, NULL, 0);
+						if(!hasdivisor(f))
+						{	explore(f, 1, 0, &unsolved);
+						}
+					}
 					else
-						sprintf(str, "%c%c%c", digitchar(i), digitchar(j), digitchar(k));
-					if(newminimal(str))
-					{	char* newstr = malloc(4);
-						memcpy(newstr, str, 4);
-						addtokernel(newstr);
-					}
+						free(middles);
 				}
-
-		for(int i=1; i<base; i++)
-			for(int j=0; j<base; j++)
-			{	char* middles = calloc(base, sizeof(char));
-				int middlesize = 0;
-				for(int k=0; k<base; k++)
-				{	char str[4];
-					sprintf(str, "%c%c%c", digitchar(i), digitchar(k), digitchar(j));
-					if(nosubword(str))
-						middles[middlesize++] = k;
-				}
-				if(middlesize>0)
-				{	family f;
-					familyinit(&f);
-					adddigit(&f, i, middles, middlesize);
-					adddigit(&f, j, NULL, 0);
-					if(!hasdivisor(f))
-					{	explore(f, 1, 0, &unsolved);
-					}
-				}
-				else
-					free(middles);
+			iter = 0;
+		}
+		else
+		{	char str[100];
+			sprintf(str, "minimal-base%d-iter%d.txt", base, iter);
+			FILE* in = fopen(str, "r");
+			char line[MAXSTRING];
+			while(fgets(line, MAXSTRING, in)!=NULL)
+			{	line[strlen(line)-1] = '\0';
+				char* newstr = malloc(strlen(line)+1);
+				strcpy(newstr, line);
+				addtokernel(newstr);
+#ifdef PRINTRESUME
+				printf("added %s to kernel\n", line);
+#endif
 			}
+			fclose(in);
+			sprintf(str, "unsolved-base%d-iter%d.txt", base, iter);
+			FILE* out = fopen(str, "r");
+			while(fgets(line, MAXSTRING, in)!=NULL)
+			{	family f;
+				familyinit(&f);
+				for(int i=0; i<strlen(line)-1; i++)
+				{	int digit = invdigitchar(line[i]);
+					if(line[i+1]!='{')
+					{	adddigit(&f, digit, NULL, 0);
+					}
+					else
+					{	int k = strchr(line+i+1, '}')-(line+i+1);
+						char* middles = calloc(k-1, sizeof(char));
+						for(int j=i+1; j<k+i+1; j++)
+						{	middles[j-(i+1)] = invdigitchar(line[j]);
+						}
+						adddigit(&f, digit, middles, k-1);
+						i = k+i+2;
+					}
+				}
+				addtolist(&unsolved, f, 2);
+#ifdef PRINTRESUME
+				familystring(str, f);
+				printf("added %s to unknown list\n", str);
+#endif
+				clearfamily(&f);
+			}
+			fclose(out);
+		}
 
-		for(iter=0; ; iter++)
+		for(; ; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
@@ -1841,7 +1901,7 @@ int main(int argc, char** argv)
 			if(nosubwordskip(K.primes[i], i))
 			{	int size = ++temp.size;
 				temp.primes = realloc(temp.primes, size*sizeof(char*));
-				temp.primes[size-1] = malloc(MAXSTRING);
+				temp.primes[size-1] = malloc(strlen(K.primes[i])+1);
 				strcpy(temp.primes[size-1], K.primes[i]);
 			}
 		clearkernel();
