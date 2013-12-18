@@ -30,6 +30,7 @@
 #define PRINTEXPLORE
 #define PRINTTRIVIAL
 #define PRINTRESUME
+#define PRINTDIVISOREXT
 #endif
 
 typedef struct
@@ -837,6 +838,61 @@ int hasdivisor(family p)
 				}
 			}
 		}
+	}
+
+	char residues[30] = {0};
+
+	emptyinstancestring(str, p);
+	mpz_set_str(empty, str, base);
+	mpz_mod_ui(temp, empty, 30);
+	residues[mpz_get_ui(temp)] = 1;
+	for(int i=p.len-1; i>=0; i--)
+	{	int outerhaschanged = 1;
+		while(outerhaschanged)
+		{	outerhaschanged = 0;
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	instancestring(str, p, i, j);
+				mpz_set_str(temp, str, base);
+				mpz_sub(temp, temp, empty);
+				int k = 0;
+				int haschanged = 1;
+				while(haschanged)
+				{	haschanged = 0;
+					mpz_ui_pow_ui(temp2, base, k);
+					mpz_mul(temp2, temp2, temp);
+					mpz_mod_ui(temp2, temp2, 30);
+					int m = mpz_get_ui(temp2);
+					for(int l=0; l<30; l++)
+					{	if(residues[l]==1 && residues[(l+m)%30]==0)
+						{	residues[(l+m)%30] = 1;
+							haschanged = 1;
+							outerhaschanged = 1;
+						}
+					}
+					k++;
+				}
+			}
+		}
+	}
+
+	int coprimeres = 0;
+	for(int i=0; i<30; i++)
+	{	if(residues[i]==1)
+		{	mpz_set_ui(temp, i);
+			mpz_gcd_ui(temp, temp, 30);
+			if(mpz_cmp_ui(temp, 1)==0)
+				coprimeres = 1;
+		}
+	}
+
+	if(!coprimeres)
+	{	
+#ifdef PRINTDIVISOREXT
+		familystring(str, p);
+		gmp_printf("%s is divisible by one of 2, 3, or 5\n", str);
+#endif
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
+		return 1;
 	}
 
 	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);

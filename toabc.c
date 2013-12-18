@@ -68,10 +68,7 @@ int main(int argc, char** argv)
 						mpz_neg(temp3, temp2);
 
 						char family[100];
-						if(mpz_sgn(temp2)>=0)
-							gmp_sprintf(family, "%Zd*%d^n-%Zd\n", temp, base, temp2);
-						else
-							gmp_sprintf(family, "%Zd*%d^n+%Zd\n", temp, base, temp3);
+						gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp3);
 
 						// Find an exponent
 						int num = -1;
@@ -92,14 +89,8 @@ int main(int argc, char** argv)
 						if(num!=i)
 							continue;
 
-						if(mpz_sgn(temp2)>=0)
-						{	gmp_printf("%Zd %d %d -%Zd %d\n", temp, base, num, temp2, (base-1)/g);
-							gmp_fprintf(abc, "%Zd %d %d -%Zd %d\n", temp, base, num, temp2, (base-1)/g);
-						}
-						else
-						{	gmp_printf("%Zd %d %d +%Zd %d\n", temp, base, num, temp3, (base-1)/g);
-							gmp_fprintf(abc, "%Zd %d %d +%Zd %d\n", temp, base, num, temp3, (base-1)/g);
-						}
+						gmp_printf("%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
+						gmp_fprintf(abc, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
 
 						// Remove the exponent from the sieve file
 						sieve = fopen(sievefilename, "r");
