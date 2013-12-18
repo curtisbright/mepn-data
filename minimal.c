@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <gmp.h>
 #include <string.h>
-#ifdef PRINTDATA
-#include <sys/stat.h>
-#endif
 #define MAXSTRING 200
 
 #ifdef PRINTALL
@@ -31,6 +28,10 @@
 #define PRINTTRIVIAL
 #define PRINTRESUME
 #define PRINTDIVISOREXT
+#endif
+
+#ifdef PRINTDATA
+#include <sys/stat.h>
 #endif
 
 typedef struct
@@ -1842,8 +1843,8 @@ int main(int argc, char** argv)
 					else
 					{	int k = strchr(line+i+1, '}')-(line+i+1);
 						char* middles = calloc(k-1, sizeof(char));
-						for(int j=i+1; j<k+i+1; j++)
-						{	middles[j-(i+1)] = invdigitchar(line[j]);
+						for(int j=i+2; j<k+i+1; j++)
+						{	middles[j-(i+2)] = invdigitchar(line[j]);
 						}
 						adddigit(&f, digit, middles, k-1);
 						i = k+i+2;
@@ -1857,9 +1858,10 @@ int main(int argc, char** argv)
 				clearfamily(&f);
 			}
 			fclose(out);
+			iter++;
 		}
 
-		for(; ; iter++)
+		for(; iter<30; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
