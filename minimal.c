@@ -848,24 +848,32 @@ int hasdivisor(family p)
 	mpz_mod_ui(temp, empty, 30);
 	residues[mpz_get_ui(temp)] = 1;
 	for(int i=p.len-1; i>=0; i--)
-	{	int outerhaschanged = 1;
+	{	//for(int i=0; i<30; i++)
+		//		printf("%d: %d\n", i, residues[i]==1);
+		int outerhaschanged = 1;
 		while(outerhaschanged)
 		{	outerhaschanged = 0;
+			char newresidues[30];
+			memcpy(newresidues, residues, 30);
 			for(int j=0; j<p.numrepeats[i]; j++)
 			{	instancestring(str, p, i, j);
 				mpz_set_str(temp, str, base);
 				mpz_sub(temp, temp, empty);
 				int k = 0;
 				int haschanged = 1;
+				int m = 0;
+				//for(int i=0; i<30; i++)
+				//	printf("%d: %d\n", i, residues[i]==1);
 				while(haschanged)
 				{	haschanged = 0;
 					mpz_ui_pow_ui(temp2, base, k);
 					mpz_mul(temp2, temp2, temp);
 					mpz_mod_ui(temp2, temp2, 30);
-					int m = mpz_get_ui(temp2);
+					m = (m + mpz_get_ui(temp2)) % 30;
+					gmp_printf("temp: %Zd\tm: %d\n", temp, m);
 					for(int l=0; l<30; l++)
-					{	if(residues[l]==1 && residues[(l+m)%30]==0)
-						{	residues[(l+m)%30] = 1;
+					{	if(residues[l]==1 && newresidues[(l+m)%30]==0)
+						{	newresidues[(l+m)%30] = 1;
 							haschanged = 1;
 							outerhaschanged = 1;
 						}
@@ -873,17 +881,21 @@ int hasdivisor(family p)
 					k++;
 				}
 			}
+			memcpy(residues, newresidues, 30);
 		}
 	}
 
 	int coprimeres = 0;
 	for(int i=0; i<30; i++)
 	{	if(residues[i]==1)
-		{	mpz_set_ui(temp, i);
+		{	printf("%d: 1\n", i);
+			mpz_set_ui(temp, i);
 			mpz_gcd_ui(temp, temp, 30);
 			if(mpz_cmp_ui(temp, 1)==0)
 				coprimeres = 1;
 		}
+		else
+			printf("%d: 0\n", i);
 	}
 
 	if(!coprimeres)
