@@ -841,36 +841,25 @@ int hasdivisor(family p)
 		}
 	}
 
-	char residues[30] = {0};
-
-	emptyinstancestring(str, p);
-	mpz_set_str(empty, str, base);
-	mpz_mod_ui(temp, empty, 30);
-	residues[mpz_get_ui(temp)] = 1;
-	for(int i=p.len-1; i>=0; i--)
-	{	int outerhaschanged = 1;
-		while(outerhaschanged)
-		{	outerhaschanged = 0;
+	char residues[30] = {1};
+	for(int i=0; i<p.len; i++)
+	{	if((unsigned char)p.digit[i]!=255)
+		{	char newresidues[30] = {0};
+			for(int j=0; j<30; j++)
+			{	if(residues[j]==1)
+					newresidues[(j*base+p.digit[i])%30] = 1;
+			}
+			memcpy(residues, newresidues, 30);
+		}
+		int haschanged = 1;
+		while(haschanged)
+		{	haschanged = 0;
 			for(int j=0; j<p.numrepeats[i]; j++)
-			{	instancestring(str, p, i, j);
-				mpz_set_str(temp, str, base);
-				mpz_sub(temp, temp, empty);
-				int k = 0;
-				int haschanged = 1;
-				while(haschanged)
-				{	haschanged = 0;
-					mpz_ui_pow_ui(temp2, base, k);
-					mpz_mul(temp2, temp2, temp);
-					mpz_mod_ui(temp2, temp2, 30);
-					int m = mpz_get_ui(temp2);
-					for(int l=0; l<30; l++)
-					{	if(residues[l]==1 && residues[(l+m)%30]==0)
-						{	residues[(l+m)%30] = 1;
-							haschanged = 1;
-							outerhaschanged = 1;
-						}
+			{	for(int l=0; l<30; l++)
+				{	if(residues[l]==1 && residues[(l*base+p.repeats[i][j])%30]==0)
+					{	residues[(l*base+p.repeats[i][j])%30] = 1;
+						haschanged = 1;
 					}
-					k++;
 				}
 			}
 		}
@@ -890,7 +879,7 @@ int hasdivisor(family p)
 	{	
 #ifdef PRINTDIVISOREXT
 		familystring(str, p);
-		gmp_printf("%s is divisible by one of 2, 3, or 5\n", str);
+		gmp_printf("every number in %s is divisible by one of 2, 3, or 5\n", str);
 #endif
 		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 		return 1;
@@ -1348,9 +1337,13 @@ int split2(family* f, list* unsolved, char insplit)
 					char str2[MAXSTRING];
 					char str3[MAXSTRING];
 					char str4[MAXSTRING];
+					char str5[MAXSTRING];
+					char str6[MAXSTRING];
 					doubleinstancestring(str1, *f, i, j, m, k);
 					tripleinstancestring(str3, *f, i, j, m, k, i, j);
 					tripleinstancestring(str4, *f, i, k, m, j, i, k);
+					quadinstancestring(str3, *f, i, j, m, k, i, j, m, k);
+					quadinstancestring(str4, *f, i, k, m, j, i, k, m, j);
 					if(m==i)
 						doubleinstancestring(str2, *f, i, k, m, j);
 					if(m==i && !nosubword(str1) && !nosubword(str2))
@@ -1584,6 +1577,140 @@ int split2(family* f, list* unsolved, char insplit)
 						printf("%s splits into ", str);
 						familystring(str, newf);
 						printf("%s [because of %s]\n", str, str4);
+#endif
+
+						clearfamily(&newf);
+
+						return 1;
+					}
+					else if(m==i && iter>5 && (!nosubword(str5)))
+					{	family newf;
+						familyinit(&newf);
+						for(int l=0; l<f->len; l++)
+						{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+							adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
+							if(i==l)
+							{	int newnumrepeats = 0;
+								int removeddigit = f->repeats[i][j];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=j)
+										newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][k];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=k)
+										newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+1] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][j];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=j)
+										newf.repeats[i+2][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+2] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][k];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=k)
+										newf.repeats[i+3][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+3] = newnumrepeats;
+							}
+						}
+						addtolist(unsolved, newf, 1);
+
+#ifdef PRINTSPLITNEW
+						char str[MAXSTRING];
+						familystring(str, *f);
+						printf("%s splits into ", str);
+						familystring(str, newf);
+						printf("%s [because of %s]\n", str, str5);
+#endif
+
+						clearfamily(&newf);
+
+						return 1;
+					}
+					else if(m==i && iter>5 && (!nosubword(str6)))
+					{	family newf;
+						familyinit(&newf);
+						for(int l=0; l<f->len; l++)
+						{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+							adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
+							if(i==l)
+							{	int newnumrepeats = 0;
+								int removeddigit = f->repeats[i][k];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=k)
+										newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][j];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=j)
+										newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+1] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][k];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=k)
+										newf.repeats[i+2][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+2] = newnumrepeats;
+
+								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
+								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
+								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
+
+								newnumrepeats = 0;
+								removeddigit = f->repeats[i][j];
+								for(int m=0; m<f->numrepeats[i]; m++)
+								{	if(m!=j)
+										newf.repeats[i+3][newnumrepeats++] = f->repeats[i][m];
+								}
+								newf.numrepeats[i+3] = newnumrepeats;
+							}
+						}
+						addtolist(unsolved, newf, 1);
+
+#ifdef PRINTSPLITNEW
+						char str[MAXSTRING];
+						familystring(str, *f);
+						printf("%s splits into ", str);
+						familystring(str, newf);
+						printf("%s [because of %s]\n", str, str6);
 #endif
 
 						clearfamily(&newf);
@@ -1861,7 +1988,7 @@ int main(int argc, char** argv)
 			iter++;
 		}
 
-		for(; iter<30; iter++)
+		for(;; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
