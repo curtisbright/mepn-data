@@ -1342,8 +1342,8 @@ int split2(family* f, list* unsolved, char insplit)
 					doubleinstancestring(str1, *f, i, j, m, k);
 					tripleinstancestring(str3, *f, i, j, m, k, i, j);
 					tripleinstancestring(str4, *f, i, k, m, j, i, k);
-					quadinstancestring(str3, *f, i, j, m, k, i, j, m, k);
-					quadinstancestring(str4, *f, i, k, m, j, i, k, m, j);
+					quadinstancestring(str5, *f, i, j, m, k, i, j, m, k);
+					quadinstancestring(str6, *f, i, k, m, j, i, k, m, j);
 					if(m==i)
 						doubleinstancestring(str2, *f, i, k, m, j);
 					if(m==i && !nosubword(str1) && !nosubword(str2))
