@@ -841,68 +841,45 @@ int hasdivisor(family p)
 		}
 	}
 
-	char residues[30] = {0};
-
-	emptyinstancestring(str, p);
-	mpz_set_str(empty, str, base);
-	mpz_mod_ui(temp, empty, 30);
-	residues[mpz_get_ui(temp)] = 1;
-	for(int i=p.len-1; i>=0; i--)
-	{	//for(int i=0; i<30; i++)
-		//		printf("%d: %d\n", i, residues[i]==1);
-		int outerhaschanged = 1;
-		while(outerhaschanged)
-		{	outerhaschanged = 0;
-			char newresidues[30];
-			memcpy(newresidues, residues, 30);
-			for(int j=0; j<p.numrepeats[i]; j++)
-			{	instancestring(str, p, i, j);
-				mpz_set_str(temp, str, base);
-				mpz_sub(temp, temp, empty);
-				int k = 0;
-				int haschanged = 1;
-				int m = 0;
-				//for(int i=0; i<30; i++)
-				//	printf("%d: %d\n", i, residues[i]==1);
-				while(haschanged)
-				{	haschanged = 0;
-					mpz_ui_pow_ui(temp2, base, k);
-					mpz_mul(temp2, temp2, temp);
-					mpz_mod_ui(temp2, temp2, 30);
-					m = (m + mpz_get_ui(temp2)) % 30;
-					gmp_printf("temp: %Zd\tm: %d\n", temp, m);
-					for(int l=0; l<30; l++)
-					{	if(residues[l]==1 && newresidues[(l+m)%30]==0)
-						{	newresidues[(l+m)%30] = 1;
-							haschanged = 1;
-							outerhaschanged = 1;
-						}
-					}
-					k++;
-				}
+	char residues[30] = {1};
+	for(int i=0; i<p.len; i++)
+	{	if((unsigned char)p.digit[i]!=255)
+		{	char newresidues[30] = {0};
+			for(int j=0; j<30; j++)
+			{	if(residues[j]==1)
+					newresidues[(j*base+p.digit[i])%30] = 1;
 			}
 			memcpy(residues, newresidues, 30);
+		}
+		int haschanged = 1;
+		while(haschanged)
+		{	haschanged = 0;
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	for(int l=0; l<30; l++)
+				{	if(residues[l]==1 && residues[(l*base+p.repeats[i][j])%30]==0)
+					{	residues[(l*base+p.repeats[i][j])%30] = 1;
+						haschanged = 1;
+					}
+				}
+			}
 		}
 	}
 
 	int coprimeres = 0;
 	for(int i=0; i<30; i++)
 	{	if(residues[i]==1)
-		{	printf("%d: 1\n", i);
-			mpz_set_ui(temp, i);
+		{	mpz_set_ui(temp, i);
 			mpz_gcd_ui(temp, temp, 30);
 			if(mpz_cmp_ui(temp, 1)==0)
 				coprimeres = 1;
 		}
-		else
-			printf("%d: 0\n", i);
 	}
 
 	if(!coprimeres)
 	{	
 #ifdef PRINTDIVISOREXT
 		familystring(str, p);
-		gmp_printf("%s is divisible by one of 2, 3, or 5\n", str);
+		gmp_printf("every number in %s is divisible by one of 2, 3, or 5\n", str);
 #endif
 		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 		return 1;
@@ -1873,7 +1850,7 @@ int main(int argc, char** argv)
 			iter++;
 		}
 
-		for(; iter<30; iter++)
+		for(;; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
