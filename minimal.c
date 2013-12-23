@@ -1967,18 +1967,22 @@ int main(int argc, char** argv)
 			{	family f;
 				familyinit(&f);
 				for(int i=0; i<strlen(line)-1; i++)
-				{	int digit = invdigitchar(line[i]);
-					if(line[i+1]!='{')
+				{	int digit;
+					if(line[i]=='{')
+						digit = 255;
+					else
+						digit = invdigitchar(line[i]);
+					if(line[i]!='{' && line[i+1]!='{')
 					{	adddigit(&f, digit, NULL, 0);
 					}
 					else
-					{	int k = strchr(line+i+1, '}')-(line+i+1);
-						char* middles = calloc(k-1, sizeof(char));
-						for(int j=i+2; j<k+i+1; j++)
-						{	middles[j-(i+2)] = invdigitchar(line[j]);
+					{	int k = strchr(line+i+1, '}')-(line+i+1)+(line[i]=='{'?1:0)-1;
+						char* middles = calloc(k, sizeof(char));
+						for(int j=i+2-(line[i]=='{'?1:0); j<k+i+2-(line[i]=='{'?1:0); j++)
+						{	middles[j-(i+2-(line[i]=='{'?1:0))] = invdigitchar(line[j]);
 						}
-						adddigit(&f, digit, middles, k-1);
-						i = k+i+2;
+						adddigit(&f, digit, middles, k);
+						i = k+i+2-(line[i]=='{'?1:0)+1;
 					}
 				}
 				addtolist(&unsolved, f, 2);
