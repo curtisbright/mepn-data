@@ -28,6 +28,7 @@
 #define PRINTTRIVIAL
 #define PRINTRESUME
 #define PRINTDIVISOREXT
+#define PRINTSPLITEXT
 #endif
 
 #if defined(PRINTDATA) || defined(PRINTITER)
@@ -889,49 +890,22 @@ int hasdivisor(family p)
 	return 0;
 }
 
-void instancefamily(family* newf, family f, int side, int back)
-{	if(back==0)
-	{	int firstrepeat = 1;
-		for(int i=0; i<f.len; i++)
-		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-			if(f.numrepeats[i]>0 && firstrepeat)
-			{	if(side==1)
-				{	adddigit(newf, f.digit[i], NULL, 0);
-					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
-				else if(side==0)
-				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-					adddigit(newf, 0, NULL, 0);
-				}
-				firstrepeat = 0;
+void instancefamily(family* newf, family f, int side, int pos)
+{	for(int i=0; i<f.len; i++)
+	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+		if(i==pos)
+		{	if(side==1)
+			{	adddigit(newf, f.digit[i], NULL, 0);
+				adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
 			}
-			else
-				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-		}
-	}
-	else
-	{	int lastrepeatpos;
-		for(int i=0; i<f.len; i++)
-		{	if(f.numrepeats[i]>0)
-				lastrepeatpos = i;
-		}
-		for(int i=0; i<f.len; i++)
-		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-			if(i==lastrepeatpos)
-			{	if(side==1)
-				{	adddigit(newf, f.digit[i], NULL, 0);
-					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
-				else if(side==0)
-				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-					adddigit(newf, 0, NULL, 0);
-				}
+			else if(side==0)
+			{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+				adddigit(newf, 0, NULL, 0);
 			}
-			else
-				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 		}
+		else
+			adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 	}
 }
 
@@ -1305,7 +1279,7 @@ int split(family* f, list* unsolved, char insplit)
 							}	
 						}
 					addtolist(unsolved, copyf, 2);
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 					familystring(str, *f);
 					printf("%s splits into ", str);
 					familystring(str, copyf);
@@ -1514,10 +1488,16 @@ int split2(family* f, list* unsolved, char insplit)
 	return 0;
 }
 
-void explore(family f, int side, int back, list* unsolved)
-{	if(back==0)
-	{	for(int i=0; i<f.len; i++)
-			if(f.numrepeats[i]>0)
+void explore(family f, int side, int pos, list* unsolved)
+{	int count = 0;
+	for(int i=0; i<f.len; i++)
+		if(f.numrepeats[i]>0)
+			count++;
+	pos = pos % count;
+	count = 0;
+	for(int i=0; i<f.len; i++)
+	{	if(f.numrepeats[i]>0)
+		{	if(pos==count)
 			{	char str[MAXSTRING];
 				familystring(str, f);
 #ifdef PRINTEXPLORE
@@ -1527,7 +1507,7 @@ void explore(family f, int side, int back, list* unsolved)
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
 					familyinit(&newf);
-					instancefamily(&newf, f, side, back);
+					instancefamily(&newf, f, side, i);
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(unsolved, newf, 1);
@@ -1557,49 +1537,8 @@ void explore(family f, int side, int back, list* unsolved)
 
 				break;
 			}
-	}
-	else
-	{	for(int i=f.len-1; i>=0; i--)
-			if(f.numrepeats[i]>0)
-			{	char str[MAXSTRING];
-				familystring(str, f);
-#ifdef PRINTEXPLORE
-				printf("exploring %s as ", str);
-#endif
-
-				for(int j=0; j<f.numrepeats[i]; j++)
-				{	family newf;
-					familyinit(&newf);
-					instancefamily(&newf, f, side, back);
-					newf.digit[i+1] = f.repeats[i][j];
-					if(examine(&newf))
-						addtolist(unsolved, newf, 1);
-
-#ifdef PRINTEXPLORE
-					familystring(str, newf);
-					printf("%s, ", str);
-#endif
-
-					clearfamily(&newf);
-				}
-
-				family copyf;
-				familyinit(&copyf);
-				copyfamily(&copyf, f);
-				copyf.repeats[i] = NULL;
-				copyf.numrepeats[i] = 0;
-				if(examine(&copyf))
-					addtolist(unsolved, copyf, 1);
-
-#ifdef PRINTEXPLORE
-				familystring(str, copyf);
-				printf("%s\n", str);
-#endif
-
-				clearfamily(&copyf);
-
-				break;
-			}
+			count++;
+		}
 	}
 }
 
@@ -1801,7 +1740,7 @@ int main(int argc, char** argv)
 			clearlist(&unsolved);
 
 			for(int j=0; j<oldlist.size; j++)
-				explore(oldlist.fam[j], iter%2, (iter/2)%2, &unsolved);
+				explore(oldlist.fam[j], iter%2, iter, &unsolved);
 
 			clearlist(&oldlist);
 			removedupes(&unsolved);
