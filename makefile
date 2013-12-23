@@ -1,3 +1,4 @@
+all: minimal simple search sieving.start merge organize summary calc check
 minimal: minimal.c
 	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA
 simple: simple.c
@@ -12,8 +13,8 @@ organize: organize.c
 	gcc organize.c -o organize -Ofast -lgmp -std=c99
 summary: summary.c
 	gcc summary.c -o summary -Ofast -std=c99
-toabc: toabc.c
-	gcc toabc.c -o toabc -Ofast -lgmp -std=c99
+calc: calc.c
+	gcc calc.c -o calc -Ofast -lgmp -std=c99
 check: check.c
 	gcc check.c -o check -Ofast -lgmp -std=c99
 clean:

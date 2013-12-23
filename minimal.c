@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <gmp.h>
 #include <string.h>
-#ifdef PRINTDATA
-#include <sys/stat.h>
-#endif
 #define MAXSTRING 200
 
 #ifdef PRINTALL
@@ -29,7 +26,13 @@
 #define PRINTSUBWORD
 #define PRINTEXPLORE
 #define PRINTTRIVIAL
-#define PRINTSIMPLE
+#define PRINTRESUME
+#define PRINTDIVISOREXT
+#define PRINTSPLITEXT
+#endif
+
+#if defined(PRINTDATA) || defined(PRINTITER)
+#include <sys/stat.h>
 #endif
 
 typedef struct
@@ -325,6 +328,13 @@ char digitchar(unsigned char digit)
 		return digit+'0';
 }
 
+char invdigitchar(char input)
+{	if(input>='0' && input<='9')
+		return input-'0';
+	else if(input>='A' && input<='Z')
+		return input-'A'+10;
+}
+
 void familystring(char* str, family p)
 {	sprintf(str, "%c", 0);
 	for(int i=0; i<p.len; i++)
@@ -562,6 +572,31 @@ int hasdivisor(family p)
 		mpz_set_ui(gcd2, 0);
 	}
 
+	int i;
+	int gcdbeenset = 0;
+	for(i=0; i<p.len; i++)
+	{	for(int j=0; j<p.numrepeats[i]; j++)
+		{	instancestring(str, p, i, j);
+			mpz_set_str(temp, str, base);
+			if(gcdbeenset)
+				mpz_gcd(gcd2, gcd2, temp);
+			else
+			{	gcdbeenset = 1;
+				mpz_set(gcd2, temp);
+			}
+			for(int k=0; k<p.len; k++)
+				for(int l=0; l<p.numrepeats[k]; l++)
+					for(int n=0; n<p.numrepeats[k]; n++)
+					{	tripleinstancestring(str, p, i, j, k, l, k, n);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(gcd2, gcd2, temp);
+					}
+		}
+		if(p.numrepeats[i]>0)
+			break;
+	}
+	int firstrepeat = i;
+
 	if(numrepeats==2)
 	{	emptyinstancestring(str, p);
 		mpz_set_str(gcd1, str, base);
@@ -572,31 +607,6 @@ int hasdivisor(family p)
 					mpz_set_str(temp, str, base);
 					mpz_gcd(gcd1, gcd1, temp);
 				}
-
-		int i;
-		int gcdbeenset = 0;
-		for(i=0; i<p.len; i++)
-		{	for(int j=0; j<p.numrepeats[i]; j++)
-			{	instancestring(str, p, i, j);
-				mpz_set_str(temp, str, base);
-				if(gcdbeenset)
-					mpz_gcd(gcd2, gcd2, temp);
-				else
-				{	gcdbeenset = 1;
-					mpz_set(gcd2, temp);
-				}
-				for(int k=0; k<p.len; k++)
-					for(int l=0; l<p.numrepeats[k]; l++)
-						for(int n=0; n<p.numrepeats[k]; n++)
-						{	tripleinstancestring(str, p, i, j, k, l, k, n);
-							mpz_set_str(temp, str, base);
-							mpz_gcd(gcd2, gcd2, temp);
-						}
-			}
-			if(p.numrepeats[i]>0)
-				break;
-		}
-		int firstrepeat = i;
 
 		gcdbeenset = 0;
 		for(i=firstrepeat+1; i<p.len; i++)
@@ -832,53 +842,70 @@ int hasdivisor(family p)
 		}
 	}
 
+	char residues[30] = {1};
+	for(int i=0; i<p.len; i++)
+	{	if((unsigned char)p.digit[i]!=255)
+		{	char newresidues[30] = {0};
+			for(int j=0; j<30; j++)
+			{	if(residues[j]==1)
+					newresidues[(j*base+p.digit[i])%30] = 1;
+			}
+			memcpy(residues, newresidues, 30);
+		}
+		int haschanged = 1;
+		while(haschanged)
+		{	haschanged = 0;
+			for(int j=0; j<p.numrepeats[i]; j++)
+			{	for(int l=0; l<30; l++)
+				{	if(residues[l]==1 && residues[(l*base+p.repeats[i][j])%30]==0)
+					{	residues[(l*base+p.repeats[i][j])%30] = 1;
+						haschanged = 1;
+					}
+				}
+			}
+		}
+	}
+
+	int coprimeres = 0;
+	for(int i=0; i<30; i++)
+	{	if(residues[i]==1)
+		{	mpz_set_ui(temp, i);
+			mpz_gcd_ui(temp, temp, 30);
+			if(mpz_cmp_ui(temp, 1)==0)
+				coprimeres = 1;
+		}
+	}
+
+	if(!coprimeres)
+	{	
+#ifdef PRINTDIVISOREXT
+		familystring(str, p);
+		gmp_printf("every number in %s is divisible by one of 2, 3, or 5\n", str);
+#endif
+		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
+		return 1;
+	}
+
 	mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 	return 0;
 }
 
-void instancefamily(family* newf, family f, int side, int back)
-{	if(back==0)
-	{	int firstrepeat = 1;
-		for(int i=0; i<f.len; i++)
-		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-			if(f.numrepeats[i]>0 && firstrepeat)
-			{	if(side==1)
-				{	adddigit(newf, f.digit[i], NULL, 0);
-					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
-				else if(side==0)
-				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-					adddigit(newf, 0, NULL, 0);
-				}
-				firstrepeat = 0;
+void instancefamily(family* newf, family f, int side, int pos)
+{	for(int i=0; i<f.len; i++)
+	{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
+		memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
+		if(i==pos)
+		{	if(side==1)
+			{	adddigit(newf, f.digit[i], NULL, 0);
+				adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
 			}
-			else
-				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-		}
-	}
-	else
-	{	int lastrepeatpos;
-		for(int i=0; i<f.len; i++)
-		{	if(f.numrepeats[i]>0)
-				lastrepeatpos = i;
-		}
-		for(int i=0; i<f.len; i++)
-		{	char* repeatscopy = malloc(f.numrepeats[i]*sizeof(char));
-			memcpy(repeatscopy, f.repeats[i], f.numrepeats[i]*sizeof(char));
-			if(i==lastrepeatpos)
-			{	if(side==1)
-				{	adddigit(newf, f.digit[i], NULL, 0);
-					adddigit(newf, 0, repeatscopy, f.numrepeats[i]);
-				}
-				else if(side==0)
-				{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
-					adddigit(newf, 0, NULL, 0);
-				}
+			else if(side==0)
+			{	adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
+				adddigit(newf, 0, NULL, 0);
 			}
-			else
-				adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 		}
+		else
+			adddigit(newf, f.digit[i], repeatscopy, f.numrepeats[i]);
 	}
 }
 
@@ -1252,7 +1279,7 @@ int split(family* f, list* unsolved, char insplit)
 							}	
 						}
 					addtolist(unsolved, copyf, 2);
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 					familystring(str, *f);
 					printf("%s splits into ", str);
 					familystring(str, copyf);
@@ -1282,11 +1309,7 @@ int split2(family* f, list* unsolved, char insplit)
 						continue;
 					char str1[MAXSTRING];
 					char str2[MAXSTRING];
-					char str3[MAXSTRING];
-					char str4[MAXSTRING];
 					doubleinstancestring(str1, *f, i, j, m, k);
-					tripleinstancestring(str3, *f, i, j, m, k, i, j);
-					tripleinstancestring(str4, *f, i, k, m, j, i, k);
 					if(m==i)
 						doubleinstancestring(str2, *f, i, k, m, j);
 					if(m==i && !nosubword(str1) && !nosubword(str2))
@@ -1416,116 +1439,6 @@ int split2(family* f, list* unsolved, char insplit)
 
 						return 1;
 					}
-					else if(m==i && iter>5 && (!nosubword(str3)))
-					{	family newf;
-						familyinit(&newf);
-						for(int l=0; l<f->len; l++)
-						{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-							adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
-							if(i==l)
-							{	int newnumrepeats = 0;
-								int removeddigit = f->repeats[i][j];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=j)
-										newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i] = newnumrepeats;
-
-								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
-
-								newnumrepeats = 0;
-								removeddigit = f->repeats[i][k];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=k)
-										newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i+1] = newnumrepeats;
-
-								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
-
-								newnumrepeats = 0;
-								removeddigit = f->repeats[i][j];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=j)
-										newf.repeats[i+2][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i+2] = newnumrepeats;
-							}
-						}
-						addtolist(unsolved, newf, 1);
-
-#ifdef PRINTSPLITNEW
-						char str[MAXSTRING];
-						familystring(str, *f);
-						printf("%s splits into ", str);
-						familystring(str, newf);
-						printf("%s [because of %s]\n", str, str3);
-#endif
-
-						clearfamily(&newf);
-
-						return 1;
-					}
-					else if(m==i && iter>5 && (!nosubword(str4)))
-					{	family newf;
-						familyinit(&newf);
-						for(int l=0; l<f->len; l++)
-						{	char* newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-							memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-							adddigit(&newf, f->digit[l], newrepeats, f->numrepeats[l]);
-							if(i==l)
-							{	int newnumrepeats = 0;
-								int removeddigit = f->repeats[i][k];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=k)
-										newf.repeats[i][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i] = newnumrepeats;
-
-								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
-
-								newnumrepeats = 0;
-								removeddigit = f->repeats[i][j];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=j)
-										newf.repeats[i+1][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i+1] = newnumrepeats;
-
-								newrepeats = malloc(f->numrepeats[l]*sizeof(char));
-								memcpy(newrepeats, f->repeats[l], f->numrepeats[l]*sizeof(char));
-								adddigit(&newf, 255, newrepeats, f->numrepeats[l]);
-
-								newnumrepeats = 0;
-								removeddigit = f->repeats[i][k];
-								for(int m=0; m<f->numrepeats[i]; m++)
-								{	if(m!=k)
-										newf.repeats[i+2][newnumrepeats++] = f->repeats[i][m];
-								}
-								newf.numrepeats[i+2] = newnumrepeats;
-							}
-						}
-						addtolist(unsolved, newf, 1);
-
-#ifdef PRINTSPLITNEW
-						char str[MAXSTRING];
-						familystring(str, *f);
-						printf("%s splits into ", str);
-						familystring(str, newf);
-						printf("%s [because of %s]\n", str, str4);
-#endif
-
-						clearfamily(&newf);
-
-						return 1;
-					}
 					else if(m>i && !nosubword(str1))
 					{	family copyf;
 						familyinit(&copyf);
@@ -1575,10 +1488,16 @@ int split2(family* f, list* unsolved, char insplit)
 	return 0;
 }
 
-void explore(family f, int side, int back, list* unsolved)
-{	if(back==0)
-	{	for(int i=0; i<f.len; i++)
-			if(f.numrepeats[i]>0)
+void explore(family f, int side, int pos, list* unsolved)
+{	int count = 0;
+	for(int i=0; i<f.len; i++)
+		if(f.numrepeats[i]>0)
+			count++;
+	pos = pos % count;
+	count = 0;
+	for(int i=0; i<f.len; i++)
+	{	if(f.numrepeats[i]>0)
+		{	if(pos==count)
 			{	char str[MAXSTRING];
 				familystring(str, f);
 #ifdef PRINTEXPLORE
@@ -1588,7 +1507,7 @@ void explore(family f, int side, int back, list* unsolved)
 				for(int j=0; j<f.numrepeats[i]; j++)
 				{	family newf;
 					familyinit(&newf);
-					instancefamily(&newf, f, side, back);
+					instancefamily(&newf, f, side, i);
 					newf.digit[i+1] = f.repeats[i][j];
 					if(examine(&newf))
 						addtolist(unsolved, newf, 1);
@@ -1618,49 +1537,8 @@ void explore(family f, int side, int back, list* unsolved)
 
 				break;
 			}
-	}
-	else
-	{	for(int i=f.len-1; i>=0; i--)
-			if(f.numrepeats[i]>0)
-			{	char str[MAXSTRING];
-				familystring(str, f);
-#ifdef PRINTEXPLORE
-				printf("exploring %s as ", str);
-#endif
-
-				for(int j=0; j<f.numrepeats[i]; j++)
-				{	family newf;
-					familyinit(&newf);
-					instancefamily(&newf, f, side, back);
-					newf.digit[i+1] = f.repeats[i][j];
-					if(examine(&newf))
-						addtolist(unsolved, newf, 1);
-
-#ifdef PRINTEXPLORE
-					familystring(str, newf);
-					printf("%s, ", str);
-#endif
-
-					clearfamily(&newf);
-				}
-
-				family copyf;
-				familyinit(&copyf);
-				copyfamily(&copyf, f);
-				copyf.repeats[i] = NULL;
-				copyf.numrepeats[i] = 0;
-				if(examine(&copyf))
-					addtolist(unsolved, copyf, 1);
-
-#ifdef PRINTEXPLORE
-				familystring(str, copyf);
-				printf("%s\n", str);
-#endif
-
-				clearfamily(&copyf);
-
-				break;
-			}
+			count++;
+		}
 	}
 }
 
@@ -1676,12 +1554,18 @@ int main(int argc, char** argv)
 	family f;
 	familyinit(&f);
 
-	int l, h;
+	int l, h, resume = 0;
 	if(argc==1)
 	{	printf("Computes minimal primes for bases between l and h,\n");
 		printf("possibly along with a set of unsolved families.\n");
 		printf("Usage: minimal l h\n");
+		printf("To resume base b from iter i: minimal resume b i\n");
 		return 0;
+	}
+	else if(strcmp(argv[1], "resume")==0)
+	{	l = h = atoi(argv[2]);
+		resume = 1;
+		iter = atoi(argv[3]);
 	}
 	else if(argc==2)
 		l = h = atoi(argv[1]);
@@ -1694,6 +1578,10 @@ int main(int argc, char** argv)
 	mkdir("data", S_IRWXU);
 #endif
 
+#ifdef PRINTITER
+	mkdir("iter", S_IRWXU);
+#endif
+
 	for(base=l; base<=h; base++)
 	{	
 #ifdef PRINTSTATS
@@ -1703,47 +1591,99 @@ int main(int argc, char** argv)
 		list unsolved;
 		listinit(&unsolved);
 
-		for(int i=0; i<base; i++)
-			for(int j=0; j<base; j++)
-				for(int k=0; k<base; k++)
-				{	char str[4];
-					if(i==0 && j==0)
-						sprintf(str, "%c", digitchar(k));
-					else if(i==0)
-						sprintf(str, "%c%c", digitchar(j), digitchar(k));
+		if(!resume)
+		{	for(int i=0; i<base; i++)
+				for(int j=0; j<base; j++)
+					for(int k=0; k<base; k++)
+					{	char str[4];
+						if(i==0 && j==0)
+							sprintf(str, "%c", digitchar(k));
+						else if(i==0)
+							sprintf(str, "%c%c", digitchar(j), digitchar(k));
+						else
+							sprintf(str, "%c%c%c", digitchar(i), digitchar(j), digitchar(k));
+						if(newminimal(str))
+						{	char* newstr = malloc(4);
+							memcpy(newstr, str, 4);
+							addtokernel(newstr);
+						}
+					}
+
+			for(int i=1; i<base; i++)
+				for(int j=0; j<base; j++)
+				{	char* middles = calloc(base, sizeof(char));
+					int middlesize = 0;
+					for(int k=0; k<base; k++)
+					{	char str[4];
+						sprintf(str, "%c%c%c", digitchar(i), digitchar(k), digitchar(j));
+						if(nosubword(str))
+							middles[middlesize++] = k;
+					}
+					if(middlesize>0)
+					{	family f;
+						familyinit(&f);
+						adddigit(&f, i, middles, middlesize);
+						adddigit(&f, j, NULL, 0);
+						if(!hasdivisor(f))
+						{	explore(f, 1, 0, &unsolved);
+						}
+					}
 					else
-						sprintf(str, "%c%c%c", digitchar(i), digitchar(j), digitchar(k));
-					if(newminimal(str))
-					{	char* newstr = malloc(4);
-						memcpy(newstr, str, 4);
-						addtokernel(newstr);
-					}
+						free(middles);
 				}
-
-		for(int i=1; i<base; i++)
-			for(int j=0; j<base; j++)
-			{	char* middles = calloc(base, sizeof(char));
-				int middlesize = 0;
-				for(int k=0; k<base; k++)
-				{	char str[4];
-					sprintf(str, "%c%c%c", digitchar(i), digitchar(k), digitchar(j));
-					if(nosubword(str))
-						middles[middlesize++] = k;
-				}
-				if(middlesize>0)
-				{	family f;
-					familyinit(&f);
-					adddigit(&f, i, middles, middlesize);
-					adddigit(&f, j, NULL, 0);
-					if(!hasdivisor(f))
-					{	explore(f, 1, 0, &unsolved);
-					}
-				}
-				else
-					free(middles);
+			iter = 0;
+		}
+		else
+		{	char str[100];
+			sprintf(str, "iter/minimal-base%d-iter%d.txt", base, iter);
+			FILE* in = fopen(str, "r");
+			char line[MAXSTRING];
+			while(fgets(line, MAXSTRING, in)!=NULL)
+			{	line[strlen(line)-1] = '\0';
+				char* newstr = malloc(strlen(line)+1);
+				strcpy(newstr, line);
+				addtokernel(newstr);
+#ifdef PRINTRESUME
+				printf("added %s to kernel\n", line);
+#endif
 			}
+			fclose(in);
+			sprintf(str, "iter/unsolved-base%d-iter%d.txt", base, iter);
+			FILE* out = fopen(str, "r");
+			while(fgets(line, MAXSTRING, in)!=NULL)
+			{	family f;
+				familyinit(&f);
+				for(int i=0; i<strlen(line)-1; i++)
+				{	int digit;
+					if(line[i]=='{')
+						digit = 255;
+					else
+						digit = invdigitchar(line[i]);
+					if(line[i]!='{' && line[i+1]!='{')
+					{	adddigit(&f, digit, NULL, 0);
+					}
+					else
+					{	int k = strchr(line+i+1, '}')-(line+i+1)+(line[i]=='{'?1:0)-1;
+						char* middles = calloc(k, sizeof(char));
+						for(int j=i+2-(line[i]=='{'?1:0); j<k+i+2-(line[i]=='{'?1:0); j++)
+						{	middles[j-(i+2-(line[i]=='{'?1:0))] = invdigitchar(line[j]);
+						}
+						adddigit(&f, digit, middles, k);
+						i = k+i+2-(line[i]=='{'?1:0)+1;
+					}
+				}
+				addtolist(&unsolved, f, 2);
+#ifdef PRINTRESUME
+				familystring(str, f);
+				printf("added %s to unknown list\n", str);
+#endif
+				clearfamily(&f);
+			}
+			fclose(out);
+			iter++;
+		}
 
-		for(iter=0; ; iter++)
+		for(;; iter++)
 		{	if(!onlysimple(unsolved))
 			{	int didsplit = 1;
 				int splititer = 0;
@@ -1800,7 +1740,7 @@ int main(int argc, char** argv)
 			clearlist(&unsolved);
 
 			for(int j=0; j<oldlist.size; j++)
-				explore(oldlist.fam[j], iter%2, (iter/2)%2, &unsolved);
+				explore(oldlist.fam[j], iter%2, iter, &unsolved);
 
 			clearlist(&oldlist);
 			removedupes(&unsolved);
@@ -1812,7 +1752,7 @@ int main(int argc, char** argv)
 
 #ifdef PRINTITER
 			char filename[100];
-			sprintf(filename, "unsolved-base%d-iter%d.txt", base, iter);
+			sprintf(filename, "iter/unsolved-base%d-iter%d.txt", base, iter);
 			FILE* out = fopen(filename, "w");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
@@ -1822,7 +1762,7 @@ int main(int argc, char** argv)
 			fclose(out);
 
 			filename[100];
-			sprintf(filename, "minimal-base%d-iter%d.txt", base, iter);
+			sprintf(filename, "iter/minimal-base%d-iter%d.txt", base, iter);
 			out = fopen(filename, "w");
 			for(int j=0; j<K.size; j++)
 			{	fprintf(out, "%s\n", K.primes[j]);
@@ -1841,7 +1781,7 @@ int main(int argc, char** argv)
 			if(nosubwordskip(K.primes[i], i))
 			{	int size = ++temp.size;
 				temp.primes = realloc(temp.primes, size*sizeof(char*));
-				temp.primes[size-1] = malloc(MAXSTRING);
+				temp.primes[size-1] = malloc(strlen(K.primes[i])+1);
 				strcpy(temp.primes[size-1], K.primes[i]);
 			}
 		clearkernel();
