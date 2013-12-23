@@ -30,7 +30,7 @@
 #define PRINTDIVISOREXT
 #endif
 
-#ifdef PRINTDATA
+#if defined(PRINTDATA) || defined(PRINTITER)
 #include <sys/stat.h>
 #endif
 
@@ -1891,6 +1891,10 @@ int main(int argc, char** argv)
 	mkdir("data", S_IRWXU);
 #endif
 
+#ifdef PRINTITER
+	mkdir("iter", S_IRWXU);
+#endif
+
 	for(base=l; base<=h; base++)
 	{	
 #ifdef PRINTSTATS
@@ -1944,7 +1948,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{	char str[100];
-			sprintf(str, "minimal-base%d-iter%d.txt", base, iter);
+			sprintf(str, "iter/minimal-base%d-iter%d.txt", base, iter);
 			FILE* in = fopen(str, "r");
 			char line[MAXSTRING];
 			while(fgets(line, MAXSTRING, in)!=NULL)
@@ -1957,7 +1961,7 @@ int main(int argc, char** argv)
 #endif
 			}
 			fclose(in);
-			sprintf(str, "unsolved-base%d-iter%d.txt", base, iter);
+			sprintf(str, "iter/unsolved-base%d-iter%d.txt", base, iter);
 			FILE* out = fopen(str, "r");
 			while(fgets(line, MAXSTRING, in)!=NULL)
 			{	family f;
@@ -2057,7 +2061,7 @@ int main(int argc, char** argv)
 
 #ifdef PRINTITER
 			char filename[100];
-			sprintf(filename, "unsolved-base%d-iter%d.txt", base, iter);
+			sprintf(filename, "iter/unsolved-base%d-iter%d.txt", base, iter);
 			FILE* out = fopen(filename, "w");
 			for(int j=0; j<unsolved.size; j++)
 			{	char str[MAXSTRING];
@@ -2067,7 +2071,7 @@ int main(int argc, char** argv)
 			fclose(out);
 
 			filename[100];
-			sprintf(filename, "minimal-base%d-iter%d.txt", base, iter);
+			sprintf(filename, "iter/minimal-base%d-iter%d.txt", base, iter);
 			out = fopen(filename, "w");
 			for(int j=0; j<K.size; j++)
 			{	fprintf(out, "%s\n", K.primes[j]);
