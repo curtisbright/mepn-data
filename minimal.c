@@ -571,6 +571,31 @@ int hasdivisor(family p)
 		mpz_set_ui(gcd2, 0);
 	}
 
+	int i;
+	int gcdbeenset = 0;
+	for(i=0; i<p.len; i++)
+	{	for(int j=0; j<p.numrepeats[i]; j++)
+		{	instancestring(str, p, i, j);
+			mpz_set_str(temp, str, base);
+			if(gcdbeenset)
+				mpz_gcd(gcd2, gcd2, temp);
+			else
+			{	gcdbeenset = 1;
+				mpz_set(gcd2, temp);
+			}
+			for(int k=0; k<p.len; k++)
+				for(int l=0; l<p.numrepeats[k]; l++)
+					for(int n=0; n<p.numrepeats[k]; n++)
+					{	tripleinstancestring(str, p, i, j, k, l, k, n);
+						mpz_set_str(temp, str, base);
+						mpz_gcd(gcd2, gcd2, temp);
+					}
+		}
+		if(p.numrepeats[i]>0)
+			break;
+	}
+	int firstrepeat = i;
+
 	if(numrepeats==2)
 	{	emptyinstancestring(str, p);
 		mpz_set_str(gcd1, str, base);
@@ -581,31 +606,6 @@ int hasdivisor(family p)
 					mpz_set_str(temp, str, base);
 					mpz_gcd(gcd1, gcd1, temp);
 				}
-
-		int i;
-		int gcdbeenset = 0;
-		for(i=0; i<p.len; i++)
-		{	for(int j=0; j<p.numrepeats[i]; j++)
-			{	instancestring(str, p, i, j);
-				mpz_set_str(temp, str, base);
-				if(gcdbeenset)
-					mpz_gcd(gcd2, gcd2, temp);
-				else
-				{	gcdbeenset = 1;
-					mpz_set(gcd2, temp);
-				}
-				for(int k=0; k<p.len; k++)
-					for(int l=0; l<p.numrepeats[k]; l++)
-						for(int n=0; n<p.numrepeats[k]; n++)
-						{	tripleinstancestring(str, p, i, j, k, l, k, n);
-							mpz_set_str(temp, str, base);
-							mpz_gcd(gcd2, gcd2, temp);
-						}
-			}
-			if(p.numrepeats[i]>0)
-				break;
-		}
-		int firstrepeat = i;
 
 		gcdbeenset = 0;
 		for(i=firstrepeat+1; i<p.len; i++)
