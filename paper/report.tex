@@ -332,7 +332,7 @@ length mod $3$.
 \end{example}
 
 A version of Lemma~\ref{lemone} which applies to the most general kind 
-of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$, where we allow the case $L_m^*\emptyset$)
+of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$, where we allow the case $L_m^*=\emptyset$)
 is formulated in Lemma~\ref{lemtwo}.
 
 \begin{lemma}\label{lemtwo}
@@ -799,7 +799,7 @@ However, as $b$ increased, in addition to the calculations becoming more costly,
 it was found to be necessary to use increasingly complicated strategies.  
 We describe some which were found to be helpful in base 29.
 \begin{lemma}
-If every number of the form $x_1(L_1-y_i)^*\dotsm x_mL_m^*$ is composite, then
+If every number of the form $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
 every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
 $x_1L_1^*y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$.
 \end{lemma}
@@ -807,7 +807,7 @@ $x_1L_1^*y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$.
 If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.  If $y$ does not contain a $y_i$
 then $w$ is composite by assumption.  Therefore if $w$ is a prime then $y$ contains a $y_i$, i.e., $y\in L_1^*y_iL_1^*$, from which the
 result follows.
-(Note that one could improve this result via $y\in(L_1-y_i)^*y_iL_1^*\cup L_1^*y_i(L_1-y_i)^*$, but this was found to be unecessary for our purposes.
+(Note that one could improve this result via $y\in(L_1-y_i)^*y_iL_1^*\cup L_1^*y_i(L_1-y_i)^*$, but this was found to be unnecessary for our purposes.)
 \end{proof}
 \begin{example}
 The numbers represented by the family $\mathtt{F}\{\0,\9,\mathtt{F}\}^*\mathtt{F}$ in base~29 are divisible by $3$,
