@@ -223,7 +223,7 @@ every number in a given family is divisible by some element of $S$.
 In the second strategy, we attempt to find a
 difference-of-squares or difference-of-cubes factorization.
 
-\subsection{The first strategy}
+\subsection{The first strategy}\label{subsecfirststrat}
 
 We start with the simplest version of the idea:  to find 
 an $N > 1$ that divides each element of the family $[xL^*z]_b$.
@@ -404,26 +404,6 @@ $[\1\1\6\1]_b$,
 $[\6\1\1\1]_b$,
 every even-length string of the form $\1^*\6\1^*$ is composite.
 \end{example}
-
-%This may still be generalized to the case where there are $n$ repetitions and %RD
-%each language where the $i$th repetition is repeated a number of times congruent to 
-%$k_i$ modulo $m_i$ has some nontrivial factor, for some choice of the $m_i$'s ($i=1,2,...,n$) 
-%and each value $k_i\in\{0,1,...,m_i-1\}$. 
-%
-%However, it may be a huge task to find the good $m_i$'s. So, it may be preferable to directly
-%determine if all the numbers of a language have factors in some (small) set of (small) primes.\\
-%Let $\{p_1,p_2,...,p_n\}$ be some set of primes and $p=\prod_{i=1,2,..,n} p_i$.\\
-%It may be observed that, for any  language $L$ of the form here considered ($x_1L_1^*\dotsm x_mL_m^*x_{m+1}$) the set $mod(L,p)=\{[w]_b \mod p|w\in L\}$ may be determined by the following rules:
-%\begin{itemize}
-%\item $mod(\emptyset,p)=0$;
-%\item $mod(L x,p)=\{\mod(m*b^{|x|}+[x]_b,p) |m\in mod(L,p)\}$;
-%\item  $mod(L' L^*,p)=lfp(f)$, i.e., the least fixpoint of the function\\
-%          $f(X)= mod(L',p)\cup\{\mod(x*b^{|w|}+[w]_b,p) |x\in X,w\in L\}$, \\which may easily be obtained iteratively from the initial value $X=mod(L',p)$.
-%\end{itemize}
-%\begin{lemma}
-%For $p=\prod_{i=1,2,..,n} p_i$, if $[x_1\ldots x_{m+1}]_b>\gcd(x,p)>1$ for each $x\in mod(L,p)$, then all the numbers represented by $L$ are composite.
-%\end{lemma}
-%This may for instance be applied with the prime factors of $b+1$ and/or $b-1$.
 
 \subsection{The second strategy}
 
@@ -797,7 +777,7 @@ Base 28: $\mathtt{OA^*F}$
 The strategies discussed so far suffice to restrict the possible forms of minimal primes to a finite number of simple families in all bases $2\leq b\leq 28$.
 However, as $b$ increased, in addition to the calculations becoming more costly, 
 it was found to be necessary to use increasingly complicated strategies.  
-We describe some which were found to be helpful in base 29.
+We now describe some additional strategies which we found sufficient to solve the problem in base~29 (up to a finite number of simple families).
 \begin{lemma}
 If every number of the form $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
 every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
@@ -829,24 +809,51 @@ In each case, $y$ is of the form $(L-\{y_i\})^*(L-\{y_j\})^*(L-\{y_i\})^*$, from
 The string $\mathtt{QLQ}$ represents a prime in base~29, and is a proper subword of $\mathtt{LQLQL}$.
 It follows that the family $\mathtt{L}\{\mathtt{L},\mathtt{Q}\}^*\mathtt{L}$ splits into the family $\mathtt{L}\mathtt{L}^*\mathtt{Q}^*\mathtt{L}^*\mathtt{L}$ in base~29.
 \end{example}
+This rule may also be generalized to apply to the case when $x_1y_iy_jy_iy_jx_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$).
+\begin{example}
+The string $\mathtt{LL9L9LQL}$ represents a prime in base~29.  It follows that the family $\mathtt{LL\{\mathtt{9},\mathtt{L}\}^*\mathtt{Q}^*\mathtt{QL}}$ splits into the family $\mathtt{LL\mathtt{L}^*\mathtt{9}^*\mathtt{L}^*\mathtt{9}^*\mathtt{Q}^*\mathtt{QL}}$ in base~29.
+\end{example}
 
-The next result will allow to progress in the exploration of the repetitions of a language, %RD
-since it will decompose a repetition in a part that is not interesting to be explored further, until no other rule may be used, and a part which may lead to reductions of the families to be exploited.
-In the following, we shall denote by $strip(L)$ the string obtain from $L$ by deleting all the repetitions in it.
-\begin{lemma} 
-Let $L=L1\{w_1,w_2,\ldots,w_n\}^*L2$ be some language of the kind we are interested in. 
-Let us decompose $\{w_1,w_2,\ldots,w_n\}$ in two disjoint sets: 
-$N$ (for no present interest to develop) and 
-$F$ (for to be further explored) - this is like a partition but $N$ or $F$ may be empty.
-$F$ is the subset of $\{w_1,w_2,\ldots,w_n\}$ such that, for any $w_i\in F$,  
-for some $m$ in $M$, the longest prefix of m which is a subword of $strip(L_1)$ is smaller than
-the longest prefix of $m$ which is a subword of $strip(L_1) w_i$; $N$ is the complement of $F$.
-If $N\neq \emptyset$,  one may explore the languages $L_1 N^* L_2$ and
-$L_1 N^*w_i\{w_1,w_2,\ldots,w_n\}^* L_2$ for each $w_i\in F$.
+In section~\ref{subsecfirststrat} we described a number of strategies for determining if every member of a family has a divisor,
+but for some families divisors exist which will not be found using those tests.  The following lemma can help one discover when
+this is the case; in particular when every member of a family is divisible by some small prime.  For a language $L$ we use the
+notation $[L]_b\bmod N$ to denote the finite set of residues $\set{[x]_b\bmod N}{x\in L}$.
+\begin{lemma}\label{lemextdiv}
+If\/ $1<\gcd(n,N)$ for every $n\in[L]_b\bmod N$ and $p\notin[L]_b$ for every prime $p$ which divides $N$, then all numbers of the form $[L]_b$ are composite.
 \end{lemma}
-This property is in some sense trivial; its true interest is that it is not useful to further explore $N^*$ until $M$ is enriched, or no other rule allows to simplify the handling.
-The rule here presented allows to progress from left to right in the handling of repetitions,
- but it is also possible to derive a similar decomposition for progressing from right to left.
+\begin{proof}
+Let $x$ be an arbitrary member of $L$.  Then $\gcd([x]_b,N)=\gcd([x]_b\bmod N,N)>1$ by assumption, so $[x]_b$ cannot be prime unless $[x]_b=\gcd([x]_b,N)$.  But in that case $[x]_b$ would be a prime which divides $N$, and so $[x]_b\notin[L]_b$ by the second assumption, in contradiction to $x\in L$.
+\end{proof}
+To make use of this lemma, we need to be able to compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$.  To do this, we can make use of the following relations:
+\begin{align*}
+[Lx]_b \bmod N &= (b\cdot([L]_b\bmod N)+[x]_b)\bmod N \\
+[L\{y_1,\dotsc,y_n\}]_b \bmod N &= \bigcup_{i=1}^n[Ly_i]_b\bmod N \\
+[L\{y_1,\dotsc,y_n\}^*]_b \bmod N &= \bigcup_{i=0}^\infty[L\{y_1,\dotsc,y_n\}^i]_b\bmod N
+\end{align*}
+In the final case, the union may be taken to be finite over $i<k$ where $k$ is chosen such that $\bigcup_{i=0}^k[L\{y_1,\dotsc,y_n\}^i]_b\bmod N=\bigcup_{i=0}^{k-1}[L\{y_1,\dotsc,y_n\}^i]_b\bmod N$.
+Using these relations, we can compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$ progressively, working left to right and starting from $[\emptyset]_b\bmod N = \{0\}$.  To solve base~29 it was sufficient to use $N=2\cdot3\cdot5$.
+\begin{example}
+Let $b\coloneqq29$ and $N\coloneqq30$. %, and $L\coloneqq\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$.
+Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $n$ is in this set then $\gcd(n,N)\in\{2,5,6,15\}$ and $\gcd(n,N)>1$.  Since $2$, $3$, $5\notin[L]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
+\end{example}
+
+%The next result will allow to progress in the exploration of the repetitions of a language, %RD
+%since it will decompose a repetition in a part that is not interesting to be explored further, until no other rule may be used, and a part which may lead to reductions of the families to be exploited.
+%In the following, we shall denote by $strip(L)$ the string obtain from $L$ by deleting all the repetitions in it.
+%\begin{lemma} 
+%Let $L=L1\{w_1,w_2,\ldots,w_n\}^*L2$ be some language of the kind we are interested in. 
+%Let us decompose $\{w_1,w_2,\ldots,w_n\}$ in two disjoint sets: 
+%$N$ (for no present interest to develop) and 
+%$F$ (for to be further explored) - this is like a partition but $N$ or $F$ may be empty.
+%$F$ is the subset of $\{w_1,w_2,\ldots,w_n\}$ such that, for any $w_i\in F$,  
+%for some $m$ in $M$, the longest prefix of m which is a subword of $strip(L_1)$ is smaller than
+%the longest prefix of $m$ which is a subword of $strip(L_1) w_i$; $N$ is the complement of $F$.
+%If $N\neq \emptyset$,  one may explore the languages $L_1 N^* L_2$ and
+%$L_1 N^*w_i\{w_1,w_2,\ldots,w_n\}^* L_2$ for each $w_i\in F$.
+%\end{lemma}
+%This property is in some sense trivial; its true interest is that it is not useful to further explore $N^*$ until $M$ is enriched, or no other rule allows to simplify the handling.
+%The rule here presented allows to progress from left to right in the handling of repetitions,
+% but it is also possible to derive a similar decomposition for progressing from right to left.
 
 \section{Composite numbers}
 
