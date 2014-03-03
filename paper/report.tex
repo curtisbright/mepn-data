@@ -644,10 +644,11 @@ as possible and update $L$; after each split examine the new families as in~(b).
 \end{enumerate}
 
 When exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
-characters to the left of $L_1$; in our implementation we alternate (with period 4) between adding characters
-to the left/right of the first/last nonempty $L_i$.  Also, the application of Lemma~\ref{lemsplit2b} tended to initially
-produce an excess number of cases, so it was useful to only apply it following a certain number of iterations.  It also led to
-duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
+characters to the left of $L_1$; in our implementation we alternate between adding characters
+to the left and right of $L_{1+k\bmod m}$, where $k$ is the number of times we have previously passed through line~(a).
+Also, the application of Lemma~\ref{lemsplit2b} tended to initially
+produce an excess number of cases, so it was useful to only apply it following a certain number of iterations (6 in our implementation).
+It also led to duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
 but these could be detected and removed.
 
 The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
@@ -662,18 +663,19 @@ In such a case, the only way to proceed is to test the primality of larger and l
 a prime is eventually discovered.
 
 The numbers in simple families are of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
-Except when $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large.
+Except in the special case $c=\pm1$ and $d=1$, when $n$ is large the known primality tests for such a number are too inefficient to run.
 In this case one must resort to a pseudoprimality test such as a Miller--Rabin test, unless a divisor of the number can be found.
 Since we are testing many numbers in an exponential sequence, it is possible to use a sieving process to find divisors
 rather than using trial division.
 
 To do this, we made use of Geoffrey Reynolds' srsieve software~\cite{srsieve}.  This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
-handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and manually
-removed those numbers for which $p\mid(ab^n+c)/d$.
+handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and ititialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
+The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$).
 
 After the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
-In the case $d=1$ we used the software LLR by Jean Penn\'e~\cite{llr}, and when $d>1$ we used custom software written using GMP~\cite{gmp}.
+For this we used the software LLR by Jean Penn\'e~\cite{llr}.
+Although undocumented, it is possible to run this program on numbers of the form $(ab^n+c)/d$ when $d\neq1$, so this program required no modifications.
 In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
 we employed PRIMO by Marcel Martin~\cite{primo}, an elliptic curve primality proving implementation.
 
