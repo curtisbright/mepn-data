@@ -643,19 +643,24 @@ as possible and update $L$; after each split examine the new families as in~(b).
 \end{enumerate}
 \end{enumerate}
 
-When exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
+The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
+A sample tree of decompositions, for the family $\1\{\0,\1,\6\}^*\1$ in base~9, is displayed in Figure~\ref{decomptree}.
+When applying Lemma~\ref{lemexplore} on a family with only one nonempty $L_i$ we don't show the first decomposition
+(simply removing $L_i^*$) since that results in the shortest word in the family, which is always implicitly
+checked for primality/minimal subwords at each step anyway.
+
+\subsection{Implementation}
+
+An implementation of the above algorithm was written in C using the GMP library~\cite{gmp} by the first author~\cite{code}.
+Independently, the second author wrote an implementation using the same ideas and derived the same results.
+
+Note that when exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
 characters to the left of $L_1$; in our implementation we alternate between adding characters
 to the left and right of $L_{1+k\bmod m}$, where $k$ is the number of times we have previously passed through line~(a).
 Also, the application of Lemma~\ref{lemsplit2b} tended to initially
 produce an excess number of cases, so it was useful to only apply it following a certain number of iterations (6 in our implementation).
 It also led to duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
 but these could be detected and removed.
-
-The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
-A sample tree of decompositions, for the family $\1\{\0,\1,\6\}^*\1$ in base~9, is displayed in Figure~\ref{decomptree}.
-When applying Lemma~\ref{lemexplore} on a family with only one nonempty $L_i$ we don't show the first decomposition
-(simply removing $L_i^*$) since that results in the shortest word in the family, which is always implicitly
-checked for primality/minimal subwords at each step anyway.
 
 At the conclusion of the algorithm described, $L$ will consist of simple families (of the form $xy^*z$) which have not yet
 yielded a prime, but for which there is no obvious reason why there can't be a prime of such a form.
@@ -987,6 +992,10 @@ $\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
 \bibitem{crus}  G. Barnes.
 \newblock {\it Sierpinski conjectures and proofs},
 \url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
+
+\bibitem{code}  C. Bright.
+\newblock {\it MEPN implementation},
+\url{https://github.com/curtisbright/mepn}.
 
 \bibitem{Choi}  S. L. G. Choi.
 \newblock Covering the set of integers by congruence 
