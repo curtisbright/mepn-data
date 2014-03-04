@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 						}
 
 						mpz_set_str(p, candidate, n);
-						result = mpz_probab_prime_p(p, 1);
+						result = mpz_probab_prime_p(p, 25);
 						if(result>0)
 						{	//gmp_printf("%s%c^(%d)%s (base %d) (%Zd) probably prime\n", start, middle, num, end, n, p);
 							printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle, num, end, n);

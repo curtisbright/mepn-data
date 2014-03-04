@@ -21,6 +21,7 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
+	mkdir("srsieve", S_IRWXU);
 	dp = opendir("./data");
 	if(dp != NULL)
 	{	while(ep = readdir(dp))
@@ -104,7 +105,13 @@ int main(int argc, char** argv)
 				}
 				fclose(in);
 				if(outopen)
-					fclose(out);
+				{	fclose(out);
+					char cpfilename[100];
+					sprintf(cpfilename, "data/sieve.%d.txt", base);
+					char copy[100];
+					sprintf(copy, "cp %s %s", outfilename, cpfilename);
+					system(copy);
+				}
 			}
 		}
 		(void)closedir(dp);

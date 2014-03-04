@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAXBASE 30
 
 int main(int argc, char** argv)
 {
-	for(int base=2; base<29; base++)
+	for(int base=2; base<=MAXBASE; base++)
 	{	char filenamein1[100], filenamein2[100], filenameout[100];
 		sprintf(filenamein1, "data/sieve.%d.txt", base);
 		FILE* in1 = fopen(filenamein1, "r");
