@@ -20,7 +20,8 @@ int main(int argc, char** argv)
 {	if(argc==1)
 	{	printf("Given a base on the command line, this program runs\n");
 		printf("srsieve on that base sieve file and then\n");
-		printf("merges the results with the search data\n");
+		printf("merges the results with the LLR search data\n");
+		printf("\nNOTE: The program srsieve must be located in the directory srsieve\n");
 	}
 	else if(argc>1)
 	{	signal(SIGINT, sig_handler);
@@ -29,7 +30,7 @@ int main(int argc, char** argv)
 			if(pid==0)
 			{	char filename[25];
 				sprintf(filename, "srsieve/sieve.%s.txt", argv[1]);
-				execlp("timeout", "timeout", "1m", "srsieve/srsieve", filename, "-o", filename, NULL);
+				execlp("timeout", "timeout", "120m", "srsieve/srsieve", filename, "-o", filename, NULL);
 			}
 			int status;
 			wait(&status);
