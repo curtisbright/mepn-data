@@ -33,8 +33,8 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{conjecture}[theorem]{Conjecture}
 
-\theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
+%\theoremstyle{remark}
+%\newtheorem{remark}[theorem]{Remark}
 \newtheorem{problem}[theorem]{Problem}
 
 \newcommand{\0}{\mathtt{0}}
@@ -94,7 +94,7 @@ for $2 \leq b \leq 30$.
 
 Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
-primes, all of whose base-$10$ digits are $1$?  Currently,
+primes, all of whose base-$10$ digits are $\1$?  Currently,
 there are only five
 known, corresponding to $(10^p-1)/9$ for $p \coloneqq 2$, $19$, $23$, $317$, and
 $1031$.  It seems likely that four more are given by
@@ -193,15 +193,11 @@ a prime or not.
 However, it is not even known if the following simpler decision problem is 
 recursively solvable:
 
-\medskip
-
 \begin{problem}
 Given strings $x$, $y$, $z$, and a base $b$, does there exist a prime
 number whose base-$b$ expansion is of the form $x \underbrace{yy\cdots y}_n z$
 for some $n \geq 0$?
 \end{problem}
-
-\medskip
 
 An algorithm to solve this problem, for example, would allow us to decide
 if there are any additional Fermat primes (of the form $2^{2^n}+1$)
@@ -1004,7 +1000,7 @@ $$ M(L) = \lbrace \1, \2, \4, \8, \6\5\5\3\6 \rbrace ? $$
 
 This would follow, for example, if we could prove that every power
 of $16$ greater than $65536$ contained at least one of the digits
-$\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
+$\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 
 
 \bibliographystyle{plain}
