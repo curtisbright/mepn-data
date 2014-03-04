@@ -3,7 +3,6 @@
 CM1*
 EE1*
 E1*E
-E*FOO
 EFO*
 F1*F1
 F0*KO

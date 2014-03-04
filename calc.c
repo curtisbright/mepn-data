@@ -12,9 +12,9 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	char line[100] = {0};
+	char line[10000] = {0};
 	for(;;)
-	{	fgets(line, 100, stdin);
+	{	fgets(line, 10000, stdin);
 		mpz_set_str(p, line, atoi(argv[1]));
 		gmp_printf("%Zd\n", p);
 	}
