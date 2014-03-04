@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 			if(pid==0)
 			{	char filename[25];
 				sprintf(filename, "srsieve/sieve.%s.txt", argv[1]);
-				execlp("timeout", "timeout", "1m", "srsieve/srsieve", filename, "-o", filename, NULL);
+				execlp("timeout", "timeout", "120m", "srsieve/srsieve", filename, "-o", filename, NULL);
 			}
 			int status;
 			wait(&status);
