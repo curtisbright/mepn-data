@@ -10,6 +10,8 @@
 
 \usepackage{mathtools}
 
+\usepackage{float}
+
 \usepackage{rotating}
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
@@ -85,7 +87,7 @@ the set $M(L)$ of minimal strings is necessarily finite, determining
 it explicitly for a given $L$ can be a difficult computational problem.  
 We use some number-theoretic heuristics to compute $M(L)$, where $L$
 is the language of base-$b$ representations of the prime numbers,
-for $2 \leq b \leq 28$.
+for $2 \leq b \leq 30$.
 \end{abstract}
 
 \section{Introduction}
@@ -94,9 +96,9 @@ Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
 primes, all of whose base-$10$ digits are $1$?  Currently,
 there are only five
-known, corresponding to $(10^p-1)/9$ for $p := 2$, $19$, $23$, $317$, and
+known, corresponding to $(10^p-1)/9$ for $p \coloneqq 2$, $19$, $23$, $317$, and
 $1031$.  It seems likely that four more are given by
-$p := 49081$, $86453$, $109297$, and $270343$, but this has not yet been
+$p \coloneqq 49081$, $86453$, $109297$, and $270343$, but this has not yet been
 rigorously proven.
 
 Another problem on the digits of primes was introduced by the
@@ -117,16 +119,15 @@ technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
 the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
-$2 \leq b \leq 16$ and $b = 18,20,22,24$.   For the remaining
-bases $b = 17,19,21,23,25,26,27,28$,
-we obtain
-results that allow us to ``almost'' completely characterize this set.
+$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $24$, $30$.   For the remaining
+bases $b = 17$, $19$, $21$, $23$, and $25\leq b\leq 29$,
+we obtain results that allow us to ``almost'' completely characterize this set.
 
 In what follows, if $x$ is a string of symbols over the alphabet
-$\Sigma_b := \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let 
+$\Sigma_b \coloneqq \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
 most significant digit).  This is extended to languages as follows:
-$[L]_b := \set{ [x]_b }{ x \in L }$.
+$[L]_b \coloneqq \set{ [x]_b }{ x \in L }$.
 We use the convention that $\A = 10$, $\B = 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
 We let $(x)_b$ be the canonical representation
@@ -134,7 +135,7 @@ of $x$ in base-$b$, that is, the representation without leading zeroes.
 %The set of all canonical representations in base $b$ is denoted
 %$C_b$.
 Finally, as usual, for a language $L$ we let
-$L^n := \underbrace{LL\dotsm L}_n$ and $L^* := \bigcup_{i \geq 0} L^i$.
+$L^n \coloneqq \underbrace{LL\dotsm L}_n$ and $L^* \coloneqq \bigcup_{i \geq 0} L^i$.
 
 \section{Why minimal sets are interesting}
 
@@ -143,8 +144,8 @@ the minimal set $M(L)$ of a language $L$ is interesting is because it
 allows us to compute two natural and related languages,
 defined as follows:
 \begin{align*}
-\subb(L) &:= \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $x \subw y$}} ; \\
-\supe(L) &:= \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $y \subw x$}} .
+\subb(L) &\coloneqq \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $x \subw y$}} ; \\
+\supe(L) &\coloneqq \set{x \in \Sigma^*}{\text{there exists $y \in L$ such that $y \subw x$}} .
 \end{align*}
 
 An amazing fact is that $\subb(L)$ and $\supe(L)$ are always regular.
@@ -172,11 +173,11 @@ The following is a ``semi-algorithm'' that
 is guaranteed to produce $M(L)$, but it is not so easy to implement:
 
 \bigskip
-\noindent (1) $ M := \emptyset$ \\
+\noindent (1) $ M \coloneqq \emptyset$ \\
 \noindent (2) while ($L \not= \emptyset$) do \\
 \hphantom{} \qquad (3) choose $x$, a shortest string in $L$ \\
-\hphantom{} \qquad (4) $ M := M \union \lbrace  x \rbrace$ \\
-\hphantom{} \qquad (5) $ L := L - \supe(\lbrace x \rbrace) $ \\
+\hphantom{} \qquad (4) $ M \coloneqq M \union \lbrace  x \rbrace$ \\
+\hphantom{} \qquad (5) $ L \coloneqq L - \supe(\lbrace x \rbrace) $ \\
 
 \smallskip
 
@@ -206,6 +207,7 @@ for some $n \geq 0$?
 An algorithm to solve this problem, for example, would allow us to decide
 if there are any additional Fermat primes (of the form $2^{2^n}+1$)
 other than the known ones (corresponding to $n = 0$, $1$, $2$, $3$, $4$).
+To see this, take $b\coloneqq2$, $x\coloneqq\1$, $y\coloneqq\0$, and $z\coloneqq\0^{16}\1$.
 
 Therefore, in practice, we are forced to try to rule out prime
 representations based on modular techniques and factorizations.
@@ -223,7 +225,7 @@ every number in a given family is divisible by some element of $S$.
 In the second strategy, we attempt to find a
 difference-of-squares or difference-of-cubes factorization.
 
-\subsection{The first strategy}
+\subsection{The first strategy}\label{subsecfirststrat}
 
 We start with the simplest version of the idea:  to find 
 an $N > 1$ that divides each element of the family $[xL^*z]_b$.
@@ -259,7 +261,7 @@ form $[xLz]_b$ are both of the form $[xL^*z]_b$.
 \end{proof}
 
 In practice, our algorithm employs this lemma with 
-$L:=\{y_1,\dotsc,y_n\}\subseteq\Sigma_b$, and all numbers of the form
+$L\coloneqq\{y_1,\dotsc,y_n\}\subseteq\Sigma_b$, and all numbers of the form
 $[xL^*z]_b$ are shown to be composite with the following corollary.
 \begin{corollary}\label{corone}
 If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
@@ -267,7 +269,7 @@ If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
 \end{corollary}
 \begin{proof}
 By Lemma~\ref{lemone}, we know
-that $N:=\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ 
+that $N\coloneqq\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)>1$ 
 divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$.
 By the size condition $N$ is strictly less than each such number, and
 so is a nontrivial divisor.
@@ -283,10 +285,10 @@ Since $1 < 7 < 49$, each such number is composite.
 We also generalize this to the following corollary in the case where 
 a single divisor does not divide each number in the family.
 \begin{corollary}\label{cortwo}
-Let $L := \lbrace y_1, y_2, \ldots, y_n \rbrace$.
-If \[N_0:=\gcd \paren[\big]{ \{ [xz]_b \} \union [xL^2 z]_b} \]
+Let $L \coloneqq \lbrace y_1, y_2, \ldots, y_n \rbrace$.
+If \[N_0\coloneqq\gcd \paren[\big]{ \{ [xz]_b \} \union [xL^2 z]_b} \]
 and
-\[ N_1:= \gcd \paren[\big]{[xLz]_b \union [xL^3z]_b} \]
+\[ N_1\coloneqq \gcd \paren[\big]{[xLz]_b \union [xL^3z]_b} \]
 lie strictly between $1$ and $[xz]_b$, then all numbers of the form 
 $[xL^*z]_b$ are composite.
 \end{corollary}
@@ -319,7 +321,7 @@ check if there are divisors $N_0$, $N_1$, $\dotsc$, $N_{k-1}$ such that
 $N_i$ divides all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ in which 
 the number of $y_i$ appearing is congruent to $i\bmod k$.
 \begin{example}
-Let $b := 16$.
+Let $b \coloneqq 16$.
 Then
 $7$ divides $[\8\A\0\1]_b$ and $[\8\A\0\A\A\A\1]_b$.
 Furthermore, $13$ divides 
@@ -332,31 +334,31 @@ length mod $3$.
 \end{example}
 
 A version of Lemma~\ref{lemone} which applies to the most general kind 
-of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*x_{m+1}$) %RD
+of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$, where we allow the case $L_m^*=\emptyset$)
 is formulated in Lemma~\ref{lemtwo}.
 
 \begin{lemma}\label{lemtwo}
-Let $x_1$, $\dotsc$, $x_{m+1}\in \Sigma^*_b$, and $L_1$, $\dotsc$, 
+Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, 
 $L_m\subseteq\Sigma^*_b$.  Then
-$N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*x_{m+1}]_b$
+$N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$
 if and only if
-$N$ divides $[x_1\dotsm x_{m+1}]_b$ and all numbers of the form 
-$[x_1L_1x_2x_3\dotsm x_{m+1}]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_mx_{m+1}]_b$.
+$N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form 
+$[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$.
 \end{lemma}
 \begin{proof}
-Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*x_{m+1}$; then there exist
+Say $w\in x_1L_1^*x_2L_2^*\dotsm x_mL_m^*$; then there exist
 $y_{i,1}$, $\dotsc$, $y_{i,n_i}\in L_i$ such that
-\[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m}x_{m+1} \]
+\[ w = x_1y_{1,1}\dotsm y_{1,n_1}x_2y_{2,1}\dotsm y_{2,n_2}\dotsm x_m y_{m,1}\dotsm y_{m,n_m} \]
 for $1\leq i\leq m$.
 As in the proof of Lemma~\ref{lemone}, we have that
-\[ [w]_b = [x_1\dotsm x_{m+1}]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_{m+1}]_b-[x_1\dotsm x_{m+1}]_b) \]
+\[ [w]_b = [x_1\dotsm x_m]_b + \sum_{i=1}^m\sum_{j=1}^{n_i} b^{\abs{y_{i,j+1}\dotsm y_{m,n_m}}}([x_1\dotsm x_i y_{i,j} x_{i+1}\dotsm x_m]_b-[x_1\dotsm x_m]_b) \]
 from which the claim follows.
 \end{proof}
 As in Lemma~\ref{lemone}, we typically apply this lemma in the case 
 where each $L_i\subseteq\Sigma_b$ and show that all numbers of the 
 form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$ have a divisor.
 \begin{example}
-Take $(L_1, L_2, L_3) := (\{ \0 \},\{\0\},\emptyset)$ and $(x_1,x_2, x_3) := (\9, \8, \1)$.
+Take $(L_1, L_2, L_3) \coloneqq (\{ \0 \},\{\0\},\emptyset)$ and $(x_1,x_2, x_3) \coloneqq (\9, \8, \1)$.
 Since $9$ divides $981$, $9081$, and $9801$, it follows that $9$ 
 divides every number with base-$10$ representation
 of the form $\9\0^*\8\0^*\1$.
@@ -368,7 +370,7 @@ of the form $[x_1L_1^*\dotsm x_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have one
 divisor, and all numbers of the form 
 $[x_1L_1^*\dotsm x_iL_i(L_i^2)^*\dotsm x_mL_m^*]_b$ have another divisor.
 \begin{example}
-Let $b := 11$.
+Let $b \coloneqq 11$.
 Since $3$ divides each of $[\4\4\A\1]_b$,
 $[\4\4\A\1\1\1]_b$,
 $[\4\4\0\A\1]_b$ ,
@@ -388,7 +390,7 @@ $[x_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ and $[x_1 L_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$
 have one divisor, and numbers of the form $[x_1L_1(L_1^2)^*x_2(L_2^2)^*x_3]_b$ 
 and $[x_1(L_1^2)^*x_2L_2(L_2^2)^*x_3]_b$ have another divisor.
 \begin{example}
-Let $b := 9$.
+Let $b \coloneqq 9$.
 Since $2$ divides each of $[\6]_b$,
 $[\1\1\6]_b$,
 $[\6\1\1]_b$,
@@ -405,26 +407,6 @@ $[\6\1\1\1]_b$,
 every even-length string of the form $\1^*\6\1^*$ is composite.
 \end{example}
 
-This may still be generalized to the case where there are $n$ repetitions and %RD
-each language where the $i$th repetition is repeated a number of times congruent to 
-$k_i$ modulo $m_i$ has some nontrivial factor, for some choice of the $m_i$'s ($i=1,2,...,n$) 
-and each value $k_i\in\{0,1,...,m_i-1\}$. 
-
-However, it may be a huge task to find the good $m_i$'s. So, it may be preferable to directly
-determine if all the numbers of a language have factors in some (small) set of (small) primes.\\
-Let $\{p_1,p_2,...,p_n\}$ be some set of primes and $p=\prod_{i=1,2,..,n} p_i$.\\
-It may be observed that, for any  language $L$ of the form here considered ($x_1L_1^*\dotsm x_mL_m^*x_{m+1}$) the set $mod(L,p)=\{[w]_b \mod p|w\in L\}$ may be determined by the following rules:
-\begin{itemize}
-\item $mod(\emptyset,p)=0$;
-\item $mod(L x,p)=\{\mod(m*b^{|x|}+[x]_b,p) |m\in mod(L,p)\}$;
-\item  $mod(L' L^*,p)=lfp(f)$, i.e., the least fixpoint of the function\\
-          $f(X)= mod(L',p)\cup\{\mod(x*b^{|w|}+[w]_b,p) |x\in X,w\in L\}$, \\which may easily be obtained iteratively from the initial value $X=mod(L',p)$.
-\end{itemize}
-\begin{lemma}
-For $p=\prod_{i=1,2,..,n} p_i$, if $[x_1\ldots x_{m+1}]_b>\gcd(x,p)>1$ for each $x\in mod(L,p)$, then all the numbers represented by $L$ are composite.
-\end{lemma}
-This may for instance be applied with the prime factors of $b+1$ and/or $b-1$.
-
 \subsection{The second strategy}
 
 A second way of proving that families of the form $xL^*z$ do not contain a 
@@ -432,8 +414,8 @@ prime is via algebraic factorizations, such as a difference-of-squares
 factorization.
 
 \begin{lemma}\label{lemsquares}
-Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
-$X:=([y]_b+(b-1)[x]_b)/g$, and $Y:=(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
+Let $x$, $y$, $z\in\Sigma^*_b$, and let $g\coloneqq\gcd([y]_b,b-1)$, 
+$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
 If\/ $b$, $X$, and $Y$ are all squares and 
 $\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form
  $[xy^*z]_b$ are composite.
@@ -452,7 +434,7 @@ denominator, and so the factorization is nontrivial.
 \end{proof}
 
 \begin{example}
-Let $b:=16$, $x:=\4$, $y:=\4$, and $z:=\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
+Let $b\coloneqq16$, $x\coloneqq\4$, $y\coloneqq\4$, and $z\coloneqq\1$.  Then $g=1$, $X=8^2$, $Y=7^2$, and
 \[ [\4\4^n\1]_b = \frac{(4^{n+1}\cdot8+7)(4^{n+1}\cdot8-7)}{15} . \]
 Since $4\cdot8-7>15$, this factorization is nontrivial and no number of 
 the form $[\4\4^*\1]_b$ is prime.
@@ -476,7 +458,7 @@ $\gcd([xyz]_b,[xy^3z]_b)$ divides $[xy^nz]_b$, and by the size condition this
 divisor is nontrivial.
 \end{proof}
 \begin{example}
-Let $b:=17$, $x:=\1\9$, $y:=\9$, and $z:=\9$.  Then $g=1$, 
+Let $b\coloneqq17$, $x\coloneqq\1\9$, $y\coloneqq\9$, and $z\coloneqq\9$.  Then $g=1$, 
 $b^{\abs{z}}X=85^2$, $Y=3^2$, and
 \[ [xy^{2n}z]_b = \frac{(17^n\cdot85+3)(17^n\cdot85-3)}{16} . \]
 Since $85-3>16$ this factorization is nontrivial.  Furthermore, all numbers 
@@ -486,8 +468,8 @@ $[\1\9\9^*\9]_b$ are composite.
 Finally, we present a variant of Lemma~\ref{lemsquares} which applies to a 
 difference-of-cubes factorization.
 \begin{lemma}\label{lemcubes}
-Let $x$, $y$, $z\in\Sigma^*_b$, and let $g:=\gcd([y]_b,b-1)$, 
-$X:=([y]_b+(b-1)[x]_b)/g$, and $Y:=(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
+Let $x$, $y$, $z\in\Sigma^*_b$, and let $g\coloneqq\gcd([y]_b,b-1)$, 
+$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
 If\/ $b$, $X$, and $Y$ are all cubes and 
 $\sqrt[3]{b^{\lvert z\rvert}X}-\sqrt[3]{Y}>(b-1)/g$, then all numbers of 
 the form
@@ -503,7 +485,7 @@ so by the size condition both factors are strictly larger than the
 denominator, and the factorization is nontrivial.
 \end{proof}
 \begin{example}
-Let $b:=8$, $x:=\1$, $y:=\0$, and $z:=\1$.  Then $g=7$, $X=1$, $Y=-1$, and
+Let $b\coloneqq8$, $x\coloneqq\1$, $y\coloneqq\0$, and $z\coloneqq\1$.  Then $g=7$, $X=1$, $Y=-1$, and
 \[ [\1\0^n\1]_b = (2^{n+1}+1)(4^{n+1}-2^{n+1}+1) . \]
 Since $2-(-1)>1$, this factorization is nontrivial and no number of the 
 form $[\1\0^*\1]_b$ is prime.
@@ -517,14 +499,14 @@ One then refines such approximations until $L=\emptyset$ from which it follows t
 
 For the initial approximation, note that every minimal prime in base $b$ with at least 4
 digits is of the form $x Y^* z$, where $x\in\Sigma_b-\{\0\}$, $z\in\Sigma_b$, and
-\[ Y := \Sigma_b - \set{y}{\text{$(p)_b\subw xyz$ for some prime $p$}} . \]
+\[ Y \coloneqq \Sigma_b - \set{y}{\text{$(p)_b\subw xyz$ for some prime $p$}} . \]
 Making use of this, our algorithm sets $M$ to be the set of base-$b$ representations
 of the minimal primes with at most $3$ digits (which can be found simply by brute force)
 and $L$ to be $\bigcup_{x,z}xY^*z$, as described above.
 
 All remaining minimal primes are members of $L$, so to find them we explore the families in~$L$.
 During this process, each family will be decomposed into possibly multiple other families.
-For example, a simple way of exploring the family $xY^*z$ where $Y:=\{y_1,\dotsc,y_n\}$ is to decompose it
+For example, a simple way of exploring the family $xY^*z$ where $Y\coloneqq\{y_1,\dotsc,y_n\}$ is to decompose it
 into the families $xY^*y_1z$, $\dotsc$, $xY^*y_nz$.  If the smallest member (say $xy_iz$)
 of any such family happens to be prime, it can be added to $M$ and the family
 $xY^*y_iz$ removed from consideration.  Furthermore, once $M$ has been updated it may be possible
@@ -553,7 +535,7 @@ Similarly, if $xy_jyy_iz$ has a proper prime subword then we can split $xY^*yY^*
 
 We now formulate these arguments for the most general kind of family we need to consider, namely
 $x_1L_1^*\dotsm x_mL_m^*$.  For simplicity, we only specify the decompositions as applying to
-$L_1:=\{y_1,\dotsc,y_n\}$, but it is straightforward to generalize these decompositions
+$L_1\coloneqq\{y_1,\dotsc,y_n\}$, but it is straightforward to generalize these decompositions
 to also apply to $L_i$ for any $1\leq i\leq m$.
 
 \begin{lemma}\label{lemexplore}
@@ -645,13 +627,12 @@ $\6\0\0^*\1\0^*\1$ and $\6\0\{\0,\4\}^*\1\1$ in base 8.
 We call families of the form $xy^*z$ (where $x$, $z\in\Sigma_b^*$ and $y\in\Sigma_b$) \emph{simple} families.
 Our algorithm then proceeds as follows:
 \begin{enumerate}
-\item $M:=\{\text{minimal primes in base $b$ of length $\leq3$}\}$ \\
-$L:=\bigcup_{x,z\in\Sigma_b}xY^*z$, where $x\neq\0$ and $Y$ is the set of digits $y$ such that $xyz$ has no subword in $M$
+\item $M\coloneqq\{\text{minimal primes in base $b$ of length $\leq3$}\}$ \\
+$L\coloneqq\bigcup_{x,z\in\Sigma_b}xY^*z$, where $x\neq\0$ and $Y$ is the set of digits $y$ such that $xyz$ has no subword in $M$
 \item While $L$ contains non-simple families:
 \begin{enumerate}
-\item Explore each non-simple family of $L$ by applying Lemma~\ref{lemexplore}, %RD ?
-and update $L$.
-\item Examine each non-simple family of $L$: %RD
+\item Explore each family of $L$ by applying Lemma~\ref{lemexplore}, and update $L$.
+\item Examine each family of $L$:
 \begin{enumerate}
 \item Let $w$ be the shortest string in the family.  If $w$ has a subword in $M$, then remove the family from $L$.
 If $w$ represents a prime, then add $w$ to $M$ and remove the family from $L$.
@@ -664,18 +645,25 @@ as possible and update $L$; after each split examine the new families as in~(b).
 \end{enumerate}
 \end{enumerate}
 
-When exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
-characters to the left of $L_1$; in our implementation we alternate (with period 4) between adding characters
-to the left/right of the first/last nonempty $L_i$.  Also, the application of Lemma~\ref{lemsplit2b} tended to initially
-produce an excess number of cases, so it was useful to only apply it following a certain number of iterations.  It also led to
-duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
-but these could be detected and removed.
-
 The process of exploring/examining/splitting a family can be concisely expressed in a tree of decompositions.
 A sample tree of decompositions, for the family $\1\{\0,\1,\6\}^*\1$ in base~9, is displayed in Figure~\ref{decomptree}.
 When applying Lemma~\ref{lemexplore} on a family with only one nonempty $L_i$ we don't show the first decomposition
 (simply removing $L_i^*$) since that results in the shortest word in the family, which is always implicitly
 checked for primality/minimal subwords at each step anyway.
+
+\subsection{Implementation}
+
+An implementation of the above algorithm was written in C using the GMP library~\cite{gmp} by the first author~\cite{code}.
+Independently, the second author wrote an implementation using the same ideas and derived the same results (except for
+a less extensive search for primes in the simple families).
+
+Note that when exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
+characters to the left of $L_1$; in our implementation we alternate between adding characters
+to the left and right of $L_{1+k\bmod m}$, where $k$ is the number of times we have previously passed through line~(a).
+Also, the application of Lemma~\ref{lemsplit2b} tended to initially
+produce an excess number of cases, so it was useful to only apply it following a certain number of iterations (6 in our implementation).
+It also led to duplicate families after simplifying, for example families of the form $xy^*y^ny^*z$ for varying $n$,
+but these could be detected and removed.
 
 At the conclusion of the algorithm described, $L$ will consist of simple families (of the form $xy^*z$) which have not yet
 yielded a prime, but for which there is no obvious reason why there can't be a prime of such a form.
@@ -683,18 +671,22 @@ In such a case, the only way to proceed is to test the primality of larger and l
 a prime is eventually discovered.
 
 The numbers in simple families are of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
-Except when $c=\pm1$ and $d=1$, it is too expensive to run a true primality test on such a number when $n$ is large.
+Except in the special case $c=\pm1$ and $d=1$, when $n$ is large the known primality tests for such a number are too inefficient to run.
 In this case one must resort to a pseudoprimality test such as a Miller--Rabin test, unless a divisor of the number can be found.
 Since we are testing many numbers in an exponential sequence, it is possible to use a sieving process to find divisors
 rather than using trial division.
 
 To do this, we made use of Geoffrey Reynolds' srsieve software~\cite{srsieve}.  This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
-handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and manually
-removed those numbers for which $p\mid(ab^n+c)/d$.
+handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and ititialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
+The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$).
 
-After the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
-In the case $d=1$ we used the software LLR by Jean Penn\'e~\cite{llr}, and when $d>1$ we used custom software written using GMP~\cite{gmp}.
+Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
+For this we used the software LLR by Jean Penn\'e~\cite{llr}.
+Although undocumented, it is possible to run this program on numbers of the form $(ab^n+c)/d$ when $d\neq1$, so this program required no modifications.
+A script was also written which allowed one to run srsieve while LLR was testing the remaining candidates, so that when a divisor
+was found by srsieve on a number which had not yet been tested by LLR it would be removed from the list of candidates.
+
 In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
 we employed PRIMO by Marcel Martin~\cite{primo}, an elliptic curve primality proving implementation.
 
@@ -742,11 +734,29 @@ ruled out as only containing composites.  Since such simple families can contain
 most one minimal prime, an upper bound on $\abs{M(L_b)}$ is given by the
 sum of the lower bound for $\abs{M(L_b)}$ and the number of unsolved families.
 
-The 33 unsolved families have all been tested to at least length 75000 without
-a prime being found.  The family $\8\0^*\1$ in base 23, corresponding to the
+\subsection{Unsolved families}
+
+The following 27 unsolved families have all been tested to at least length $100{,}000$ without
+a prime being found.
+The family $\8\0^*\1$ in base 23, corresponding to the
 generalized Proth numbers $8\cdot23^n+1$, was found to be prime
 for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
+
+\begin{figure}[H]
+Base 17: $\mathtt{F19^*}$ \\
+Base 19: $\mathtt{EE16^*}$ \\
+Base 21: $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
+Base 23: $\mathtt{9E^*}$ \\
+Base 25: $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
+Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
+Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$ \\
+Base 28: $\mathtt{OA^*F}$
+\end{figure}
+
+While we did not run an extensive search on the unsolved families in base~29, in
+Section~\ref{addstrat} we describe some additional strategies which solves
+the problem in base~29 up to a finite number of simple families.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
 b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
@@ -773,42 +783,34 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 22 & 1242 & 764 & 0 \\ 
 23\mathrlap{^*} & \geq6020 & \geq119216 & 1 \\ 
 24 & 306 & 100 & 0 \\ 
-25\mathrlap{^*} & \geq17594 & \geq66380 & 15 \\ 
+25\mathrlap{^*} & \geq17595 & \geq98399 & 14 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
-27\mathrlap{^*} & \geq17207 & \geq49643 & 9 \\ 
-28\mathrlap{^*} & \geq5782 & \geq4242 & 2 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 \\
+30 & 223 & 1024 & 0
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
 \caption{Summary of results for the prime numbers for each base $b$.}
 \label{resultsfig}
 \end{figure}
 
-\subsection{Unsolved families}
-Base 17: $\mathtt{F19^*}$ \\
-Base 19: $\mathtt{EE16^*}$ \\
-Base 21: $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
-Base 23: $\mathtt{9E^*}$ \\
-Base 25: $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{E^*FOO}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
-Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
-Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{A0^*PM}$, $\mathtt{CA0F^*A}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$, $\mathtt{L^*0G}$, $\mathtt{L^*G}$ \\
-Base 28: $\mathtt{O4O^*9}$, $\mathtt{OA^*F}$
-
-\section{Some additional strategies}
+\section{Some additional strategies}\label{addstrat}
 
 The strategies discussed so far suffice to restrict the possible forms of minimal primes to a finite number of simple families in all bases $2\leq b\leq 28$.
 However, as $b$ increased, in addition to the calculations becoming more costly, 
 it was found to be necessary to use increasingly complicated strategies.  
-We describe some which were found to be helpful in base 29.
+We now describe some additional strategies which we found sufficient to solve the problem in base~29 (up to a finite number of simple families---%
+our implementation finds $58{,}849$ minimal primes and $2{,}656$ unsolved families).
 \begin{lemma}
-If every number of the form $x_1(L_1-y_i)^*\dotsm x_mL_m^*$ is composite, then
+If every number of the form $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
 every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
-$x_1(L_1-y_i)^*y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$ (or $x_1L_1^*y_i(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$).  %RD
+$x_1L_1^*y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$.
 \end{lemma}
 \begin{proof}
 If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.  If $y$ does not contain a $y_i$
-then $w$ is composite by assumption.  Therefore if $w$ is a prime then $y$ contains a $y_i$, i.e., $y\in( L_1-y_i)^*y_iL_1^*$ (or $y\in L_1^*y_i(L_1-y_i)^*$), %RD
-from which the
+then $w$ is composite by assumption.  Therefore if $w$ is a prime then $y$ contains a $y_i$, i.e., $y\in L_1^*y_iL_1^*$, from which the
 result follows.
+(Note that one could improve this result via $y\in(L_1-y_i)^*y_iL_1^*\cup L_1^*y_i(L_1-y_i)^*$, but this was found to be unnecessary for our purposes.)
 \end{proof}
 \begin{example}
 The numbers represented by the family $\mathtt{F}\{\0,\9,\mathtt{F}\}^*\mathtt{F}$ in base~29 are divisible by $3$,
@@ -830,24 +832,51 @@ In each case, $y$ is of the form $(L-\{y_i\})^*(L-\{y_j\})^*(L-\{y_i\})^*$, from
 The string $\mathtt{QLQ}$ represents a prime in base~29, and is a proper subword of $\mathtt{LQLQL}$.
 It follows that the family $\mathtt{L}\{\mathtt{L},\mathtt{Q}\}^*\mathtt{L}$ splits into the family $\mathtt{L}\mathtt{L}^*\mathtt{Q}^*\mathtt{L}^*\mathtt{L}$ in base~29.
 \end{example}
+This rule may also be generalized to apply to the case when $x_1y_iy_jy_iy_jx_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$).
+\begin{example}
+The string $\mathtt{LL9L9LQL}$ represents a prime in base~29.  It follows that the family $\mathtt{LL\{\mathtt{9},\mathtt{L}\}^*\mathtt{Q}^*\mathtt{QL}}$ splits into the family $\mathtt{LL\mathtt{L}^*\mathtt{9}^*\mathtt{L}^*\mathtt{9}^*\mathtt{Q}^*\mathtt{QL}}$ in base~29.
+\end{example}
 
-The next result will allow to progress in the exploration of the repetitions of a language, %RD
-since it will decompose a repetition in a part that is not interesting to be explored further, until no other rule may be used, and a part which may lead to reductions of the families to be exploited.
-In the following, we shall denote by $strip(L)$ the string obtain from $L$ by deleting all the repetitions in it.
-\begin{lemma} 
-Let $L=L1\{w_1,w_2,\ldots,w_n\}^*L2$ be some language of the kind we are interested in. 
-Let us decompose $\{w_1,w_2,\ldots,w_n\}$ in two disjoint sets: 
-$N$ (for no present interest to develop) and 
-$F$ (for to be further explored) - this is like a partition but $N$ or $F$ may be empty.
-$F$ is the subset of $\{w_1,w_2,\ldots,w_n\}$ such that, for any $w_i\in F$,  
-for some $m$ in $M$, the longest prefix of m which is a subword of $strip(L_1)$ is smaller than
-the longest prefix of $m$ which is a subword of $strip(L_1) w_i$; $N$ is the complement of $F$.
-If $N\neq \emptyset$,  one may explore the languages $L_1 N^* L_2$ and
-$L_1 N^*w_i\{w_1,w_2,\ldots,w_n\}^* L_2$ for each $w_i\in F$.
+In section~\ref{subsecfirststrat} we described a number of strategies for determining if every member of a family has a divisor,
+but for some families divisors exist which will not be found using those tests.  The following lemma can help one discover when
+this is the case; in particular when every member of a family is divisible by some small prime.  For a language $L$ we use the
+notation $[L]_b\bmod N$ to denote the finite set of residues $\set{[x]_b\bmod N}{x\in L}$.
+\begin{lemma}\label{lemextdiv}
+If\/ $1<\gcd(n,N)$ for every $n\in[L]_b\bmod N$ and $p\notin[L]_b$ for every prime $p$ which divides $N$, then all numbers of the form $[L]_b$ are composite.
 \end{lemma}
-This property is in some sense trivial; its true interest is that it is not useful to further explore $N^*$ until $M$ is enriched, or no other rule allows to simplify the handling.
-The rule here presented allows to progress from left to right in the handling of repetitions,
- but it is also possible to derive a similar decomposition for progressing from right to left.
+\begin{proof}
+Let $x$ be an arbitrary member of $L$.  Then $\gcd([x]_b,N)=\gcd([x]_b\bmod N,N)>1$ by assumption, so $[x]_b$ cannot be prime unless $[x]_b=\gcd([x]_b,N)$.  But in that case $[x]_b$ would be a prime which divides $N$, and so $[x]_b\notin[L]_b$ by the second assumption, in contradiction to $x\in L$.
+\end{proof}
+To make use of this lemma, we need to be able to compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$.  To do this, we can make use of the following relations:
+\begin{align*}
+[Lx]_b \bmod N &= (b\cdot([L]_b\bmod N)+[x]_b)\bmod N \\
+[L\{y_1,\dotsc,y_n\}]_b \bmod N &= \bigcup_{i=1}^n[Ly_i]_b\bmod N \\
+[L\{y_1,\dotsc,y_n\}^*]_b \bmod N &= \bigcup_{i=0}^\infty[L\{y_1,\dotsc,y_n\}^i]_b\bmod N
+\end{align*}
+In the final case, the union may be taken to be finite over $i<k$ where $k$ is chosen such that $\bigcup_{i=0}^k[L\{y_1,\dotsc,y_n\}^i]_b\bmod N=\bigcup_{i=0}^{k-1}[L\{y_1,\dotsc,y_n\}^i]_b\bmod N$.
+Using these relations, we can compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$ progressively, working left to right and starting from $[\emptyset]_b\bmod N = \{0\}$.  To solve base~29 it was sufficient to use $N=2\cdot3\cdot5$.
+\begin{example}
+Let $b\coloneqq29$ and $N\coloneqq30$. %, and $L\coloneqq\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$.
+Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $n$ is in this set then $\gcd(n,N)\in\{2,5,6,15\}$ and $\gcd(n,N)>1$.  Since $2$, $3$, $5\notin[L]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
+\end{example}
+
+%The next result will allow to progress in the exploration of the repetitions of a language, %RD
+%since it will decompose a repetition in a part that is not interesting to be explored further, until no other rule may be used, and a part which may lead to reductions of the families to be exploited.
+%In the following, we shall denote by $strip(L)$ the string obtain from $L$ by deleting all the repetitions in it.
+%\begin{lemma} 
+%Let $L=L1\{w_1,w_2,\ldots,w_n\}^*L2$ be some language of the kind we are interested in. 
+%Let us decompose $\{w_1,w_2,\ldots,w_n\}$ in two disjoint sets: 
+%$N$ (for no present interest to develop) and 
+%$F$ (for to be further explored) - this is like a partition but $N$ or $F$ may be empty.
+%$F$ is the subset of $\{w_1,w_2,\ldots,w_n\}$ such that, for any $w_i\in F$,  
+%for some $m$ in $M$, the longest prefix of m which is a subword of $strip(L_1)$ is smaller than
+%the longest prefix of $m$ which is a subword of $strip(L_1) w_i$; $N$ is the complement of $F$.
+%If $N\neq \emptyset$,  one may explore the languages $L_1 N^* L_2$ and
+%$L_1 N^*w_i\{w_1,w_2,\ldots,w_n\}^* L_2$ for each $w_i\in F$.
+%\end{lemma}
+%This property is in some sense trivial; its true interest is that it is not useful to further explore $N^*$ until $M$ is enriched, or no other rule allows to simplify the handling.
+%The rule here presented allows to progress from left to right in the handling of repetitions,
+% but it is also possible to derive a similar decomposition for progressing from right to left.
 
 \section{Composite numbers}
 
@@ -890,7 +919,7 @@ or $u v^p w$ is composite, where $p = [x]_b$.
 Our bound now follows.
 \end{proof}
 
-Write $S_b := \set{(n)_b}{\text{$n \geq 4$ is composite}}$.
+Write $S_b \coloneqq \set{(n)_b}{\text{$n \geq 4$ is composite}}$.
 For our purposes, the following theorem gives a better bound.
 
 \begin{theorem}
@@ -941,7 +970,9 @@ b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 25 & 117 & 2 \\
 26 & 111 & 3 \\
 27 & 115 & 2 \\
-28 & 131 & 3
+28 & 131 & 3 \\
+29 & 123 & 3 \\
+30 & 207 & 4
 \end{array}\]
 \caption{Summary of results for the composite numbers for each base $b$.}
 \label{ttwo}
@@ -962,7 +993,7 @@ To illustrate once more the difficulty of computing $M(L)$, we recall
 an open problem from \cite{Sh00}:
 
 \begin{problem} 
-Let $L := \lbrace {\tt 1, 2, 4, 8, 16, 32, 64, } \ldots \rbrace$, the
+Let $L \coloneqq \lbrace {\tt 1, 2, 4, 8, 16, 32, 64, } \ldots \rbrace$, the
 base-$10$ representation of the powers of $2$.  
 Is it the case that
 $$ M(L) = \lbrace \1, \2, \4, \8, \6\5\5\3\6 \rbrace ? $$
@@ -979,6 +1010,10 @@ $\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
 \bibitem{crus}  G. Barnes.
 \newblock {\it Sierpinski conjectures and proofs},
 \url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
+
+\bibitem{code}  C. Bright.
+\newblock {\it MEPN implementation},
+\url{https://github.com/curtisbright/mepn}.
 
 \bibitem{Choi}  S. L. G. Choi.
 \newblock Covering the set of integers by congruence 
