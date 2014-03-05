@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 				while(fgets(line, MAXSTRING, in)!=NULL)
 				{	numlines++;
 					lines = realloc(lines, sizeof(char*)*numlines);
-					lines[numlines-1] = malloc(MAXSTRING);
+					lines[numlines-1] = malloc(strlen(line)+1);
 					strcpy(lines[numlines-1], line);
 					lines[numlines-1][strlen(line)-1] = '\0';
 				}
