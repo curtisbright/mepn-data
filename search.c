@@ -43,10 +43,11 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	if(argc==1)
-	{	printf("After sieving has been done, this program\n");
-		printf("searches for prime candidates between exponents\n");
-		printf("m and n, given on the command-line\n");
+	if(argc<=2)
+	{	printf("After sieving has been done, this program uses LLR\n");
+		printf("to search for prime candidates between exponents\n");
+		printf("n and m, given on the command-line\n");
+		printf("\nNOTE: The program llr must be located in the base directory\n");
 		return 0;
 	}
 

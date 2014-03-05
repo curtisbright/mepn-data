@@ -11,12 +11,12 @@ int main(int argc, char** argv)
 	DIR *dp;
 	struct dirent *ep;
 
-	if(argc==1)
+	if(argc<=2)
 	{	printf("Initializes sieve files for all unsolved families\n");
-		printf("between exponents m and n, given on the command-line\n");
-		printf("which may then be processed by srsieve\n");
-		printf("Current unsolved families:\n");
+		printf("between exponents n and m, given on the command-line\n");
+		printf("which may then be processed by programs sieving and search\n");
 	}
+	printf("Current unsolved families:\n");
 
 	mpz_t p;
 	mpz_init(p);
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 				int outopen = 0;
 				if(fgets(line, 100, in)!=NULL)
 				{	sprintf(outfilename, "srsieve/sieve.%d.txt", base);
-					if(argc>1)
+					if(argc>2)
 					{	out = fopen(outfilename, "w");
 						outopen = 1;
 					}
