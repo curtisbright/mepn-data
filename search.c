@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)
 							{	if(strcmp(line, family)==0)
-								{	if(fgets(line, 100, sieve)!=NULL && strchr(line, '*')==NULL)
+								{	while(num<i && fgets(line, 100, sieve)!=NULL && strchr(line, '*')==NULL)
 										num = atoi(line);
 									break;
 								}
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
 						int n = fread(output, 1, 999999, llrprocess);
 						output[n] = '\0';
 						pclose(llrprocess);
-						printf("%s", strstr(output, "\r("));
+						printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
 
 						if(strstr(output, "PRP")!=NULL)
 						{	// Add prime to set of minimal primes
@@ -207,7 +207,7 @@ int main(int argc, char** argv)
 							remove(sievefilename);
 							rename(sievetmpfilename, sievefilename);
 						}
-						else if(strstr(output, "is not prime")!=NULL)
+						else if(strstr(output, "not prime")!=NULL)
 						{	// Family is still unsolved
 							fprintf(out, "%s%c*%s\n", start, middle[0], end);
 
