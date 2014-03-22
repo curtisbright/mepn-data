@@ -880,7 +880,7 @@ int hasdivisor(family p)
 	{	
 #ifdef PRINTDIVISOREXT
 		familystring(str, p);
-		gmp_printf("every number in %s is divisible by one of 2, 3, or 5\n", str);
+		gmp_printf("\nevery number in %s is divisible by one of 2, 3, or 5\n", str);
 #endif
 		mpz_clears(gcd, temp, gcd1, gcd2, x, y, z, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, empty, NULL);
 		return 1;
@@ -1269,15 +1269,15 @@ int split(family* f, list* unsolved, char insplit)
 					family copyf;
 					familyinit(&copyf);
 					for(int ii=0; ii<f->len; ii++)
-						{	char* repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
+					{	char* repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
+						memcpy(repeatscopy, f->repeats[ii], f->numrepeats[ii]*sizeof(char));
+						adddigit(&copyf, f->digit[ii], repeatscopy, f->numrepeats[ii]);
+						if(i==ii)
+						{	repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
 							memcpy(repeatscopy, f->repeats[ii], f->numrepeats[ii]*sizeof(char));
-							adddigit(&copyf, f->digit[ii], repeatscopy, f->numrepeats[ii]);
-							if(i==ii)
-							{	repeatscopy = malloc(f->numrepeats[ii]*sizeof(char));
-								memcpy(repeatscopy, f->repeats[ii], f->numrepeats[ii]*sizeof(char));
-								adddigit(&copyf, f->repeats[i][j], repeatscopy, f->numrepeats[i]);
-							}	
+							adddigit(&copyf, f->repeats[i][j], repeatscopy, f->numrepeats[i]);
 						}
+					}
 					addtolist(unsolved, copyf, 2);
 #ifdef PRINTSPLITEXT
 					familystring(str, *f);
@@ -1490,7 +1490,7 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 						char str[MAXSTRING];
 						familystring(str, *f);
 						printf("%s splits into ", str);
@@ -1545,7 +1545,7 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 						char str[MAXSTRING];
 						familystring(str, *f);
 						printf("%s splits into ", str);
@@ -1612,7 +1612,7 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 						char str[MAXSTRING];
 						familystring(str, *f);
 						printf("%s splits into ", str);
@@ -1679,7 +1679,7 @@ int split2(family* f, list* unsolved, char insplit)
 						}
 						addtolist(unsolved, newf, 1);
 
-#ifdef PRINTSPLITNEW
+#ifdef PRINTSPLITEXT
 						char str[MAXSTRING];
 						familystring(str, *f);
 						printf("%s splits into ", str);

@@ -20,7 +20,8 @@ int main(int argc, char** argv)
 {	if(argc==1)
 	{	printf("Given a base on the command line, this program runs\n");
 		printf("srsieve on that base sieve file and then\n");
-		printf("merges the results with the search data\n");
+		printf("merges the results with the LLR search data\n");
+		printf("\nNOTE: The program srsieve must be located in the directory srsieve\n");
 	}
 	else if(argc>1)
 	{	signal(SIGINT, sig_handler);

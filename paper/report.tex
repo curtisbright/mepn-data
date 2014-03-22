@@ -33,8 +33,8 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{conjecture}[theorem]{Conjecture}
 
-\theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
+%\theoremstyle{remark}
+%\newtheorem{remark}[theorem]{Remark}
 \newtheorem{problem}[theorem]{Problem}
 
 \newcommand{\0}{\mathtt{0}}
@@ -94,7 +94,7 @@ for $2 \leq b \leq 30$.
 
 Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
-primes, all of whose base-$10$ digits are $1$?  Currently,
+primes, all of whose base-$10$ digits are $\1$?  Currently,
 there are only five
 known, corresponding to $(10^p-1)/9$ for $p \coloneqq 2$, $19$, $23$, $317$, and
 $1031$.  It seems likely that four more are given by
@@ -128,7 +128,7 @@ $\Sigma_b \coloneqq \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
 most significant digit).  This is extended to languages as follows:
 $[L]_b \coloneqq \set{ [x]_b }{ x \in L }$.
-We use the convention that $\A = 10$, $\B = 11$, and so forth,
+We use the convention that $\A \coloneqq 10$, $\B \coloneqq 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
 We let $(x)_b$ be the canonical representation
 of $x$ in base-$b$, that is, the representation without leading zeroes.
@@ -172,14 +172,13 @@ is relatively simple~\cite{GHK07}.
 The following is a ``semi-algorithm'' that 
 is guaranteed to produce $M(L)$, but it is not so easy to implement:
 
-\bigskip
-\noindent (1) $ M \coloneqq \emptyset$ \\
-\noindent (2) while ($L \not= \emptyset$) do \\
+\begin{figure}[H]
+(1) $ M \coloneqq \emptyset$ \\
+(2) while ($L \not= \emptyset$) do \\
 \hphantom{} \qquad (3) choose $x$, a shortest string in $L$ \\
 \hphantom{} \qquad (4) $ M \coloneqq M \union \lbrace  x \rbrace$ \\
-\hphantom{} \qquad (5) $ L \coloneqq L - \supe(\lbrace x \rbrace) $ \\
-
-\smallskip
+\hphantom{} \qquad (5) $ L \coloneqq L - \supe(\lbrace x \rbrace) $
+\end{figure}
 
 In practice, for arbitrary $L$,
 we cannot feasibly carry out step (5).  Instead, we work
@@ -194,20 +193,18 @@ a prime or not.
 However, it is not even known if the following simpler decision problem is 
 recursively solvable:
 
-\medskip
-
 \begin{problem}
-Given strings $x, y, z$, and a base $b$, does there exist a prime
+Given strings $x$, $y$, $z$, and a base $b$, does there exist a prime
 number whose base-$b$ expansion is of the form $x \underbrace{yy\cdots y}_n z$
 for some $n \geq 0$?
 \end{problem}
-
-\medskip
 
 An algorithm to solve this problem, for example, would allow us to decide
 if there are any additional Fermat primes (of the form $2^{2^n}+1$)
 other than the known ones (corresponding to $n = 0$, $1$, $2$, $3$, $4$).
 To see this, take $b\coloneqq2$, $x\coloneqq\1$, $y\coloneqq\0$, and $z\coloneqq\0^{16}\1$.
+Since if $2^n+1$ is prime then $n$ must be a power of two, a prime of the
+form $[xy^*z]_b$ must be a new Fermat prime.
 
 Therefore, in practice, we are forced to try to rule out prime
 representations based on modular techniques and factorizations.
@@ -736,7 +733,7 @@ sum of the lower bound for $\abs{M(L_b)}$ and the number of unsolved families.
 
 \subsection{Unsolved families}
 
-The following 27 unsolved families have all been tested to at least length $100{,}000$ without
+The following 26 unsolved families have all been tested to at least length $110{,}000$ without
 a prime being found.
 The family $\8\0^*\1$ in base 23, corresponding to the
 generalized Proth numbers $8\cdot23^n+1$, was found to be prime
@@ -748,13 +745,13 @@ Base 17: $\mathtt{F19^*}$ \\
 Base 19: $\mathtt{EE16^*}$ \\
 Base 21: $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
 Base 23: $\mathtt{9E^*}$ \\
-Base 25: $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{M1^*F1}$, $\mathtt{MF^*0F6}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
+Base 25: $\mathtt{6MF^*9}$, $\mathtt{96^*M}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{M1^*F1}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
 Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
 Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$ \\
 Base 28: $\mathtt{OA^*F}$
 \end{figure}
 
-While we did not run an extensive search on the unsolved families in base~29, in
+While we did not run an extensive search on unsolved families in base~29, in
 Section~\ref{addstrat} we describe some additional strategies which solves
 the problem in base~29 up to a finite number of simple families.
 
@@ -783,11 +780,11 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 22 & 1242 & 764 & 0 \\ 
 23\mathrlap{^*} & \geq6020 & \geq119216 & 1 \\ 
 24 & 306 & 100 & 0 \\ 
-25\mathrlap{^*} & \geq17595 & \geq98399 & 14 \\ 
+25\mathrlap{^*} & \geq17596 & \geq109992 & 13 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
 27\mathrlap{^*} & \geq17210 & \geq109006 & 5 \\ 
 28\mathrlap{^*} & \geq5783 & \geq94538 & 1 \\
-30 & 223 & 1024 & 0
+30 & 220 & 1024 & 0
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
 \caption{Summary of results for the prime numbers for each base $b$.}
@@ -799,8 +796,10 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 The strategies discussed so far suffice to restrict the possible forms of minimal primes to a finite number of simple families in all bases $2\leq b\leq 28$.
 However, as $b$ increased, in addition to the calculations becoming more costly, 
 it was found to be necessary to use increasingly complicated strategies.  
-We now describe some additional strategies which we found sufficient to solve the problem in base~29 (up to a finite number of simple families---%
-our implementation finds $58{,}849$ minimal primes and $2{,}656$ unsolved families).
+%We now describe some additional strategies which we found sufficient to solve the problem in base~29 (up to a finite number of simple families).
+%our implementation finds $55{,}817$ minimal primes and $2{,}565$ unsolved families).
+We now describe some additional strategies which we used in base~29 to find $57{,}252$ minimal primes
+and 45 unsolved families (with no primes with less than $10{,}000$ digits).
 \begin{lemma}
 If every number of the form $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
 every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
@@ -857,7 +856,7 @@ In the final case, the union may be taken to be finite over $i<k$ where $k$ is c
 Using these relations, we can compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$ progressively, working left to right and starting from $[\emptyset]_b\bmod N = \{0\}$.  To solve base~29 it was sufficient to use $N=2\cdot3\cdot5$.
 \begin{example}
 Let $b\coloneqq29$ and $N\coloneqq30$. %, and $L\coloneqq\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$.
-Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $n$ is in this set then $\gcd(n,N)\in\{2,5,6,15\}$ and $\gcd(n,N)>1$.  Since $2$, $3$, $5\notin[L]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
+Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $n$ is in this set then $\gcd(n,N)\in\{2,5,6,15\}$ and $\gcd(n,N)>1$.  Since $2$, $3$, $5\notin[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
 \end{example}
 
 %The next result will allow to progress in the exploration of the repetitions of a language, %RD
@@ -1001,7 +1000,7 @@ $$ M(L) = \lbrace \1, \2, \4, \8, \6\5\5\3\6 \rbrace ? $$
 
 This would follow, for example, if we could prove that every power
 of $16$ greater than $65536$ contained at least one of the digits
-$\lbrace 1,2,4, 8 \rbrace$.  But this seems beyond current capabilities.
+$\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 
 
 \bibliographystyle{plain}

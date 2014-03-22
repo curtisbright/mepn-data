@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#define MAXSTRING 60000
+#define MAXSTRING 120000
 
 int compare(const void* a, const void* b)
 {	const char **ia = (const char **)a;
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 				while(fgets(line, MAXSTRING, in)!=NULL)
 				{	numlines++;
 					lines = realloc(lines, sizeof(char*)*numlines);
-					lines[numlines-1] = malloc(MAXSTRING);
+					lines[numlines-1] = malloc(strlen(line)+1);
 					strcpy(lines[numlines-1], line);
 					lines[numlines-1][strlen(line)-1] = '\0';
 				}

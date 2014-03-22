@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <gmp.h>
-#define MAXSTRING 1100
+#define MAXSTRING 120000
 
 int subword(char* prime, char* start, char middle, char* end, int* k)
 {	int i=0, j=0, l=0;
@@ -41,17 +41,17 @@ int main(int argc, char** argv)
 	clock_t begin, end;	
 	double time_spent;
 
-	if(argc==1)
+	if(argc<=2)
 	{	printf("This program searches unsolved simple families\n");
-		printf("for prime candidates starting from exponent n\n");
-		printf("where n is given as a command-line argument\n");
+		printf("for prime candidates between exponents n and m,\n");
+		printf("given on the command-line\n");
 		return 0;
 	}
 
 	mpz_t p;
 	mpz_init(p);
 
-	for(int num=atoi(argv[1]); num<1000; num++)
+	for(int num=atoi(argv[1]); num<=atoi(argv[2]); num++)
 	{	begin = clock();
 		dp = opendir("./data");
 		int count=0;
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 						}
 
 						mpz_set_str(p, candidate, n);
-						result = mpz_probab_prime_p(p, 1);
+						result = mpz_probab_prime_p(p, 25);
 						if(result>0)
 						{	//gmp_printf("%s%c^(%d)%s (base %d) (%Zd) probably prime\n", start, middle, num, end, n, p);
 							printf("%s%c^(%d)%s (base %d) probably prime\n", start, middle, num, end, n);
