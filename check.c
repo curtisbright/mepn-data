@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <dirent.h>
 #include <string.h>
@@ -35,8 +36,18 @@ int main(int argc, char** argv)
 				while(fgets(line, MAXSTRING, in)!=NULL)
 				{	count++;
 					mpz_set_str(p, line, n);
-					if(mpz_probab_prime_p(p, 1)==0)
+					int result = mpz_probab_prime_p(p, 1);
+					if(result==0)
 						gmp_printf("%s (base %d) not prime!\n", line, n);
+					else if(result==1)
+					{	mkdir("primo", S_IRWXU);
+						char outfilename[100];
+						sprintf(outfilename, "primo/base%d-%d.in", n, count);
+						FILE* out = fopen(outfilename, "w");
+						fprintf(out, "[Candidate]\n");
+						gmp_fprintf(out, "N=%Zd\n", p);
+						fclose(out);
+					}
 				}
 				fclose(in);
 				gettimeofday(&end, 0);
