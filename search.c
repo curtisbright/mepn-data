@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <gmp.h>
-#define MAXSTRING 120000
+#define MAXSTRING 1200000
 
 FILE *popen(const char *command, const char *type);
 int pclose(FILE *stream);
