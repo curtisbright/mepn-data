@@ -71,8 +71,8 @@ void finish_candidate_seqs(void)
       error("%s: k and c in k*b^n+c must be relatively prime.", seq_str(i));
     if (k < 1)
       error("%s: k in k*b^n+c must be positive.", seq_str(i));
-    if (base % 2 == 1 && k % 2 == 1 && abs_c % 2 == 1)
-      error("%s: Every term is divisible by 2.", seq_str(i));
+    /*if (base % 2 == 1 && k % 2 == 1 && abs_c % 2 == 1)
+      error("%s: Every term is divisible by 2.", seq_str(i));*/
 
     k_max = MAX(k_max,k);
     abs_c_max = MAX(abs_c_max,abs_c);
