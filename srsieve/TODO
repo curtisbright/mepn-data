@@ -1,0 +1,92 @@
+Build bitmaps incrementally instead of starting with a list when reading
+sieve files. This would reduce the peak memory use which currently occurs
+just after reading the sieve file.
+
+Design a lookup table to replace bitmaps once they become too sparse.
+
+Add code to do internal self tests and benchmarks.
+
+Add the ability to accept a variable k in a sequence expression along with
+--kmin --kmax. For example `srsieve --kmin 100 --kmax 200 "k*5^n+1" would
+sieve all sequences 100*5^n+1, 101*5^n+1, ..., 200*5^n+1.
+
+Add an option to remove a sequence from the sieve when a prime term is
+found. This would really only be useful in conjunction with the variable k
+option above.
+
+Write a vec_mulmod function in assembler, for use in the giant steps:
+vec_mulmod(V,len,a,p) { V[i] = mulmod(V[i],a,p) for 0 <= i < len }. This
+might be done by loading multiple terms onto the FPU stack, or using SSE2.
+
+Accept sequences of the form (k*b^n+c)/d. This can be done by finding
+d=p1^m1*p2^m2*...*pk^mk and then sieving k*b^n+c as usual except testing
+whether pi^(mi+1) divides k*b^n+c instead of sieving pi. Increase
+small_sieve_limit to include all pi and it won't affect the speed of the
+main sieves at all.
+
+Add a --weight switch to make srfile calculate sieve weight for each sequence.
+
+Add a --twin switch to make srfile remove non-twin terms from sieve files
+(terms for k*b^n+c where neither k*b^n+c+2 nor k*b^n+c-2 are in the sieve).
+
+Avoid calculating 1/k (mod p) more than once when more than one sequence
+shares the same k.
+
+Optimise building of the table of 1/b^d (mod p) values. Currently it is not
+efficient when the largest d-value is much smaller than Q, or when there are
+much less than Q d-values (Generate an optimal addition ladder).
+
+If gcd_i(d_i) = x then work in base b'=b^x with Q'=Q/x and d'=d/x. (May not
+be necessary if the optimal addition ladder above works out).
+
+Write a bsgs setup routine specialised for sieves with c = +/-1, saving one
+mulmod per sequence (as done in sr5sieve).
+
+Speed up the file processing code. Simple AWK scripts are much faster.
+
+Write a new version of is_factor() for use by srfile that can handle
+arbitrarily large factors (e.g. factors found by P-1 or ECM).
+
+prime_sieve() currently sieves odd numbers p=x*2+1 for primes. Write a
+version that sieves fermat divisors p=x*2^y+1 for primes instead, where y
+can be determined at runtime. Maybe even a third verison that sieves for
+p=a,b,...(mod M) as given by the user with the --mod=M,a,b,c,... switch.
+
+When per-subsequence filters are being employed, build a table of the number
+of baby and giant steps to use for each quantity of subsequences passing the
+filters, then set m and M from the table at each bsgs iteration depending on
+the result of filtering.
+
+If there are f (f small) different per-subsequence filters, choose one of
+2^f pre-computed filter lists instead of building a new one each time
+do_filters() is called.
+
+Allow sequences of the form (k^a)*b^n+/-(c^d) where 0 < a,d < 2^32.
+
+If k = x^y for small x then calculate -c/k (mod p) as -c(1/x)^y (mod p)
+using powmod. Should be much faster for generalised Fermat sequences.
+
+When it is discovered during filter setup that all the terms of a
+subsequence have the form A^2-B^2, report the factors (A-B) and delete the
+subsequence. (Probably best only to do this if explicitly requested).
+
+Currently small primes are reported to the screen and left in the sieve. It
+would be better to remove them from the sieve and keep them in a seperate
+list so that they don't interfere with the subsequence generating routines.
+
+Use a left-right version of powmod(b,n,p) [that makes use of pre2_mulmod64()
+or fixed-base mulmod()] when a powering ladder can be precomputed for n.
+
+Take into account the proportion of primes passing the filters and the
+hashtable size when choosing which subsequence base to sieve with.
+
+Calculate the number of baby/giant steps to use seperately for each
+iteration after finding the number of subsequences passing the filters.
+*** Tried this, no faster (even a little slower) than before. ***
+
+Add .dat file format to srfile.
+
+Add a switch to remove algebraic factors instead of warning of their presence.
+
+Add option to write a worktodo.txt file for Prime95 version 25.6:
+  PRP=k,b,n,c,how_far_factored,tests_saved

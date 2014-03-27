@@ -1,0 +1,66 @@
+Date: 08 March 2009
+Subject: srsieve 0.6.15 fixes a serious 64-bit BUG, please note!
+----------------------------------------------------------------
+
+This version fixes a serious bug that potentially affected all 64-bit
+executables for srsieve versions 0.6.4 to 0.6.14. This bug could find
+bogus factors, and thus incorrectly eliminate some terms from the output
+sieve file, if ALL of these conditions were met:
+
+1. Version 0.6.4-14 of any 64-bit srsieve executable was used, and
+
+2. The -c (--check) switch was NOT used, and
+
+3. k > 65535 OR |c| > 65535 for ANY sequence k*b^n+c in the sieve.
+
+If the -c switch was used to check the factors then srsieve would have
+stopped with an error message when the first incorrect factor was found.
+However there is no mention of the -c switch in the README, so chances are
+that this feature wasn't used.
+
+As from version 0.6.15 all factors will be checked by default unless the new
+--no-check switch is used.
+
+
+What to do if you are affected:
+-------------------------------
+
+Don't despair! It is actually quite easy to work out exactly which if any
+terms the bug incorrectly eliminated, even if you no longer have the
+original sieve files.
+
+For a start, the only bogus factors p will be in the range 257 < p < LIM,
+where LIM is the greatest value of k or |c| for the sequences k*b^n+c sieved.
+
+Also, factors above 2^32 were not affected, so if any value of k or |c| is
+greater than 2^32 then just set LIM = 2^32 (LIM ~ 4295e6).
+
+
+Procedure to discover any missing terms:
+----------------------------------------
+
+1. Start a new sieve and sieve up to p=LIM with the BUG-AFFECTED srsieve
+   executable (http://www.geocities.com/g_w_reynolds/srsieve/bug64.zip).
+   Save the output file in ABC format (use the -w switch for srsieve), and
+   rename it to OLD.abc
+
+2. Start a new sieve and sieve up to p=LIM with srsieve 0.6.15 or later, or
+   with any 32-bit srsieve executable. Save the output file in ABC format
+   (-w switch) and rename it to NEW.abc
+
+3. Create a third ABC file containing terms in NEW.abc that are missing from
+   OLD.abc. In unix you can do this with the commands
+
+    tail -n+2 OLD.abc | cat - NEW.abc | sort -k2,2 -n | uniq -u > MISSED.abc
+
+
+Now you can continue sieving MISSED.abc, then PRP test what remains in the
+usual way or merge it with the original sieve if that is still in progress.
+
+If necessary you can email me a copy of the bug-affected sieve file and I
+will create the file of missing terms for you. If the file is small then
+send the whole thing in .zip format. If is is large (megabytes), send me
+just the list of sequences k*b^n+c and the range of n.
+
+
+Geoffrey Reynolds. (See srsieve README for email address).

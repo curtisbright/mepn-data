@@ -1,0 +1,12 @@
+This directory contains source code and some binaries for the srsieve
+program, a 'fixed k' sieve for sequences of the form k*b^n+c where k < 2^64,
+b < 2^32, |c| < 2^63.
+
+
+The latest version is VERSION.
+
+
+For more specialised sieves see:
+
+../sr1sieve/    Single sequence k*b^n+/-1
+../sr2sieve/    Multiple sequences k*b^n+/-1 and b^n+/-k
