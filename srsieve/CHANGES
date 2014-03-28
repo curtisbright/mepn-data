@@ -1,0 +1,580 @@
+Version 0.6.17:
+-d switch for srfile now accepts a filename argument. This feature added by
+ Mark Rodenkirch.
+
+Version 0.6.16: (Posted 31 March 2009)
+Fixed a bug that resulted in memory being freed twice when a sequence is
+ removed from the sieve. Thanks to Jayson King for reporting this bug and
+ locating the problem in the source.
+
+Version 0.6.15: (Posted 8 March 2009)
+Fixed a modular inverse bug that can cause the sieve to stop with an error
+ when a candidate factor p is a divisor of k or c in k*b^n+c. Many thanks to
+ Jayson King who found the bug and provided a source code patch.
+The above bug results partly from a change made in version 0.6.4 to use the
+ 64-bit arithmetic routines factors below 2^32 in the 64-bit build. This
+ change also had other much more serious effects for the 64-bit build, and
+ has now been undone. See BUG64.txt for details.
+Check factors by default, use --no-check to turn off checking.
+
+Version 0.6.14: (Posted 17 February 2009)
+Replaced all variable length automatic arrays with malloc()'d arrays.
+Stop with an error if p_max is above the sieve limit.
+For x86_64 Windows the FPU must be changed into extended precision mode when
+ compiling with USE_FPU_MULMOD=1.
+Added WARNING.txt for the srsieve-x86_64-windows.exe executable.
+
+Version 0.6.13: (Posted 7 December 2008)
+Fixed a buffer overflow that could occur when printing messages with long
+ file names. Thanks Chuck Lasher for reporting this bug.
+In priority.c, use PRIO_MAX=10 if not defined in sys/resource.h
+Changed the way ABC file headers are written from $a*2^$b+$c to $a*2^$b$c.
+ Both types of header will be accepted as input.
+
+Version 0.6.12:
+Added x86-64 powmod from sr5sieve 1.7.10.
+Added x86-64 memset_fast32 from sr5sieve 1.7.10.
+Allowed for _WIN64 sizeof(uint_fast32_t)==4 in clear_hashtable().
+Added k8-gcc430 target to avoid possible bugs in GCC 4.3.0.
+Built srsieve-0.6.12-windows64-k8.zip for testing using mingw64-gcc 4.3.0.
+
+Version 0.6.11:
+Use `addc' instead of `adde' instruction in ppc64 mulmod.
+
+Version 0.6.10: (Posted 27 December 2007)
+Just set thread affinity, not process affinity, for Windows.
+Allow X > 2^32 for the minimum reported factor switch `-m --minimum X'.
+
+Version 0.6.9: (Posted 7 December 2007)
+Added `-A --affinity N' switch to set affinity to CPU N.
+
+Version 0.6.8: (Posted 3 December 2007)
+Fixed another typo in srfile.c.
+Added `-z --idle' and `-Z --no-idle' switches. Idle priority is default.
+
+Version 0.6.7: (Posted 21 October 2007)
+Testing reveals that the x86-64 SSE2 mulmod can fail with modulus between
+ 2^51 and 2^52. Reduced limit for this arch to 2^51.
+`Lavalamp' found a serious bug in the filtering code that can cause some
+ factors for sequences with both odd and even exponents to be missed when
+ the subsequence base b^Q has an odd Q. Affected versions 0.5.0 to 0.6.6.
+
+Version 0.6.6: (Posted 13 March 2007)
+The sieve limit for ppc64 is 2^63 when using assembler mulmods, not 2^52.
+Added x86-64 assembler powmod (powmod-k8.S)
+Fixed a bug in write_newpgen_files() that caused the wrong number of terms
+ to be reported when writing multiple files.
+Added -Wall to default CPPFLAGS. Thanks jasong.
+
+Version 0.6.5: (Posted 31 January 2007)
+Fixed typo in srsieve.c, thanks michaf.
+srfile -c now takes an argument: `srfile -c X infile.txt' will now report
+ the number of terms in each congruence class modulo X (i.e. the number of
+ terms in each subsequence when sieving in base b^X). Thanks masser for
+ the suggestion.
+
+Version 0.6.4: (Posted 14 January 2007)
+Fixed a serious and longstanding bug in remove_eliminated_subsequences()
+ that corrupted the sequence list when all subsequences for more than one
+ sequence were removed from the sieve during the same event. Thanks Mark for
+ reporting this.
+Added Mark Rodenkirch's improved ppc64 assembler mulmod() function.
+Use the 64-bit sieve for primes below 2^32 on 64-bit machines.
+Added x86-64 assembler mulmod64()/sqrmod64() functions.
+Added build for linux64-k8 binary.
+
+Version 0.6.3:
+Fixed a bug in mod64_init/fini() that may have prevented the FPU control
+ word being correctly restored on i386.
+
+Version 0.6.2:
+Removed some core64() debugging stuff that should only print when DEBUG=yes. 
+
+Version 0.6.1: (Posted 30 November 2006)
+Fixed trial factoring in core64() which caused extremely long init times for
+ sequences with large prime k. Thanks Citrix for reporting this bug.
+Save and restore r2 register in expmod-ppc64.S, fixes segfault on PPC/Linux.
+ Thanks Ed for the report and Mark for the fix.
+Fixed mpz_get/set_uint64() in srtest to work on 32-bit MSB systems.
+The srtest program is now run as a part of 'make check'.
+Fixed a typo in arithmetic.h which was preventing the sqrmod code being used.
+Test sqrmod64() in srtest too.
+Made assembler pre2_* functions into PRE2_* macros. Benefits GCC 4.1.
+Better FPU instruction scheduling in i386 assembler mulmod64()/powmod64().
+Test for __ppc64__ or __powerpc64__ to recognise PowerPC 64.
+
+Version 0.6.0: (Posted 22 November 2006)
+New i386 assembler mulmod64() and powmod64() functions give correct results
+ for all primes up to 2^62. Testing against GMP revealed that all earlier
+ versions could give occasional incorrect results for primes as low as 2^46.
+Added sqrmod64() function for use by generic powmod64().
+
+Version 0.5.3:
+Exchange %ebx,%ebp in powmod64().
+Set CONST_EMPTY_SLOT in hashtable.h to use a constant value to mark empty
+ hashtable slots. This requires one extra 16-bit register/constant comparison
+ in lookup(), but avoids a 64-bit register/memory comparison when the slot is
+ in fact empty.
+
+Version 0.5.2: (Posted 31 October 2006)
+Removed redundant call to fill_bits() in prime_sieve().
+Replaced memset32_8() in hashtable.h with memset_fast32() in memset_fast32.h.
+Assembler powmod64() for i586/i686.
+
+Version 0.5.1: (Posted 22 September 2006)
+Added a seperate code path for the 32 bit sieve when all sequences k*b^n+c
+ have k,|c| < 2^16.
+Pass a pair (mod,map) instead of a filter function to the prime sieve, check
+ test_bit(map,p%mod) instead of calling filter(p).
+Reduced default hashtable maximum density from 0.8 to 0.65.
+
+Version 0.5.0:
+For each subsequence k*b^n+c, check whether -ck (or -bck if n is odd) is a
+ quadratic residue with respect to p before adding it to the BSGS list.
+
+Version 0.4.8: (Posted 12 September 2006)
+Allocate ck64,bd64 arrays on the stack instead of the heap.
+
+Version 0.4.7: (Posted 11 September 2006)
+Use uniformly sized bitmaps for each subsequence so .m_low and .m_high
+ fields are no longer needed.
+Added umod(a,p), and add an extra branch to lmod(a,p) to try to avoid a
+ division if possible.
+
+Version 0.4.6: (Posted 6 September 2006)
+Increased minimum short/long hashtable size to 2^10/2^9.
+New invmod() functions taken from Jason Papadopoulos's Msieve 1.10.
+Removed unused submod() functions.
+
+Version 0.4.5: (Posted 1 September 2006)
+Relaxed asm constraints on i386 memset32_8(). Added x86-64 assember version.
+A small improvement to powmod() saves one mulmod per call.
+Removed unused sieve_high variable.
+Added function invmod32_64(a,p) used instead of invmod64(a,p) when a < 2^32.
+
+Version 0.4.4: (Posted 27 August 2006)
+Unrolled clear_hashtable() loop, optimising seperately for 32 or 64 bit
+ machines, with inline assembler version for i386.
+Don't compile pentium4 or athlon binaries, i686 is just as good now that
+ base-specific code is no longer used.
+
+Version 0.4.3:
+Removed the base-specific mulmods as these hardly ever get used except in
+ bsgs_small() when first starting a new sieve. Removed the setup() functions
+ optimised for the Q=1 case for the same reason.
+Limit --nmax to 2^32-2, not 2^32-1.
+
+Version 0.4.2: (Posted 12 August 2006)
+Added quadratic residue filters for sequences where each term is of the form
+ r*A^2+B^2 or r*A^2-B^2 with r <= 6.
+Don't employ per-subsequence filtering unless at least 20% of subsequences
+ have filters installed.
+Fixed a problem introduced in 0.4.1 that could prevent the special form of
+ some sequences being recognised if Q was not a power of 2.
+Don't cast from uint32_t to void * on 64 bit machines. (srfile.c).
+Adjusted the formula for choosing b^Q to favour slightly lower Q.
+
+Version 0.4.1:
+Changed the way that Q is chosen for sieving in base b^Q. This should result
+ in better choices eventually, but needs tuning.
+`srsieve --force-base X' forces b^X to be the sieving base.
+
+Version 0.4.0:
+Extended k,c in k*b^n+c to 64 bit variables: 0 < k < 2^64, 0 < |c| < 2^63.
+ This results in a small slowdown for the 32 bit sieve, but a seperate code
+ path means no slowdown for the 64 bit sieve if all k,|c| values are < 2^32.
+Changed pre2_mulmod64_init() to make use of stack created by mod64_init().
+Removed asm-i386-msc.h because I can't test it and it is doubtful whether
+ the rest of the program compiles with MSC anyway.
+Avoid use of ceil(x) where the integer part of x might be large (> 2^31?)
+ because of a bug in GCC 4.1.0. [ceil(15^8) returns rubbish in GCC 4.1.0].
+ (A work-around would be to add -fno-builtin-ceil to CFLAGS).
+
+Version 0.3.18: (Posted 4 August 2006)
+Fixed a sign bug reported by `Citrix' that caused bad results for sequences
+ k*b^n+c with 2^31 <= k < 2^32 when sieving with 0 < p < 2^32.
+
+Version 0.3.17: (Posted 3 August 2006)
+Removed the 64-bit mode K8 assembler mulmod64() because it is slower than
+ the generic C version. Thanks to the mersenneforum.org members who tested
+ this for me.
+
+Version 0.3.16: (Posted 1 August 2006)
+Added the --mod=M,a,b,... command line switch to install a global filter for
+ primes of the form a,b,... (mod M). e.g. `--mod 10,-1,1' will only test
+ potential factors that are 1 (mod 10) or -1 (mod 10).
+Added per-subsequence prime filters. Srsieve will now filter for special
+ form factors even if not all subsequences have the same special form. e.g.
+ if terms of one sequence are of the form A^(2^x)+B^(2^x) and another is of
+ the form C^(2^y)+D^(2^y) then the first sequence will be left out of the
+ sieve when p=K*2^x+1 and the second will be left out when p=K*2^y+1.
+
+Version 0.3.15:
+Added ARCH=k8 entry in Makefile for Athlon64 in native 64 bit mode.
+Added assembler mulmod32/64() functions for x86-64. These are untested, and
+ may be slower than the C versions. Try compiling with ARCH=k8 ASSEMBLER=no
+ and then with ARCH=k8 ASSEMBLER=yes to see which are fastest.
+
+Version 0.3.14: (Posted 28 July 2006)
+Split sr5sieve into a seperate package sr5sieve-1.0.0.tar.gz
+
+Version 0.3.13:
+Extended the generalised Fermat filter to allow sequences of the form
+ a^(2^y)+b^(2^y) instead of just x^(2^y)+1.
+Fixed a bug introduced in 0.3.12 that prevented some sequences with square
+ bases being properly recognised as having the form x^(2^y)+1.
+Added a switch `srsieve --no-filter' to disable filtering of the sieve
+ primes (for debugging only).
+Check that k*b^n+c satisfies (b,c)=1.
+Throw an error if an invalid sequence is input instead of just deleting the
+ sequence with a warning.
+
+Version 0.3.12:
+Sequences in which every term is of the form x^(2^y)+1 can only have factors
+ of the form z*2^(y+1)+1. Srsieve will now recognise these sequences and
+ filter candidates from the prime sieve appropriately. Thanks to `Citrix'
+ for this idea. Currently all sequences in the sieve must have factors of
+ the same form for this to work -- removing this limitation is a TODO item.
+
+Version 0.3.11: (Posted 23 July 2006)
+`srfile --known-factors FILE' will now also accept GMP-ECM factors in FILE.
+ Thanks `konrad127123' for the suggestion. Large Prime95 and GMP-ECM factors
+ are accepted without verification.
+
+Version 0.3.10:
+Fixed a bug introduced in version 0.3.0 that could sometimes cause an extra
+ term to be added to the end of a sequence when the sieve file was written.
+Fixed init_prime_sieve() to handle very small sieve limits (p < 9).
+Ensure small_sieve_limit is not less than the greatest prime factor of |c|.
+
+Version 0.3.9: (Posted 20 July 2006)
+`srfile --pfactor X' sets the last field of the worktodo.ini entry to X (the
+ number of PRP tests saved by finding a factor). In previous versions this
+ was incorrectly set to 0. Thanks to `michaf' for noticing this.
+
+Version 0.3.8: (Posted 18 July 2006)
+`srfile --known-factors results.txt' will now also accept Prime95 factors in
+ results.txt for removal from the sieve. The factors are not checked.
+Fixed a bug introduced in version 0.3.0 that sometimes caused srsieve to
+ report the wrong number of terms when writing NewPGen format files.
+
+Version 0.3.7: (Posted 17 July 2006)
+Fixed a bug introduced in version 0.3.0 that sometimes caused terms k*b^n+c
+ for all n>0 to be lost when the term k*b^0+c was prime and in the sieve.
+
+Version 0.3.6: (Posted 16 July 2006)
+sr5sieve now writes factors for the range <pmin>,<pmax> to factors<pmin>.txt
+ instead of srfactors.txt.
+Fixed for_each_term() so that terms are always processed strictly in order
+ of increasing n, then increasing k, then increasing c. This showed up where
+ --prp would sometimes print terms with equal n in the wrong order.
+
+Version 0.3.5: (Posted 13 July 2006)
+sr5sieve --newpgen K N0 N1 writes a NewPGen format file K.txt for PRP/LLR
+ testing K*5^n+/-1 in the range N0 <= n < N1.
+Fixed raising of base after small sieve.
+
+Version 0.3.4: (Posted 8 July 2006)
+Fixed typo: pre2_mod64_fini --> pre2_mulmod64_fini in asm-ppc64.h.
+Removed nested function in srfile.c.
+
+Version 0.3.3:
+Use pre2_mulmod64 in bsgs setup64, although the gain is very small.
+Don't raise the sequence base after the small sieve finishes except for new
+ sieves. Don't raise it after the 32bit sieve at all.
+By default srsieve will make one pass at splitting base b sequences into
+ base b^Q subsequences. If --limit-base X is supplied with a value larger
+ than the resulting Q, then it will continue splitting the subsequences into
+ higher bases until either the base reaches b^X or the base doesn't increase
+ from one pass to the next. I don't know if this is useful or not.
+
+Version 0.3.2: (Posted 7 July 2006)
+Removed a redundant trailing mulmod from the giant steps loop.
+sr5sieve --delete K deletes the sequence K*5^n+/-1 from sr5data.txt.
+
+Version 0.3.1: (Posted 6 July 2006)
+Compute -c/k (mod p) once per base b sequence instead of once per base b^Q
+ subsequence. This makes it efficient to use a larger Q, and so the default
+ choice of maximum Q should now be close to optimal.
+Fixed a dangling pointer left when every term of a sequence was eliminated.
+Fixed wrong estimate of completion date in sr5sieve.
+
+Version 0.3.0: (Posted 5 July 2006)
+Split sequences in base b into subsequences in base b^Q. Q can be limited to
+ a divisor of X with --limit-base X. I don't know how to choose the optimal
+ Q, so experimentation is needed. The wrong choice for Q may result in a
+ large performance loss.
+
+Version 0.2.4: (Posted 5 July 2006)
+sr5sieve now reports percentage of total range done, and estimated
+ completion date.
+sr5work.txt format changed: <pmin>,<pmax> is in billions, no 'e' notation.
+
+Version 0.2.3:
+Fixed a bug introduced in version 0.2.0 causing a segfault in test_bit()
+ when a duplicate factor is found near the bottom of the sieve range.
+When --duplicates and --check are specified together, doublecheck duplicate
+ factors as well.
+Relaxed the restriction on b in k*b^n+c having common factors with k or c.
+ I can't remember why I imposed this condition in the first place, but it
+ doesn't seem to apply anymore.
+Changed behaviour of --checkpoint: Don't resume from checkpoint.txt unless
+ it contains a value p such that pmin < p < pmax, where pmin and pmax are
+ calulated from defaults or from the input file or given on the command line
+ as usual.
+Removed the --twin feature, since for k*b^n+/-1 forms it was faster to sieve
+ (k^2)*(b^2)^n-1 (thanks R.Gerbicz for pointing this out), and for other
+ forms it was no better than sieving the individual sequences and removing
+ the non-twin terms from the resulting sieve files (now a TODO for srfile).
+
+Version 0.2.2: (Posted 1 July 2006)
+sr5sieve is a version of srsieve specialised for the base 5 projects. It
+ accepts no command line arguments, but invoking 'sr5sieve' is equivalent to
+ 'srsieve --check --checkpoint --factors --report 120 --save 5 sr5data.txt'
+ except that --pmin and --pmax are read as a comma-separated pair from a
+ file sr5work.txt. When sieving is complete the first line of sr5work.txt is
+ deleted and sieving starts again with the next line, until empty.
+
+Version 0.2.1:
+'srfile --pfactor' will print each term in the sieve as a Prime95 P-1
+ worktodo.ini entry 'Pfactor=k,b,n,c,bit_level,0'.
+Reduce base modulo p before calling modular arithmetic functions in
+ small_sieve(). Luckily only mulmod/powmod were affected, as the current
+ versions can tolerate values greater than p anyway.
+
+Version 0.2.0: (Posted 29 June 2006)
+Compressed bitmaps by representing n_i as q*m_i+r where q=min_{nmin<n_i<nmax}
+ gcd(n_{i+1}-n_i).
+srfile --congruence FILE prints congruence information for sequences in FILE.
+
+Version 0.1.24: (Posted 26 June 2006)
+--twin sieves for twin primes.
+
+Version 0.1.23:
+If the order of b is found in the baby steps then skip the giant steps.
+
+Version 0.1.22:
+Added support for NewPGen type 19 and 20 sieve files (b^n+k, b^n-k) when
+ using --newpgen or --prp. LLR version 3.7.0 can read these formats, but PRP
+ version 24.14 can't (it incorrectly tests k*b^n+/-1 instead of b^n+/-k).
+NOTE NEW FILE NAMES: A NewPGen type T sieve for K*B^n+/-1 or B^n+/-K is now
+ written to file t<T>_b<B>_k<K>.npg with --newpgen or to file t<T>_b<B>.prp
+ with --prp. T is one of 16,17,19,20.
+If k=1 then the sequence k*b^n+c can be written as b^n+c.
+Increased the small sieve limit proportional to the sieve range (nmax-nmin).
+ This should greatly improve the sieve speed for very small p whan starting
+ a large new sieve.
+
+Version 0.1.21: (Posted 22 June 2006)
+Added PPC assembler versions of mulmod and powmod supplied by Mark Rodenkirch.
+Re-arranged the Makefile so that extra CFLAGS can be passed on the make
+ command line, e.g. 'make CFLAGS=-O3' just adds -O3 to the other flags
+ instead of replacing them.
+
+Version 0.1.20: (Posted 20 June 2006)
+Set prime sieve limits at runtime so all primes up to p_max can be generated.
+If --pmax is not specified, then default to p_min + 4 trillion.
+Use bitmaps instead of byte arrays in prime sieve.
+Made the reporting period independent of the sieve block size.
+Command line arguments can be given in exponential notation, 1e6=1000000 etc.
+--hashtable X now limits the maximum hashtable density to X (default 0.8).
+ (Use lower densities to increase hashtable size).
+Actual hashtable density and size is reported when --verbose is used.
+
+Version 0.1.19: (Posted 17 June 2006)
+Leave small prime terms in the sieve.
+--no-base prevents base-specific mulmods being used.
+
+Version 0.1.18: (Posted 14 June 2006)
+Much improved hashtable code. When SHORT_HASHTABLE=1 the number of baby
+ steps is limited to 2^15-1, which allows the memory used in both the main
+ table and overflow list to be halved. References to the overflow list are
+ avoided unless there is a collision. All this helps to keep the main table
+ in cache longer, resulting in speedups on my P4 of about 60% for larger
+ sieves and 5-10% for small sieves. For very large sieves a warning is given
+ that it may be best to recompile with SHORT_HASHTABLE=0.
+Hashtable size is reported when the --verbose switch is specified.
+Reduced prime sieve block sizes as large blocks don't seem to gain anything.
+
+Version 0.1.17:
+Delete the checkpoint file if the sieving job is complete.
+Fixed a potential bug in the assembler version of mulmod64() present since
+ it was inlined in version 0.0.15. GCC could have re-ordered mulmod64() to
+ put it before mod64_init() or after mod64_fini(). I don't think this ever
+ actually happened in any released version of srsieve, as it would probably
+ have been caught by 'make check'.
+
+Version 0.1.16:
+Added base specific mulmods for bases 2 and 3. There are probably gains to
+ be had for other small bases too, I will add them if requested.
+
+Version 0.1.15: (Posted 7 June 2006)
+Added base five specific functions mul5mod32(a,p) and mul5mod64(a,p). They
+ are employed in the baby steps only. The 32/64 bit base 5 sieve is approx.
+ 30%/10% faster than the general sieve on my P3, and 40%/30% faster on my P4.
+
+Version 0.1.14: (Posted 6 June 2006)
+Implemented pre2_mulmod64(a,b,p) which uses a pre-computed value of b/p held
+ on the FPU stack. This is exploited in bsgs() where b/p is constant through
+ the baby steps and (with a different b) the giant steps, resulting in a
+ small speedup for the 64 bit sieve. (About 7% on my P3/450 for 20 sequences
+ over 50K < n < 150K, perhaps a little more for larger sieves).
+
+Version 0.1.13: (Posted 3 June 2006)
+Added srfile --delete option to delete a sequence from the sieve.
+Only report the total number of terms removed with srfile --known-factors
+ unless --verbose is also specified.
+
+Version 0.1.12: (Posted 2 June 2006)
+Added --abcd switch to write a multiple header ABCD format sieve file.
+Added --checkpoint switch which causes a one line checkpoint.txt file
+ contining the current sieve prime to be written, and causes srsieve to
+ resume sieving from checkpoint.txt if it exists. If both --checkpoint and
+ --factors are given then no sieve file will be written unless explicitly
+ requested. This will be useful when the input sieve is very large.
+
+Version 0.1.11: (Posted 1 June 2006)
+Allow blank lines and comments in input files. Lines with all whitespace
+ characters or whose first non-whitespace character is '#' are ignored.
+Report the line number where the error occured in input error reports.
+
+Version 0.1.10: (Posted 30 May 2006)
+Converted printf/scanf formats to use macros in <inttypes.h> for
+ compatibility with mingw32.
+
+Version 0.1.9:
+Avoid using alarms, poll every time p increases by 1 million instead.
+Misc other changes to compile cleanly with the Debian mingw32 cross compiler.
+
+Version 0.1.8:
+Added config.h option HAVE_ALARMS and code for systems that don't have them.
+
+Version 0.1.7: (Posted 29 May 2006)
+Avoid excessive memory use when writing sorted --prp or --pfgw files.
+Rewrite of the generic C mulmod64() based on simpler code by Phil Carmody. I
+ expect it to be better suited to non-x86 architectures.
+Define limits for a,b,p along with the definition of mulmod64(a,b,p).
+
+Version 0.1.6: (Posted 27 May 2006)
+Minimised MAX_PRIMES_IN_TABLE in sieve.c to avoid unnecessary memory use,
+ and fixed an array bounds bug and a bug that caused some small primes to be
+ sieved twice.
+Made USE_PRIME_SIEVE the default, define USE_PP_SIEVE to use the old
+ probable prime code instead.
+
+Version 0.1.5: (Posted 26 May 2006)
+Reverted to original default sieve file format, as pfgw can't parse multiple
+ header ABC files, only ABCD files, and these are not nice for hand editing.
+Don't report each individual NewPGen file written unless --verbose is used.
+Removed gcd functions from arithmetic.h as they are not critical.
+
+Version 0.1.4: (Posted 25 May 2006)
+Makefile option USE_PRIME_SIEVE uses Mark Rodenkirch's sieve code in sieve.c
+ instead of the probable prime code, now in pp_sieve.c.
+
+Version 0.1.3:
+Allow c in k*b^n+c to be any number relatively prime to b and k, not just
+ +1,-1.
+Added --pfgw option to write the sieve in a format (abc, sorted by n)
+ suitable for input to pfgw, as the --newpgen and --prp formats do not allow
+ k*b^n+c with c other than +1,-1. Updated srfile to match.
+Write a multiple-header abc format sieve file by default. This format is
+ almost identical to the old srsieve format but can be read by pfgw and maybe
+ other programs. Old format can still be read, but will not be written.
+
+Version 0.1.2:
+Put inline assembler functions in files asm-<architecture>-<compiler>.h.
+
+Version 0.1.1: (Posted 22 May 2006)
+Fixed a potential bug in the GCC assembler version of mulmod32 (it could
+ only strike if explicitly invoked as mulmod32(a,b,b) which didn't happen).
+Assembler versions of submod32/64().
+
+Version 0.1.0:
+Translated mulmod62() from assembler to C, GMP no longer required.
+Removed sqrmod(a,p) as GCC generates the same code from inline mulmod(a,a,p).
+
+Version 0.0.15: (Posted 18 May 2006)
+Inlined the mulmod62() assembler for GCC, this speeds up the 64 bit sieve by
+ about 5% on my P3/450.
+Run 'make check' to perform two simple tests of the srsieve binary.
+
+Version 0.0.14:
+Changed "%ju" back to "%llu" in printf()/scanf().
+--pmin was being ignored when starting a new sieve.
+
+Version 0.0.13: (Posted 15 May 2006)
+Allow command line --pmin to override pmin from input files.
+Prefix underscores to global labels when compiling for Cygwin (define
+ NEED_UNDERSCORE in config.h for other machines that need this) Thanks to
+ `Greenbank' for fixing this.
+Alternative millisec_clock() function for machines lacking getrusage().
+
+Version 0.0.12: (Posted 13 May 2006)
+Report the rate at which factors are being found (seconds per factor).
+--stop-rate X stops sieving when the rate reaches X seconds per factor.
+Added a new program srfile for converting between file formats and removing
+ factors, other functions will be added later. Not well tested yet.
+
+Version 0.0.11:
+Fixed an incorrect assertation (j == count) in write_prp_file().
+Replaced "%llu" with "%ju" which should work with 32 and 64 bit systems.
+Included a .zip verison of the source archive as well as .tar.gz
+Added MD5SUM.txt and README.txt for the yahoo directory.
+
+Version 0.0.10: (Posted 10 May 2006)
+If every term of a sequence is eliminated then the sequence is removed from
+ the sieve. If there are no more sequences left then the program ends. These
+ events are logged in srsieve.log.
+
+Version 0.0.9: (Posted 9 May 2006)
+The previous bug fix didn't work in all cases, fixed now.
+
+Version 0.0.8: (Posted 8 May 2006)
+Fixed a bug where composite p might have a common factor with k.
+Removed --benchmark, it is too simplistic to be accurate.
+
+Version 0.0.7:
+Inlined the mulmod32() assembler for GCC, thanks to Anand Nair for his help
+with this, it speeds up the 32 bit sieve by about 10% on my P3/450.
+Removed powmod32.S as the C version is just as fast with mulmod32() inline.
+Inlined common cases for insert() and lookup().
+--hashtable allows a larger hashtable to be used.
+
+Version 0.0.6: (Posted 6 May 2006)
+--prp writes the sieve as two files suitable as input to PRP (sorted by n).
+Simplified giant steps for the common case of p large relative to (nmax-nmin).
+Fully buffer the factors file when p is small.
+--babystep adjusts the ratio of baby steps to giant steps.
+
+Version 0.0.5: (Posted 4 May 2006)
+Added i386 assembler versions of mulmod32(), powmod32() and mulmod64() (now
+ mulmod62()) supplied by Mark Rodenkirch. On my P3/450 mulmod32/62 are twice
+ and five times faster respectively compared to the C/GMP versions.
+Added a --benchmark command line option to time some critical functions.
+Added --duplicates and --order options to help with debugging and tuning.
+
+Version 0.0.4: (Posted 2 May 2006)
+Added a missing bitmap sentinel bit to prevent a segfault caused by an
+ unbounded next_bit(). Thanks to Mark Rodenkirch for spotting this bug.
+Added a compile option BSGS_HASH to select a hash function as the residue
+ modulo a prime or (Mark Rodenkirch's suggestion) modulo a power of 2.
+ The latter seems to be faster.
+--report R makes a simple timing report (p/cpu.sec) every R seconds.
+Block signals while writing save files.
+
+Version 0.0.3: (Posted 1 May 2006).
+Added a more compact save file format, in addition to the NewPGen
+ one-candidate-sequence-per-file format.
+Use next_prime() instead of getprime(), which takes too long to initialise
+ at large pmin. next_prime() needs tuning (or rewriting).
+
+Version 0.0.2:
+GMP (mpn) arithmetic for primes above 2^32. This is just a temporary measure
+ until proper 64 bit arithmetic is implemented.
+Simple signal handling to write save files and screen progress reports.
+Hashtable only stores indices into an existing array of data, not the data
+ itself.
+
+Version 0.0.1: (Posted 27 April 2006).
+Baby steps giant steps algorithm seems to work.

@@ -1,0 +1,10 @@
+1. Edit the Makefile.
+   In most cases it should suffice to set three variables: DEBUG; ASSEMBLER;
+   ARCH.
+
+2. Run 'make'
+   This should produce two executables: srsieve; srfile.
+
+3. Run 'make check' (GMP libraries required)
+   This will run a series of self tests. If all is well then the message
+   'All tests passed' will appear.

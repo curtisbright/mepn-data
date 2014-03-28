@@ -1,0 +1,16 @@
+The srsieve-x86_64-windows.exe executable was built with an experimental
+version of the GCC compiler known to produce bad code in some situations.
+
+If you encounter problems, or just don't want to take the risk, then please
+use the srsieve-x86-windows.exe executable instead.
+
+Bug reports are still welcome, send details to Geoffrey Reynolds
+<g_w_reynolds@yahoo.co.nz>.
+
+Since srsieve is usually only used to create an initial sieve file for
+further sieving with sr1sieve or sr2sieve, not much time is lost by using
+the 32-bit version.
+
+(Although built with the same compiler, the sr1sieve-x86_64-windows.exe and
+sr2sieve-x86_64-windows.exe executables have been more thoroughly tested and
+contain work-arounds for the compiler problems discovered as a result).
