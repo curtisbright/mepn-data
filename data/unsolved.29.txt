@@ -29,5 +29,4 @@ Q*OL
 Q*GL
 Q*LO
 RM*G
-RKP0*P
 SP*K
