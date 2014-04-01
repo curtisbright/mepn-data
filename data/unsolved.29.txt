@@ -15,7 +15,6 @@ L*CE
 LOG*
 OOPS*A
 O0*FPL
-PA*6
 PC*
 PL*C
 PL*OOC
