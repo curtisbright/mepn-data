@@ -17,7 +17,6 @@ PC*
 PCL*
 POL*0O
 PPPL*O
-P0*OPR
 Q*GL
 Q*LO
 RM*G
