@@ -2,7 +2,6 @@
 68L0*6
 AMP*
 C*FK
-E9C*
 F*OPF
 FKI*
 F*OP
