@@ -8,7 +8,6 @@ F*OP
 I*FK
 LP09*
 LPC*9
-L*CE
 OOPS*A
 O0*FPL
 PC*
