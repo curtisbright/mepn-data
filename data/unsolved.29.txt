@@ -7,7 +7,6 @@ FKI*
 F*OP
 I*FK
 LP09*
-LPC*9
 OOPS*A
 O0*FPL
 PC*
