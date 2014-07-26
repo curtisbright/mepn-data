@@ -5,7 +5,6 @@ C*FK
 F*OPF
 FKI*
 F*OP
-I*FK
 LP09*
 OOPS*A
 O0*FPL
