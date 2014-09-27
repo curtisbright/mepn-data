@@ -720,25 +720,31 @@ we employed PRIMO by Marcel Martin~\cite{primo}, an elliptic curve primality pro
 
 \section{Results}
 A summary of the results of our algorithm is presented in 
-Figure~\ref{resultsfig}.
+Figure~\ref{resultsfig}; it was able to completely solve all bases up to 30 except for
+17, 19, 21, 23, 25, 26, 27, 28, and~29.
 The results in base~29 required some additional strategies, as described in Section~\ref{addstrat}.
-For each base $b$ between 2 and~16,
-we give the size $|M(L_b)|$ and ``width'' $\max_{x \in M(L_b)} |x|$ of
+%For the bases up to~30
+
+For every solved base, we give the size $|M(L_b)|$ and the ``width'' $\max_{x \in M(L_b)} |x|$ of
 the corresponding family.
-For bases between 17 and~30 a lower bound on the size and width of
-$M(L_b)$ is given, along with the number of families of the form
+For the unsolved bases, we give a lower bound on the size and width of $M(L_b)$,
+along with the number of families of the form
 $xy^*z$ for which no prime member could be found, nor could the family be
 ruled out as only containing composites.  Since such simple families can contain at
 most one minimal prime, an upper bound on $\abs{M(L_b)}$ is given by the
 sum of the lower bound for $\abs{M(L_b)}$ and the number of unsolved families.
+Additionally, we give the height to which the simple families were searched
+for primes; if there are any more primes in $M(L_b)$ they must have at least
+this many digits in base $b$.
 
-\subsection{Unsolved families}
-The following unsolved families have been tested to at least length $160000$ without
-a prime being found, except for those in base~29, which have been tested up to length $110000$.
 The family $\8\0^*\1$ in base~23, corresponding to the
 generalized Proth numbers $8\cdot23^n+1$, was already known to be prime
 for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
+
+\subsection{Unsolved families}
+We now explicitly list the 41 families for which we were unable to determine if
+they contain a prime or not.
 
 \begin{figure}[H]
 Base 17: $\mathtt{F19^*}$ \\
@@ -749,44 +755,44 @@ Base 25: $\mathtt{6MF^*9}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$
 Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
 Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$ \\
 Base 28: $\mathtt{OA^*F}$ \\
-Base 29: $\mathtt{1A^*}$, $\mathtt{68L0^*6}$, $\mathtt{AMP^*}$, $\mathtt{C^*FK}$, $\mathtt{F^*OPF}$, $\mathtt{FKI^*}$, $\mathtt{F^*OP}$, $\mathtt{LP09^*}$, $\mathtt{OOPS^*A}$, $\mathtt{O0^*FPL}$, $\mathtt{PC^*}$, $\mathtt{PCL^*}$, $\mathtt{PPPL^*O}$, $\mathtt{Q^*GL}$, $\mathtt{Q^*LO}$, $\mathtt{RM^*G}$
+\mbox{Base 29: }$\mathtt{1A^*}$, $\mathtt{68L0^*6}$, $\mathtt{AMP^*}$, $\mathtt{C^*FK}$, $\mathtt{F^*OPF}$, $\mathtt{FKI^*}$, $\mathtt{F^*OP}$, $\mathtt{LP09^*}$, $\mathtt{OOPS^*A}$, $\mathtt{O0^*FPL}$, $\mathtt{PC^*}$, $\mathtt{PCL^*}$, $\mathtt{PPPL^*O}$, $\mathtt{Q^*GL}$, $\mathtt{Q^*LO}$, $\mathtt{RM^*G}$
 \end{figure}
 
 %While we did not run an extensive search on unsolved families in base~29, in
 %Section~\ref{addstrat} we describe some additional strategies which solves
 %the problem in base~29 up to a finite number of simple families.
 
-\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c}
-b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} \\ \hline
-2 & 2 & 2 & 0 \\ 
-3 & 3 & 3 & 0 \\ 
-4 & 3 & 2 & 0 \\ 
-5 & 8 & 5 & 0 \\ 
-6 & 7 & 5 & 0 \\ 
-7 & 9 & 5 & 0 \\ 
-8 & 15 & 9 & 0 \\ 
-9 & 12 & 4 & 0 \\ 
-10 & 26 & 8 & 0 \\ 
-11 & 152 & 45 & 0 \\ 
-12 & 17 & 8 & 0 \\ 
-13\mathrlap{^*} & 228 & 32021 & 0 \\ 
-14 & 240 & 86 & 0 \\ 
-15 & 100 & 107 & 0 \\ 
-16 & 483 & 3545 & 0 \\ 
-17\mathrlap{^*} & \geq1279 & \geq111334 & 1 \\ 
-18 & 50 & 33 & 0 \\ 
-19\mathrlap{^*} & \geq3462 & \geq110986 & 1 \\ 
-20 & 651 & 449 & 0 \\ 
-21\mathrlap{^*} & \geq2599 & \geq47336 & 2 \\ 
-22 & 1242 & 764 & 0 \\ 
-23\mathrlap{^*} & \geq6020 & \geq119216 & 1 \\ 
-24 & 306 & 100 & 0 \\ 
-25\mathrlap{^*} & \geq17597 & \geq136967 & 12 \\ 
-26\mathrlap{^*} & \geq5662 & \geq8773 & 2 \\ 
-27\mathrlap{^*} & \geq17210 & \geq109006 & 5 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 \\
-29\mathrlap{^*} & \geq57281 & \geq110727 & 16 \\
-30 & 220 & 1024 & 0
+\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c@{\qquad}c}
+b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} & \parbox{5em}{\centering searched height} \\ \hline
+2 & 2 & 2 & 0 & - \\ 
+3 & 3 & 3 & 0 & - \\ 
+4 & 3 & 2 & 0 & - \\ 
+5 & 8 & 5 & 0 & - \\ 
+6 & 7 & 5 & 0 & - \\ 
+7 & 9 & 5 & 0 & - \\ 
+8 & 15 & 9 & 0 & - \\ 
+9 & 12 & 4 & 0 & - \\ 
+10 & 26 & 8 & 0 & - \\ 
+11 & 152 & 45 & 0 & - \\ 
+12 & 17 & 8 & 0 & - \\ 
+13\mathrlap{^*} & 228 & 32021 & 0 & - \\ 
+14 & 240 & 86 & 0 & - \\ 
+15 & 100 & 107 & 0 & - \\ 
+16 & 483 & 3545 & 0 & - \\ 
+17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 666000 \\ 
+18 & 50 & 33 & 0 & - \\ 
+19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 464000 \\ 
+20 & 651 & 449 & 0 & - \\ 
+21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 180000 \\ 
+22 & 1242 & 764 & 0 & - \\ 
+23\mathrlap{^*} & \geq6020 & \geq119216 & 1 & 574000 \\ 
+24 & 306 & 100 & 0 & - \\ 
+25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 180000 \\ 
+26\mathrlap{^*} & \geq5662 & \geq8773 & 2 & 180000 \\ 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 180000 \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 350000 \\
+29\mathrlap{^*} & \geq57281 & \geq110727 & 16 & 120000 \\
+30 & 220 & 1024 & 0 & -
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
 \caption{Summary of results for the prime numbers for each base $b$.}
