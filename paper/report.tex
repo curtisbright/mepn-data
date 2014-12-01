@@ -14,6 +14,8 @@
 
 \usepackage{rotating}
 
+\usepackage{auto-pst-pdf,pst-text}
+
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\paren{\lparen}{\rparen}
 
@@ -51,6 +53,7 @@
 \newcommand{\B}{\mathtt{B}}
 \newcommand{\union}{\cup}
 \newcommand{\set}[2]{\{\,#1{}:{}#2\,\}}
+\renewcommand{\a}{\begin{pspicture}\pscharpath[fillstyle=solid,fillcolor=black,linestyle=none]{@}\end{pspicture}}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -59,21 +62,21 @@ School of Computer Science\\
 University of Waterloo\\
 Waterloo, ON  N2L 3G1\\
 Canada\\
-{\tt cbright@uwaterloo.ca} \\
+{\tt cbright\a uwaterloo.ca} \\
 \ \\
 Raymond Devillers\\
 D\'epartement d'Informatique, CP 212\\
 Universit\'e Libre de Bruxelles \\
 B-1050 Bruxelles\\
 Belgium\\
-{\tt rdevil@ulb.ac.be} \\
+{\tt rdevil\a ulb.ac.be} \\
 \ \\
 Jeffrey Shallit \\
 School of Computer Science\\
 University of Waterloo\\
 Waterloo, ON  N2L 3G1\\
 Canada \\
-{\tt shallit@cs.uwaterloo.ca}}
+{\tt shallit\a cs.uwaterloo.ca}}
 
 \begin{document}
 
