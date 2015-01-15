@@ -132,6 +132,10 @@ represented in base 10 (and similarly for those of the form $4n+3$).
 This successfully completes the sequences A111055 and A111056 in the OEIS~\cite{oeis}
 which had been missing elements since their introduction to the encyclopedia in 2005.
 
+Finally, we also show that determining the minimal set for
+the composite numbers represented in base $b$ is a significantly easier problem,
+and explicitly compute the minimal set for all $2\leq b\leq 30$.
+
 \subsection{Notation}
 
 In what follows, if $x$ is a string of symbols over the alphabet
@@ -499,7 +503,7 @@ Since $2-(-1)>1$, this factorization is nontrivial and no number of the
 form $[\1\0^*\1]_b$ is prime.
 \end{example}
 
-\section{Our heuristic algorithm}
+\section{Our heuristic algorithm}\label{secalg}
 
 As previously mentioned, in practice to compute $M(L_b)$ one works with an underapproximation
 $M$ of $M(L_b)$ and an overapproximation $L$ of $L_b-\sup(M)$.
@@ -561,7 +565,7 @@ by exploring $\{\0,\1\}^*$ on the right.
 \end{example}
 
 \begin{lemma}\label{lemsplit1}
-If $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some $k>0$) then every minimal prime of the form
+If $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some $k\geq1$) then every minimal prime of the form
 $x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(y_i(L_1-\{y_i\})^*)^jx_2L_2^*\dotsm x_mL_m^*\]
 for some $0\leq j<k$.
 \end{lemma}
@@ -577,6 +581,9 @@ The string $\6\6\1$ represents a prime in base 9, and is a proper subword of $\1
 the family $\1\0\{\0,\1,\6\}^*\1$ splits into the families
 $\1\0\{\0,\1\}^*\1$ and $\1\0\{\0,\1\}^*\6\{\0,\1\}^*\1$ in base 9.
 \end{example}
+
+Lemma~\ref{lemsplit1} is especially useful when it can be applied with $k=1$, since in that case the family $x_1L_1^*\dotsm x_mL_m^*$
+is replaced by a single strictly simpler family, in contrast to the other lemmas we will describe.
 
 \begin{lemma}\label{lemsplit2}
 If $x_1y_iy_jx_2\dotsm x_m$ and $x_1y_iy_jx_2\dotsm x_m$ contain prime proper subwords (where $i\neq j$) then 
@@ -770,11 +777,26 @@ Base 28: $\mathtt{OA^*F}$ \\
 \end{figure}
 
 \subsection{\boldmath Primes of the form $4n+1$ and $4n+3$}
-The heuristic algorithm described in 
+The heuristic algorithm described in Section~\ref{secalg} may also be easily modified to apply to recursive subsets of prime numbers,
+e.g., those congruent to $1\bmod4$ (alternatively, $3\bmod4$).  The only modifications necessary are to the initialization
+of $M$ in line~1, and to update the check ``$w$ represents a minimal prime'' to also check that $w$ is in the subset
+under consideration.
 
-%While we did not run an extensive search on unsolved families in base~29, in
-%Section~\ref{addstrat} we describe some additional strategies which solves
-%the problem in base~29 up to a finite number of simple families.
+The lemmas of Section~\ref{seclemmas} can be used without modification, since a family which contains only composites
+of course does not contain any primes of a special form, either.  For simplicity the lemmas of Section~\ref{secalg} are stated
+to apply when the minimal set consists of primes, but actually apply to general minimal sets and also need no modification.
+
+When run on the primes of the form $4n+1$ represented in base 10, our implementation successfully computed the minimal set
+consisting of 146 elements, the largest of which contained 79 digits.  The On-Line Encyclopedia of Integer Sequences~\cite{oeis}
+contains the elements for this minimal set in entry A111055.  Prior to our work, the longest 11 elements were missing
+from this listing.
+
+When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computed the minimal set
+consisting of 113 elements, the largest of which contained 19153 digits.  Because of its size, the largest element has not
+yet been subjected to a rigorous primality test.  The second-largest element has 50 digits, so the remaining elements
+can easily be proved prime.  The On-Line Encyclopedia of Integer Sequences~\cite{oeis}
+contains the elements for this minimal set in entry A111056.  Prior to our work, the longest 10 elements were missing
+from this listing.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c@{\qquad}c}
 b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} & \parbox{5em}{\centering searched height} \\ \hline
@@ -804,8 +826,8 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 187000 \\ 
 26\mathrlap{^*} & \geq5662 & \geq8773 & 2 & 254000 \\ 
 27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 203000 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 350000 \\
-29\mathrlap{^*} & \geq57282 & \geq123420 & 15 & 138000 \\
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 351000 \\
+29\mathrlap{^*} & \geq57282 & \geq123420 & 15 & 139000 \\
 30 & 220 & 1024 & 0 & -
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
