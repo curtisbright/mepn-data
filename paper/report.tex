@@ -778,9 +778,11 @@ Base 28: $\mathtt{OA^*F}$ \\
 
 \subsection{\boldmath Primes of the form $4n+1$ and $4n+3$}
 The heuristic algorithm described in Section~\ref{secalg} may also be easily modified to apply to recursive subsets of prime numbers,
-e.g., those congruent to $1\bmod4$ (alternatively, $3\bmod4$).  The only modifications necessary are to the initialization
+e.g., those congruent to $1\bmod4$ (alternatively, $3\bmod4$).  The modifications necessary are to the initialization
 of $M$ in line~1, and to update the check ``$w$ represents a minimal prime'' to also check that $w$ is in the subset
-under consideration.
+under consideration.  When searching for minimal primes of the form $4n+1$, it was necessary to remove families only containing
+numbers of the form $4n+3$, and vice versa.  A modified Lemma~\ref{lemone} can be used to check this, e.g.,
+$[x(L^0\cup L)z]_b$ are all $\equiv c\bmod d$ implies that $[xL^*z]_b$ are all $\equiv c\bmod d$.
 
 The lemmas of Section~\ref{seclemmas} can be used without modification, since a family which contains only composites
 of course does not contain any primes of a special form, either.  For simplicity the lemmas of Section~\ref{secalg} are stated
