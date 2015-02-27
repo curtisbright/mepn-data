@@ -761,19 +761,58 @@ for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
 
 \subsection{Unsolved families}
-We now explicitly list the 40 families for which we were unable to determine if
-they contain a prime or not.
+There were 40 families for which we were unable to determine if they contain a prime or not.
+They are explicitly described in Figure~\ref{unsolved} in both their ``base $b$'' string representation
+and ``algebraic'' form $(ab^n+c)/d$, where $n$ denotes the number of times the repeated digit
+appears in the string representation.  The numbers $a$ and $c$ are given in their factorized form
+so as to help spot algebraic factorizations.
 
-\begin{figure}[H]
-Base 17: $\mathtt{F19^*}$ \\
-Base 19: $\mathtt{EE16^*}$ \\
-Base 21: $\mathtt{CF^*0K}$, $\mathtt{G0^*FK}$ \\
-Base 23: $\mathtt{9E^*}$ \\
-Base 25: $\mathtt{6MF^*9}$, $\mathtt{CM1^*}$, $\mathtt{EE1^*}$, $\mathtt{E1^*E}$, $\mathtt{EFO^*}$, $\mathtt{F1^*F1}$, $\mathtt{F0^*KO}$, $\mathtt{F0K^*O}$, $\mathtt{LOL^*8}$, $\mathtt{M1^*F1}$, $\mathtt{M10^*8}$, $\mathtt{OL^*8}$ \\
-Base 26: $\mathtt{A^*6F}$, $\mathtt{I^*GL}$ \\
-Base 27: $\mathtt{80^*9A}$, $\mathtt{999G^*}$, $\mathtt{CL^*E}$, $\mathtt{EI^*F8}$, $\mathtt{F^*9FM}$ \\
-Base 28: $\mathtt{OA^*F}$ \\
-\mbox{Base 29: }$\mathtt{1A^*}$, $\mathtt{68L0^*6}$, $\mathtt{AMP^*}$, $\mathtt{C^*FK}$, $\mathtt{F^*OPF}$, $\mathtt{FKI^*}$, $\mathtt{F^*OP}$, $\mathtt{LP09^*}$, $\mathtt{OOPS^*A}$, $\mathtt{O0^*FPL}$, $\mathtt{PC^*}$, $\mathtt{PPPL^*O}$, $\mathtt{Q^*GL}$, $\mathtt{Q^*LO}$, $\mathtt{RM^*G}$
+\begin{figure}%[H]
+\begin{center}\begin{tabular}{ccc}
+Base & Family & Algebraic form \\ \hline
+17 & $\mathtt{F19^*}$ & $(5\cdot821\cdot17^n-3)/16$ \\
+19 & $\mathtt{EE16^*}$ & $(2^2\cdot13\cdot307\cdot19^n-1)/3$ \\
+21 & $\mathtt{CF^*0K}$ & $(3\cdot17\cdot21^{n+2}-11\cdot113)/4$ \\
+& $\mathtt{G0^*FK}$ & $2^4\cdot3\cdot21^{n+1}+5\cdot67$ \\
+23 & $\mathtt{9E^*}$ & $(2\cdot53\cdot23^n-7)/11$ \\
+25 & $\mathtt{6MF^*9}$ & $(1381\cdot25^{n+1}-53)/8$ \\
+& $\mathtt{CM1^*}$ & $(59\cdot131\cdot25^n-1)/24$ \\
+& $\mathtt{EE1^*}$ & $(8737\cdot25^n-1)/24$ \\
+& $\mathtt{E1^*E}$ & $(337\cdot25^{n+1}+311)/24$ \\
+& $\mathtt{EFO^*}$ & $2\cdot3\cdot61\cdot25^n-1$ \\
+& $\mathtt{F1^*F1}$ & $(19\cdot25^{n+2}+37\cdot227)/24$ \\
+& $\mathtt{F0^*KO}$ & $3\cdot5\cdot25^n+2^2\cdot131$ \\
+& $\mathtt{F0K^*O}$ & $(5\cdot11\cdot41\cdot25^{n+1}+19)/6$ \\
+& $\mathtt{LOL^*8}$ & $(53\cdot83\cdot25^{n+1}-3\cdot37)/8$ \\
+& $\mathtt{M1^*F1}$ & $(23\cdot25^{n+2}+37\cdot227)/24$ \\
+& $\mathtt{M10^*8}$ & $19\cdot29\cdot25^{n+1}+2$ \\
+& $\mathtt{OL^*8}$ & $(199\cdot25^{n+1}-3\cdot37)/8$ \\
+26 & $\mathtt{A^*6F}$ & $(2^2\cdot26^{n+1}-7\cdot71)/5$ \\
+& $\mathtt{I^*GL}$ & $(2^2\cdot3^2\cdot26^{n+1}-11\cdot113)/25$ \\
+27 & $\mathtt{80^*9A}$ & $2^3\cdot3\cdot27^n+11\cdot23$ \\
+& $\mathtt{999G^*}$ & $(101\cdot877\cdot27^n-2)/13$ \\
+& $\mathtt{CL^*E}$ & $(3^2\cdot37\cdot27^{n+1}-7\cdot29)/26$ \\
+& $\mathtt{EI^*F8}$ & $(191\cdot27^{n+2}-2^3\cdot149)/13$ \\
+& $\mathtt{F^*9FM}$ & $(3\cdot5\cdot27^{n+3}-113557)/26$ \\
+28 & $\mathtt{OA^*F}$ & $(2\cdot7\cdot47\cdot28^{n+1}+5)/27$ \\
+29 & $\mathtt{1A^*}$ & $(19\cdot29^n-5)/14$ \\
+& $\mathtt{68L0^*6}$ & $7\cdot757\cdot29^{n+1}+2\cdot3$ \\
+& $\mathtt{AMP^*}$ & $(8761\cdot29^n-5)/28$ \\
+& $\mathtt{C^*FK}$ & $(3\cdot29^{n+1}+2\cdot331)/7$ \\
+& $\mathtt{F^*OPF}$ & $(3\cdot5\cdot29^{n+1}+139\cdot1583)/28$ \\
+& $\mathtt{FKI^*}$ & $(6379\cdot29^n-3)/14$ \\
+& $\mathtt{F^*OP}$ & $(3\cdot5\cdot29^{n+1}+7573)/28$ \\
+& $\mathtt{LP09^*}$ & $(31\cdot16607\cdot29^n-3)/28$ \\
+& $\mathtt{OOPS^*A}$ & $2\cdot10453\cdot29^{n+1}-19$ \\
+& $\mathtt{O0^*FPL}$ & $2^3\cdot3\cdot29^{n+1}+31\cdot431$ \\
+& $\mathtt{PC^*}$ & $(2\cdot89\cdot29^n-3)/7$ \\
+& $\mathtt{PPPL^*O}$ & $(87103\cdot29^{n+1}+3)/4$ \\
+& $\mathtt{Q^*GL}$ & $(13\cdot29^{n+1}-3\cdot1381)/14$ \\
+& $\mathtt{Q^*LO}$ & $(13\cdot29^{n+1}-19\cdot109)/14$ \\
+& $\mathtt{RM^*G}$ & $(389\cdot29^{n+1}-5\cdot19)/14$
+\end{tabular}\end{center}
+\caption{The unsolved families listed in their ``base $b$'' and ``algebraic'' representations.}
+\label{unsolved}
 \end{figure}
 
 \subsection{\boldmath Primes of the form $4n+1$ and $4n+3$}
@@ -782,7 +821,7 @@ e.g., those congruent to $1\bmod4$ (alternatively, $3\bmod4$).  The modification
 of $M$ in line~1, and to update the check ``$w$ represents a minimal prime'' to also check that $w$ is in the subset
 under consideration.  When searching for minimal primes of the form $4n+1$, it was necessary to remove families only containing
 numbers of the form $4n+3$, and vice versa.  A modified Lemma~\ref{lemone} can be used to check this, e.g.,
-$[x(L^0\cup L)z]_b$ are all $\equiv c\bmod d$ implies that $[xL^*z]_b$ are all $\equiv c\bmod d$.
+$[x(L^0\cup L)z]_b$ are all congruent to $c\bmod d$ implies that $[xL^*z]_b$ are all congruent to $c\bmod d$.
 
 The lemmas of Section~\ref{seclemmas} can be used without modification, since a family which contains only composites
 of course does not contain any primes of a special form, either.  For simplicity the lemmas of Section~\ref{secalg} are stated
