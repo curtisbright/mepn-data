@@ -54,11 +54,11 @@ citecolor=webgreen]{hyperref}
 \newcommand{\B}{\mathtt{B}}
 \newcommand{\union}{\cup}
 \newcommand{\set}[2]{\{\,#1{}:{}#2\,\}}
-\renewcommand{\a}{@}
+%\renewcommand{\a}{@}
 
 % Obfuscate @ sign to help avoid spam
-%\usepackage{auto-pst-pdf,pst-text}
-%\renewcommand{\a}{\begin{pspicture}\pscharpath[fillstyle=solid,fillcolor=black,linestyle=none]{@}\end{pspicture}}
+\usepackage{auto-pst-pdf,pst-text}
+\renewcommand{\a}{\begin{pspicture}\pscharpath[fillstyle=solid,fillcolor=black,linestyle=none]{@}\end{pspicture}}
 
 
 \newcommand{\seqnum}[1]{\href{http://oeis.org/#1}{\underline{#1}}}
@@ -764,6 +764,43 @@ bases 26, 28, and the odd bases larger than 16.
 The results in base~29 required some additional strategies, as described in Section~\ref{addstrat}.
 %For the bases up to~30
 
+\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c@{\qquad}c}
+b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} & \parbox{5em}{\centering searched height} \\ \hline
+2 & 2 & 2 & 0 & - \\ 
+3 & 3 & 3 & 0 & - \\ 
+4 & 3 & 2 & 0 & - \\ 
+5 & 8 & 5 & 0 & - \\ 
+6 & 7 & 5 & 0 & - \\ 
+7 & 9 & 5 & 0 & - \\ 
+8 & 15 & 9 & 0 & - \\ 
+9 & 12 & 4 & 0 & - \\ 
+10 & 26 & 8 & 0 & - \\ 
+11 & 152 & 45 & 0 & - \\ 
+12 & 17 & 8 & 0 & - \\ 
+13\mathrlap{^*} & 228 & 32021 & 0 & - \\ 
+14 & 240 & 86 & 0 & - \\ 
+15 & 100 & 107 & 0 & - \\ 
+16 & 483 & 3545 & 0 & - \\ 
+17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 792000 \\ 
+18 & 50 & 33 & 0 & - \\ 
+19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 562000 \\ 
+20 & 651 & 449 & 0 & - \\ 
+21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 315000 \\ 
+22 & 1242 & 764 & 0 & - \\ 
+23\mathrlap{^*} & \geq6020 & \geq119216 & 1 & 722000 \\ 
+24 & 306 & 100 & 0 & - \\ 
+25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 214000 \\ 
+26 & \geq5662 & \geq8773 & 2 & 303000 \\ 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 255000 \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 393000 \\
+29\mathrlap{^*} & \geq57282 & \geq123420 & 15 & 160000 \\
+30 & 220 & 1024 & 0 & -
+\end{array}\]
+\begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
+\caption{Summary of results for the prime numbers for each base $b$.}
+\label{resultsfig}
+\end{figure}
+
 For every solved base, we give the size $|M(L_b)|$ and the ``width'' $\max_{x \in M(L_b)} |x|$ of
 the corresponding family.
 For the unsolved bases, we give a lower bound on the size and width of $M(L_b)$,
@@ -859,43 +896,6 @@ yet been subjected to a rigorous primality test.  The second-largest element has
 can easily be proved prime.  The {\it Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111056}.  Prior to our work, the longest 10 elements were missing
 from this listing.
-
-\begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c@{\qquad}c}
-b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}{\centering\# unsolved\\families} & \parbox{5em}{\centering searched height} \\ \hline
-2 & 2 & 2 & 0 & - \\ 
-3 & 3 & 3 & 0 & - \\ 
-4 & 3 & 2 & 0 & - \\ 
-5 & 8 & 5 & 0 & - \\ 
-6 & 7 & 5 & 0 & - \\ 
-7 & 9 & 5 & 0 & - \\ 
-8 & 15 & 9 & 0 & - \\ 
-9 & 12 & 4 & 0 & - \\ 
-10 & 26 & 8 & 0 & - \\ 
-11 & 152 & 45 & 0 & - \\ 
-12 & 17 & 8 & 0 & - \\ 
-13\mathrlap{^*} & 228 & 32021 & 0 & - \\ 
-14 & 240 & 86 & 0 & - \\ 
-15 & 100 & 107 & 0 & - \\ 
-16 & 483 & 3545 & 0 & - \\ 
-17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 792000 \\ 
-18 & 50 & 33 & 0 & - \\ 
-19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 562000 \\ 
-20 & 651 & 449 & 0 & - \\ 
-21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 315000 \\ 
-22 & 1242 & 764 & 0 & - \\ 
-23\mathrlap{^*} & \geq6020 & \geq119216 & 1 & 722000 \\ 
-24 & 306 & 100 & 0 & - \\ 
-25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 214000 \\ 
-26 & \geq5662 & \geq8773 & 2 & 303000 \\ 
-27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 255000 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 393000 \\
-29\mathrlap{^*} & \geq57282 & \geq123420 & 15 & 160000 \\
-30 & 220 & 1024 & 0 & -
-\end{array}\]
-\begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
-\caption{Summary of results for the prime numbers for each base $b$.}
-\label{resultsfig}
-\end{figure}
 
 \section{Some additional strategies}\label{addstrat}
 
