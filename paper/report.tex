@@ -1,20 +1,19 @@
 \documentclass[12pt]{article}
 
 \usepackage{amsmath,amssymb,amsthm,amscd,amsfonts}
-
 \usepackage{tikz}
-
 \usepackage{url}
-
 \usepackage{fullpage}
-
 \usepackage{mathtools}
-
 \usepackage{float}
-
 \usepackage{rotating}
-
-\usepackage{auto-pst-pdf,pst-text}
+\usepackage[colorlinks=true,
+linkcolor=webgreen,
+filecolor=webbrown,
+citecolor=webgreen]{hyperref}
+\definecolor{webgreen}{rgb}{0,.5,0}
+\definecolor{webbrown}{rgb}{.6,0,0}
+\usepackage{color}
 
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\paren{\lparen}{\rparen}
@@ -53,7 +52,15 @@
 \newcommand{\B}{\mathtt{B}}
 \newcommand{\union}{\cup}
 \newcommand{\set}[2]{\{\,#1{}:{}#2\,\}}
-\renewcommand{\a}{\begin{pspicture}\pscharpath[fillstyle=solid,fillcolor=black,linestyle=none]{@}\end{pspicture}}
+\renewcommand{\a}{@}
+
+% Obfuscate @ sign to help avoid spam
+%\usepackage{auto-pst-pdf,pst-text}
+%\renewcommand{\a}{\begin{pspicture}\pscharpath[fillstyle=solid,fillcolor=black,linestyle=none]{@}\end{pspicture}}
+
+
+\newcommand{\seqnum}[1]{\href{http://oeis.org/#1}{\underline{#1}}}
+
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -98,10 +105,11 @@ for $2 \leq b \leq 30$.
 Problems about the digits of prime numbers have a long history, and many
 of them are still unsolved.  For example, are there infinitely many
 primes, all of whose base-$10$ digits are $\1$?  Currently,
-there are only five
-known, corresponding to $(10^p-1)/9$ for $p \coloneqq 2$, $19$, $23$, $317$, and
-$1031$.  It seems likely that four more are given by
-$p \coloneqq 49081$, $86453$, $109297$, and $270343$, but this has not yet been
+there are only five such ``repunits''
+known \cite{WD},
+corresponding to $(10^p-1)/9$ for $p \in \{ 2, 19, 23, 317, 1031 \}$. 
+It seems likely that four more are given by
+$p \in \{ 49081, 86453, 109297, 270343\}$, but this has not yet been
 rigorously proven.
 
 Another problem on the digits of primes was introduced by the
@@ -112,7 +120,7 @@ one can strike out zero or more symbols of $y$ to get $x$.
 For example, {\tt string} is a subword of
 {\tt Meistersinger}.  
 (In the literature, this concept is sometimes called a ``scattered
-subword'' or ``substring''.)
+subword'' or ``substring'' or ``subsequence''.)
 A {\it language} is a set of strings.  A string $s$ is {\it minimal}
 for $L$ if  (a) $s \in L$ and (b) if $x \in L$ and $x \subw s$, then
 $x = s$.    The set of all minimal strings of $L$ is denoted $M(L)$.
@@ -129,8 +137,11 @@ we obtain results that allow us to ``almost'' completely characterize this set.
 The same technique can also be applied to find minimal sets for subsets of prime numbers.
 For example, we were able to determine the minimal set for primes of the form $4n+1$
 represented in base 10 (and similarly for those of the form $4n+3$).
-This successfully completes the sequences A111055 and A111056 in the OEIS~\cite{oeis}
-which had been missing elements since their introduction to the encyclopedia in 2005.
+This successfully completes the sequences 
+\seqnum{A111055} and \seqnum{A111056} in the 
+{\it Encyclopedia of Integer Sequences}~\cite{oeis},
+which had been incomplete
+since their introduction to the Encyclopedia in 2005.
 
 Finally, we also show that determining the minimal set for
 the composite numbers represented in base $b$ is a significantly easier problem,
@@ -150,7 +161,7 @@ of $x$ in base-$b$, that is, the representation without leading zeroes.
 %The set of all canonical representations in base $b$ is denoted
 %$C_b$.
 Finally, as usual, for a language $L$ we let
-$L^n \coloneqq \underbrace{LL\dotsm L}_n$ and $L^* \coloneqq \bigcup_{i \geq 0} L^i$.
+$L^n \coloneqq \overbrace{LL\dotsm L}^n$ and $L^* \coloneqq \bigcup_{i \geq 0} L^i$.
 
 \section{Why minimal sets are interesting}
 
@@ -182,7 +193,7 @@ where $w_i=w_{i,1}\dotsm w_{i,\abs{w_i}}$ with $w_{i,j}\in\Sigma$.
 
 Determining $M(L)$ for arbitrary $L$
 is in general unsolvable, and can be difficult even when $L$
-is relatively simple~\cite{GHK07}.
+is relatively simple~\cite{GHK07,GHK09}.
 
 The following is a ``semi-algorithm'' that 
 is guaranteed to produce $M(L)$, but it is not so easy to implement:
@@ -210,7 +221,7 @@ recursively solvable:
 
 \begin{problem}
 Given strings $x$, $y$, $z$, and a base $b$, does there exist a prime
-number whose base-$b$ expansion is of the form $x \underbrace{yy\cdots y}_n z$
+number whose base-$b$ expansion is of the form $x \overbrace{yy\cdots y}^n z$
 for some $n \geq 0$?
 \end{problem}
 
@@ -222,12 +233,14 @@ Since if $2^n+1$ is prime then $n$ must be a power of two, a prime of the
 form $[xy^*z]_b$ must be a new Fermat prime.
 
 Therefore, in practice, we are forced to try to rule out prime
-representations based on modular techniques and factorizations.
+representations based on heuristics such as
+modular techniques and factorizations.
 This is discussed in the next section.
 
 \section{Some useful lemmas}\label{seclemmas}
 It will be necessary for our algorithm to determine if families of the
-form $[xL^*z]_b$ contain a prime or not.  We use two different strategies
+form $[xL^*z]_b$ contain a prime or not.  We use two different 
+heuristic strategies
 to show that such families contain no primes.
 
 In the first strategy, we mimic the well-known technique of ``covering
@@ -691,19 +704,25 @@ In this case one must resort to a pseudoprimality test such as a Miller--Rabin t
 Since we are testing many numbers in an exponential sequence, it is possible to use a sieving process to find divisors
 rather than using trial division.
 
-To do this, we made use of Geoffrey Reynolds' srsieve software~\cite{srsieve}.  This program uses the baby-step giant-step
+To do this, we made use of Geoffrey Reynolds' 
+{\tt srsieve} software~\cite{srsieve}.
+This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
 handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and ititialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
 The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$).
 
 Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
-For this we used the software LLR by Jean Penn\'e~\cite{llr}.
+For this we used the software {\tt LLR} by Jean Penn\'e~\cite{llr}.
 Although undocumented, it is possible to run this program on numbers of the form $(ab^n+c)/d$ when $d\neq1$, so this program required no modifications.
-A script was also written which allowed one to run srsieve while LLR was testing the remaining candidates, so that when a divisor
-was found by srsieve on a number which had not yet been tested by LLR it would be removed from the list of candidates.
+A script was also written which allowed one to run {\tt srsieve} while 
+{\tt LLR} was testing the remaining candidates, so that when a divisor
+was found by {\tt srsieve} on a number which had not yet been tested by 
+{\tt LLR} it would be removed from the list of candidates.
 
 In the cases where the elements of $M(L_b)$ could be proven prime rigorously,
-we employed PRIMO by Marcel Martin~\cite{primo}, an elliptic curve primality proving implementation.
+we employed {\tt PRIMO}
+by Marcel Martin~\cite{primo},
+an elliptic curve primality proving implementation.
 
 \begin{sidewaysfigure}\begin{tiny}\[ \begin{tikzpicture}
 \node{$\1\{\0,\1,\6\}^*\1$}[sibling distance=8cm]
@@ -828,15 +847,16 @@ of course does not contain any primes of a special form, either.  For simplicity
 to apply when the minimal set consists of primes, but actually apply to general minimal sets and also need no modification.
 
 When run on the primes of the form $4n+1$ represented in base 10, our implementation successfully computed the minimal set
-consisting of 146 elements, the largest of which contained 79 digits.  The On-Line Encyclopedia of Integer Sequences~\cite{oeis}
-contains the elements for this minimal set in entry A111055.  Prior to our work, the longest 11 elements were missing
+consisting of 146 elements, the largest of which contained 79 digits.  The 
+{\it Encyclopedia of Integer Sequences}~\cite{oeis}
+contains the elements for this minimal set in entry \seqnum{A111055}.  Prior to our work, the longest 11 elements were missing
 from this listing.
 
 When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computed the minimal set
 consisting of 113 elements, the largest of which contained 19153 digits.  Because of its size, the largest element has not
 yet been subjected to a rigorous primality test.  The second-largest element has 50 digits, so the remaining elements
-can easily be proved prime.  The On-Line Encyclopedia of Integer Sequences~\cite{oeis}
-contains the elements for this minimal set in entry A111056.  Prior to our work, the longest 10 elements were missing
+can easily be proved prime.  The {\it Encyclopedia of Integer Sequences}~\cite{oeis}
+contains the elements for this minimal set in entry \seqnum{A111056}.  Prior to our work, the longest 10 elements were missing
 from this listing.
 
 \begin{figure}\[\begin{array}{c@{\qquad}c@{\qquad}c@{\qquad}c@{\qquad}c}
@@ -922,7 +942,7 @@ This rule may also be generalized to apply to the case when $x_1y_iy_jy_iy_jx_2\
 The string $\mathtt{LL9L9LQL}$ represents a prime in base~29.  It follows that the family $\mathtt{LL\{\mathtt{9},\mathtt{L}\}^*\mathtt{Q}^*\mathtt{QL}}$ splits into the family $\mathtt{LL\mathtt{L}^*\mathtt{9}^*\mathtt{L}^*\mathtt{9}^*\mathtt{Q}^*\mathtt{QL}}$ in base~29.
 \end{example}
 
-In section~\ref{subsecfirststrat} we described a number of strategies for determining if every member of a family has a divisor,
+In Section~\ref{subsecfirststrat} we described a number of strategies for determining if every member of a family has a divisor,
 but for some families divisors exist which will not be found using those tests.  The following lemma can help one discover when
 this is the case; in particular when every member of a family is divisible by some small prime.  For a language $L$ we use the
 notation $[L]_b\bmod N$ to denote the finite set of residues $\set{[x]_b\bmod N}{x\in L}$.
@@ -1067,8 +1087,9 @@ b & \lvert M(S_b)\rvert & \max\limits_{x\in M(S_b)}\lvert x\rvert \\ \hline
 
 We have (sometimes partially) solved the problem of finding the minimal elements for the prime numbers
 represented with the first bases. However, the problem rapidly becomes very complex: the number of members
-increases rapidly, some bases need sophisticate strategies, and some members are very long.
-Hence, to complete the cases where some (simple) families resisted to our analysis, and to go further in the bases,
+increases rapidly, some bases need sophisticated strategies,
+and some members are very long.
+Hence, to complete the cases where some (simple) families resisted our analysis, and to go further in the bases,
 we need better exploration strategies, and better primality tests for numbers expressed by a simple family in some base.
 
 Another problem left open is to delineate the asymptotic behaviour of the size and width of those sets $M(L_b)$ when $b$ increases.
@@ -1093,11 +1114,11 @@ $\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 \begin{thebibliography}{10}
 
 \bibitem{crus}  G. Barnes.
-\newblock {\it Sierpinski conjectures and proofs},
+\newblock Sierpinski conjectures and proofs, \newline
 \url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
 
 \bibitem{code}  C. Bright.
-\newblock {\it MEPN implementation},
+\newblock MEPN implementation,
 \url{https://github.com/curtisbright/mepn}.
 
 \bibitem{Choi}  S. L. G. Choi.
@@ -1112,7 +1133,7 @@ L. E. Dickson.
 \newblock Chelsea Publishing Company, New York, 1952.
 
 \bibitem{gmp}  T. Granlund et al.
-\newblock {\it The GNU Multiple Precision Arithmetic Library},
+\newblock The GNU Multiple Precision Arithmetic Library, \newline
 \url{http://gmplib.org/}.
 
 \bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
@@ -1136,24 +1157,28 @@ L. E. Dickson.
 Addison-Wesley, 1979.
 
 \bibitem{primo}  M. Martin.
-\newblock {\it Primo for Linux},
+\newblock Primo for Linux,
 \url{http://www.ellipsa.eu/public/primo/primo.html}.
 
 \bibitem{oeis} OEIS Foundation Inc.
-\newblock {\it The On-Line Encyclopedia of Integer Sequences},
+\newblock The On-Line Encyclopedia of Integer Sequences,
 \url{http://oeis.org}.
 
 \bibitem{llr}  J. Penn\'e.
-\newblock {\it LLR Version 3.8.9},
+\newblock LLR Version 3.8.9,
 \url{http://jpenne.free.fr/index2.html}.
 
 \bibitem{srsieve}  G. Reynolds.
-\newblock {\it Sierpinski/Riesel Sieve Version 0.6.17},
+\newblock Sierpinski/Riesel Sieve Version 0.6.17, \newline
 \url{https://sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
 
 \bibitem{Sh00}  J. Shallit.
 \newblock Minimal primes.
 \newblock {\it J. Recreational Math.} {\bf 30} (2) (2001), 113--117.
+
+\bibitem{WD}  H. C. Williams and H. Dubner.
+\newblock The primality of $R_{1031}$.
+\newblock {\it Math. Comput.} {\bf 47} (1986), 703--711.
 
 \end{thebibliography}
 
