@@ -708,7 +708,7 @@ To do this, we made use of Geoffrey Reynolds'
 {\tt srsieve} software~\cite{srsieve}.
 This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
-handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and ititialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
+handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and initialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
 The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$).
 
 Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
