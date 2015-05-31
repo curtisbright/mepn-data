@@ -132,8 +132,8 @@ technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
 the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
-$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $24$, $30$.   For the remaining
-bases $b = 17$, $19$, $21$, $23$, and $25\leq b\leq 29$,
+$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $23$, $24$, $30$.   For the remaining
+bases $b = 17$, $19$, $21$, and $25\leq b\leq 29$,
 we obtain results that allow us to ``almost'' completely characterize this set.
 
 The same technique can also be applied to find minimal sets for subsets of prime numbers.
@@ -760,7 +760,8 @@ an elliptic curve primality proving implementation.
 \section{Results}
 A summary of the results of our algorithm is presented in 
 Figure~\ref{resultsfig}; it was able to completely solve all bases up to 30 except for
-bases 26, 28, and the odd bases larger than 16.
+17, 19, 21, and those between 25 and 29.
+%bases 26, 28, and the odd bases larger than 16.
 The results in base~29 required some additional strategies, as described in Section~\ref{addstrat}.
 %For the bases up to~30
 
@@ -781,19 +782,19 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 14 & 240 & 86 & 0 & - \\ 
 15 & 100 & 107 & 0 & - \\ 
 16 & 483 & 3545 & 0 & - \\ 
-17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 828000 \\ 
+17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 865000 \\ 
 18 & 50 & 33 & 0 & - \\ 
-19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 590000 \\ 
+19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 617000 \\ 
 20 & 651 & 449 & 0 & - \\ 
-21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 343000 \\ 
+21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 369000 \\ 
 22 & 1242 & 764 & 0 & - \\ 
-23\mathrlap{^*} & \geq6020 & \geq119216 & 1 & 760000 \\ 
+23\mathrlap{^*} & 6021 & 800874 & 0 & - \\ 
 24 & 306 & 100 & 0 & - \\ 
-25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 231000 \\ 
-26 & \geq5662 & \geq8773 & 2 & 328000 \\ 
-27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 276000 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 423000 \\
-29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 174000 \\
+25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 248000 \\ 
+26 & \geq5662 & \geq8773 & 2 & 356000 \\ 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 298000 \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 453000 \\
+29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 188000 \\
 30 & 220 & 1024 & 0 & -
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
@@ -818,8 +819,14 @@ generalized Proth numbers $8\cdot23^n+1$, was already known to be prime
 for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
 
+The largest probable prime we found was the number $\mathtt{9E}^{800873}$
+(expressed as a base~23 string)
+or $(106\cdot23^{800873}-7)/11$ in standard notation.
+It contains 1090573 decimal digits and at the time of discovery was the tenth
+largest known probable prime according to Henri and Renaud Lifchitz's ranking~\cite{lifc}.
+
 \subsection{Unsolved families}
-There were 39 families for which we were unable to determine if they contain a prime or not.
+There were 38 families for which we were unable to determine if they contain a prime or not.
 They are explicitly described in Figure~\ref{unsolved} in both their ``base $b$'' string representation
 $xy^*z$ and ``algebraic'' form $(ab^n+c)/d=[xy^nz]_b$.  The numbers $a$ and $c$ are given in their factorized form
 so as to help spot algebraic factorizations.
@@ -831,7 +838,7 @@ Base & Family & Algebraic form \\ \hline
 19 & $\mathtt{EE16^*}$ & $(2^2\cdot13\cdot307\cdot19^n-1)/3$ \\
 21 & $\mathtt{CF^*0K}$ & $(3\cdot17\cdot21^{n+2}-11\cdot113)/4$ \\
 & $\mathtt{G0^*FK}$ & $2^4\cdot21^{n+2}+5\cdot67$ \\
-23 & $\mathtt{9E^*}$ & $(2\cdot53\cdot23^n-7)/11$ \\
+%23 & $\mathtt{9E^*}$ & $(2\cdot53\cdot23^n-7)/11$ \\
 25 & $\mathtt{6MF^*9}$ & $(1381\cdot25^{n+1}-53)/8$ \\
 & $\mathtt{CM1^*}$ & $(59\cdot131\cdot25^n-1)/24$ \\
 & $\mathtt{EE1^*}$ & $(8737\cdot25^n-1)/24$ \\
@@ -884,16 +891,17 @@ The lemmas of Section~\ref{seclemmas} can be used without modification, since a 
 of course does not contain any primes of a special form, either.  For simplicity the lemmas of Section~\ref{secalg} are stated
 to apply when the minimal set consists of primes, but actually apply to general minimal sets and also need no modification.
 
-When run on the primes of the form $4n+1$ represented in base 10, our implementation successfully computed the minimal set
-consisting of 146 elements, the largest of which contained 79 digits.  The 
+When run on the primes of the form $4n+1$ represented in base 10, our implementation successfully computes the minimal set
+consisting of 146 elements, the largest of which contains 79 digits.  The 
 {\it Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111055}.  Prior to our work, the longest 11 elements were missing
 from this listing.
 
-When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computed the minimal set
-consisting of 113 elements, the largest of which contained 19153 digits.  Because of its size, the largest element has not
-yet been subjected to a rigorous primality test.  The second-largest element has 50 digits, so the remaining elements
-can easily be proved prime.  The {\it Encyclopedia of Integer Sequences}~\cite{oeis}
+When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computes the minimal set
+consisting of 113 elements, the largest of which contains 19153 digits.  Because of its size
+this number is not easily proven prime, but Francois Morain successfully produced a primality certificate for it~\cite{mora}.
+The second-largest number has 50 digits, so the remaining elements
+are easily proven prime.  The {\it Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111056}.  Prior to our work, the longest 10 elements were missing
 from this listing.
 
@@ -1117,11 +1125,11 @@ $\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 
 \bibitem{crus}  G. Barnes.
 \newblock Sierpinski conjectures and proofs, \newline
-\url{http://www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
+\url{www.noprimeleftbehind.net/crus/Sierp-conjectures.htm}.
 
 \bibitem{code}  C. Bright.
 \newblock MEPN implementation,
-\url{https://github.com/curtisbright/mepn}.
+\url{github.com/curtisbright/mepn}.
 
 \bibitem{Choi}  S. L. G. Choi.
 \newblock Covering the set of integers by congruence 
@@ -1135,8 +1143,8 @@ L. E. Dickson.
 \newblock Chelsea Publishing Company, New York, 1952.
 
 \bibitem{gmp}  T. Granlund et al.
-\newblock The GNU Multiple Precision Arithmetic Library, \newline
-\url{http://gmplib.org/}.
+\newblock The GNU Multiple Precision Arithmetic Library,
+\url{gmplib.org}.
 
 \bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
 \newblock The size of Higman-Haines sets.
@@ -1158,21 +1166,29 @@ L. E. Dickson.
 \newblock {\it Introduction to Automata Theory, Languages, and Computation},
 Addison-Wesley, 1979.
 
+\bibitem{lifc} H. Lifchitz and R. Lifchitz.
+\newblock PRP Records,
+\url{www.primenumbers.net/prptop/prptop.php}
+
 \bibitem{primo}  M. Martin.
 \newblock Primo for Linux,
-\url{http://www.ellipsa.eu/public/primo/primo.html}.
+\url{www.ellipsa.eu/public/primo/primo.html}.
+
+\bibitem{mora}  F. Morain.
+\newblock Some primes proven by my programs, \newline
+\url{www.lix.polytechnique.fr/Labo/Francois.Morain/Primes/myprimes.html}.
 
 \bibitem{oeis} OEIS Foundation Inc.
-\newblock The On-Line Encyclopedia of Integer Sequences, \newline
-\url{http://oeis.org}.
+\newblock The On-Line Encyclopedia of Integer Sequences,
+\url{oeis.org}.
 
 \bibitem{llr}  J. Penn\'e.
 \newblock LLR Version 3.8.9,
-\url{http://jpenne.free.fr/index2.html}.
+\url{jpenne.free.fr/index2.html}.
 
 \bibitem{srsieve}  G. Reynolds.
 \newblock Sierpinski/Riesel Sieve Version 0.6.17, \newline
-\url{https://sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
+\url{sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
 
 \bibitem{Sh00}  J. Shallit.
 \newblock Minimal primes.
