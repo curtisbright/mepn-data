@@ -63,6 +63,8 @@ citecolor=webgreen]{hyperref}
 
 \newcommand{\seqnum}[1]{\href{http://oeis.org/#1}{\underline{#1}}}
 
+%\newcommand{\updated}[1]{{\color{red}#1}}
+\newcommand{\updated}[1]{#1}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -132,8 +134,8 @@ technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
 the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
-$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $23$, $24$, and $30$.   For the remaining
-bases $b = 17$, $19$, $21$, and $25\leq b\leq 29$,
+$2 \leq b \leq 16$ and \updated{$b = 18$, $20$, $22$, $23$, $24$, and $30$.   For the remaining
+bases $b = 17$, $19$, $21$, and $25\leq b\leq 29$,}
 we obtain results that allow us to ``almost'' completely characterize this set.
 
 The same technique can also be applied to find minimal sets for subsets of prime numbers.
@@ -154,8 +156,8 @@ and explicitly compute the minimal set for all $2\leq b\leq 30$.
 In what follows, if $x$ is a string of symbols over the alphabet
 $\Sigma_b \coloneqq \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
-most significant digit), and $[\epsilon]_b\coloneqq0$ where $\epsilon$
-is the empty string.  This is extended to languages as follows:
+most significant digit)\updated{, and $[\epsilon]_b\coloneqq0$ where $\epsilon$
+is the empty string}.  This is extended to languages as follows:
 $[L]_b \coloneqq \set{ [x]_b }{ x \in L }$.
 We use the convention that $\A \coloneqq 10$, $\B \coloneqq 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
@@ -266,10 +268,8 @@ we could not find these kinds of results in the literature.
 
 \begin{lemma}\label{lemone}
 Let\/ $x$, $z\in \Sigma^*_b$, and let\/ $L\subseteq\Sigma^*_b$.
-Then \/
-$N$ divides all numbers of the form\/ $[xL^*z]_b$
-if and only if \/
-$N$ divides\/ $[xz]_b$ and all numbers of the form\/ $[xLz]_b$.
+Then\/ $N$ divides all numbers of the form\/ $[xL^*z]_b$
+if and only if\/ $N$ divides\/ $[xz]_b$ and all numbers of the form\/ $[xLz]_b$.
 \end{lemma}
 \begin{proof}%($\Rightarrow$)
 Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
@@ -442,7 +442,7 @@ prime is via algebraic factorizations, such as a difference-of-squares
 factorization.
 
 \begin{lemma}\label{lemsquares}
-Let\/ $x$, $z\in\Sigma^*_b$, $y\in\Sigma_b$, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
+Let\/ $x$, $z\in\Sigma^*_b$, \updated{$y\in\Sigma_b$}, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
 $X\coloneqq([y]_b+(b-1)[x]_b)/g$, and\/ $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
 If\/ $b$, $X$, and\/ $Y$ are all squares and\/ 
 $\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form\/
@@ -496,7 +496,7 @@ $[\1\9\9^*\9]_b$ are composite.
 Finally, we present a variant of Lemma~\ref{lemsquares} which applies to a 
 difference-of-cubes factorization.
 \begin{lemma}\label{lemcubes}
-Let\/ $x$, $z\in\Sigma^*_b$, $y\in\Sigma_b$, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
+Let\/ $x$, $z\in\Sigma^*_b$, \updated{$y\in\Sigma_b$}, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
 $X\coloneqq([y]_b+(b-1)[x]_b)/g$, and\/ $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
 If\/ $b$, $X$, and\/ $Y$ are all cubes and\/ 
 $\sqrt[3]{b^{\lvert z\rvert}X}-\sqrt[3]{Y}>(b-1)/g$, then all numbers of 
@@ -602,7 +602,7 @@ Lemma~\ref{lemsplit1} is especially useful when it can be applied with $k=1$, si
 is replaced by a single strictly simpler family, in contrast to the other lemmas we will describe.
 
 \begin{lemma}\label{lemsplit2}
-If\/ $x_1y_iy_jx_2\dotsm x_m$ and\/ $x_1y_jy_ix_2\dotsm x_m$ contain prime proper subwords (where\/ $i\neq j$) then 
+If\/ $x_1y_iy_jx_2\dotsm x_m$ and\/ $x_1\updated{y_jy_i}x_2\dotsm x_m$ contain prime proper subwords (where\/ $i\neq j$) then 
 every minimal prime of the form\/ $x_1L_1^*\dotsm x_mL_m^*$ is of the form
 \[x_1(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* \qquad\text{or}\qquad x_1(L_1-\{y_j\})^*x_2L_2^*\dotsm x_mL_m^* . \]
 \end{lemma}
@@ -685,7 +685,7 @@ checked for primality/minimal subwords at each step anyway.
 \subsection{Implementation}
 
 An implementation of the above algorithm was written in C using the GMP library~\cite{gmp} by the first author~\cite{code}.
-Independently, the second author~\cite{devillers} wrote an implementation in C using the MIRACL library~\cite{miracl} using the same ideas and derived the same results (with a less extensive search for primes in the simple families, but with results for bases $b\leq50$).
+\updated{Independently, the second author~\cite{devillers} wrote an implementation in C using the MIRACL library~\cite{miracl} using the same ideas and derived the same results (with a less extensive search for primes in the simple families, but with results for bases $b\leq50$).}
 
 Note that when exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
 characters to the left of $L_1$; in our implementation we alternate between adding characters
@@ -711,7 +711,7 @@ To do this, we made use of Geoffrey Reynolds'
 This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
 handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and initialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
-The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$, but $2$ may not divide $(ab^n+c)/d$).
+The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$\updated{, but $2$ may not divide $(ab^n+c)/d$}).
 
 Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a probable primality test.
 For this we used the software {\tt LLR} by Jean Penn\'e~\cite{llr}.
@@ -759,8 +759,8 @@ an elliptic curve primality proving implementation.
 
 \section{Results}
 A summary of the results of our algorithm is presented in 
-Figure~\ref{resultsfig}; it was able to completely solve all bases up to 30 except for
-17, 19, 21, and those between 25 and 29.
+Figure~\ref{resultsfig}; it was able to completely solve all bases up to 30 \updated{except for
+17, 19, 21, and those between 25 and 29}.
 %bases 26, 28, and the odd bases larger than 16.
 The results in base~29 required some additional strategies, as described in Section~\ref{addstrat}.
 %For the bases up to~30
@@ -782,19 +782,19 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 14 & 240 & 86 & 0 & - \\ 
 15 & 100 & 107 & 0 & - \\ 
 16 & 483 & 3545 & 0 & - \\ 
-17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 878000 \\ 
+17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & \updated{879000} \\ 
 18 & 50 & 33 & 0 & - \\ 
-19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 625000 \\ 
+19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & \updated{625000} \\ 
 20 & 651 & 449 & 0 & - \\ 
-21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 379000 \\ 
+21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & \updated{379000} \\ 
 22 & 1242 & 764 & 0 & - \\ 
-23\mathrlap{^*} & 6021 & 800874 & 0 & - \\ 
+23\mathrlap{^*} & \updated{6021} & \updated{800874} & \updated{0} & \updated{-} \\ 
 24 & 306 & 100 & 0 & - \\ 
-25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 254000 \\ 
-26 & \geq5662 & \geq8773 & 2 & 366000 \\ 
-27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 306000 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 461000 \\
-29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 202000 \\
+25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & \updated{254000} \\ 
+26 & \geq5662 & \geq8773 & 2 & \updated{366000} \\ 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & \updated{306000} \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & \updated{461000} \\
+29\mathrlap{^*} & \updated{\geq57283} & \updated{\geq174240} & \updated{14} & \updated{202000} \\
 30 & 220 & 1024 & 0 & -
 \end{array}\]
 \begin{center}$^*$Data based on results of probable primality tests.\end{center}
@@ -819,20 +819,20 @@ generalized Proth numbers $8\cdot23^n+1$, was already known to be prime
 for minimal $n=119215$ in the process
 of solving the generalized Sierpi\'nski conjecture in base 23~\cite{crus}.
 
-The largest probable prime we found was the number $\mathtt{9E}^{800873}$
+\updated{The largest probable prime we found was the number $\mathtt{9E}^{800873}$
 (expressed as a base~23 string)
 or $(106\cdot23^{800873}-7)/11$ in standard notation.
 It contains 1090573 decimal digits and at the time of discovery was the tenth
-largest known probable prime according to Henri and Renaud Lifchitz's ranking~\cite{lifc}.
+largest known probable prime according to Henri and Renaud Lifchitz's ranking~\cite{lifc}.}
 
 \subsection{Unsolved families}
-There were 38 families for which we were unable to determine if they contain a prime or not.
+\updated{There were 38 families for which we were unable to determine if they contain a prime or not.
 They are explicitly described in Figure~\ref{unsolved} in both their ``base $b$'' string representation
 $xy^*z$ and ``algebraic'' form $(ab^n+c)/d=[xy^nz]_b$.  The numbers $a$ and $c$ are given in their factorized form
-so as to help spot algebraic factorizations.
+so as to help spot algebraic factorizations.}
 
 \begin{figure}%[H]
-\begin{center}\begin{tabular}{ccc}
+\updated{\begin{center}\begin{tabular}{ccc}
 Base & Family & Algebraic form \\ \hline
 17 & $\mathtt{F19^*}$ & $(5\cdot821\cdot17^n-3^2)/16$ \\
 19 & $\mathtt{EE16^*}$ & $(2^2\cdot13\cdot307\cdot19^n-1)/3$ \\
@@ -875,7 +875,7 @@ Base & Family & Algebraic form \\ \hline
 & $\mathtt{Q^*LO}$ & $(13\cdot29^{n+2}-19\cdot109)/14$ \\
 & $\mathtt{RM^*G}$ & $(389\cdot29^{n+1}-5\cdot19)/14$
 \end{tabular}\end{center}
-\caption{The unsolved families listed in their ``base $b$'' and ``algebraic'' representations.}
+\caption{The unsolved families listed in their ``base $b$'' and ``algebraic'' representations.}}
 \label{unsolved}
 \end{figure}
 
@@ -883,9 +883,9 @@ Base & Family & Algebraic form \\ \hline
 The heuristic algorithm described in Section~\ref{secalg} may also be easily modified to apply to recursive subsets of prime numbers,
 e.g., those congruent to $1\bmod4$ (alternatively, $3\bmod4$).  The modifications necessary are to the initialization
 of $M$ in line~1, and to update the check ``$w$ represents a minimal prime'' to also check that $w$ is in the subset
-under consideration.  When searching for minimal primes of the form $4n+1$, it was necessary to remove families only containing
+under consideration.  \updated{When searching for minimal primes of the form $4n+1$, it was necessary to remove families only containing
 numbers of the form $4n+3$, and vice versa.  A modified Lemma~\ref{lemone} can be used to check this, e.g.,
-$[x(L^0\cup L)z]_b$ are all congruent to $c\bmod d$ implies that $[xL^*z]_b$ are all congruent to $c\bmod d$.
+$[x(L^0\cup L)z]_b$ are all congruent to $c\bmod d$ implies that $[xL^*z]_b$ are all congruent to $c\bmod d$.}
 
 The lemmas of Section~\ref{seclemmas} can be used without modification, since a family which contains only composites
 of course does not contain any primes of a special form, either.  For simplicity the lemmas of Section~\ref{secalg} are stated
@@ -898,8 +898,8 @@ contains the elements for this minimal set in entry \seqnum{A111055}.  Prior to 
 from this listing.
 
 When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computes the minimal set
-consisting of 113 elements, the largest of which contains 19153 digits.  Because of its size
-this number is not easily proven prime, but Fran\c{c}ois Morain successfully produced a primality certificate for it~\cite{mora}.
+consisting of 113 elements, the largest of which contains 19153 digits.  \updated{Because of its size
+this number is not easily proven prime, but Fran\c{c}ois Morain successfully produced a primality certificate for it~\cite{mora}.}
 The second-largest number has 50 digits, so the remaining elements
 are easily proven prime.  The \textit{Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111056}.  Prior to our work, the longest 10 elements were missing
@@ -1136,9 +1136,9 @@ $\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 classes of distinct moduli.
 \newblock \textit{Math. Comp.} {\bf 25} (1971), 885--895.
 
-\bibitem{devillers}  R. Devillers.
+\updated{\bibitem{devillers}  R. Devillers.
 \newblock Results in searching for minimal primes wrt subword order,
-\url{github.com/RaymondDevillers/primes}.
+\url{github.com/RaymondDevillers/primes}.}
 
 \bibitem{Dick}  L. E. Dickson.
 \newblock \textit{History of the Theory of Numbers}.
@@ -1169,17 +1169,17 @@ classes of distinct moduli.
 \newblock \textit{Introduction to Automata Theory, Languages, and Computation},
 Addison-Wesley, 1979.
 
-\bibitem{lifc}  H. Lifchitz and R. Lifchitz.
+\updated{\bibitem{lifc}  H. Lifchitz and R. Lifchitz.
 \newblock PRP Records,
-\url{www.primenumbers.net/prptop/prptop.php}
+\url{www.primenumbers.net/prptop/prptop.php}}
 
 \bibitem{primo}  M. Martin.
 \newblock Primo for Linux,
 \url{www.ellipsa.eu/public/primo/primo.html}.
 
-\bibitem{mora}  F. Morain.
+\updated{\bibitem{mora}  F. Morain.
 \newblock Some primes proven by my programs, \newline
-\url{www.lix.polytechnique.fr/Labo/Francois.Morain/Primes/myprimes.html}.
+\url{www.lix.polytechnique.fr/Labo/Francois.Morain/Primes/myprimes.html}.}
 
 \bibitem{oeis}  OEIS Foundation Inc.
 \newblock The On-Line Encyclopedia of Integer Sequences,
@@ -1193,9 +1193,9 @@ Addison-Wesley, 1979.
 \newblock Sierpinski/Riesel Sieve Version 0.6.17, \newline
 \url{sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
 
-\bibitem{miracl}  M. Scott.
+\updated{\bibitem{miracl}  M. Scott.
 \newblock Multiprecision Integer and Rational Arithmetic Cryptographic Library,
-\url{www.certivox.com/miracl}.
+\url{www.certivox.com/miracl}.}
 
 \bibitem{Sh00}  J. Shallit.
 \newblock Minimal primes.
