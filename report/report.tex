@@ -54,7 +54,7 @@ citecolor=webgreen]{hyperref}
 \newcommand{\B}{\mathtt{B}}
 \newcommand{\union}{\cup}
 \newcommand{\set}[2]{\{\,#1{}:{}#2\,\}}
-%\renewcommand{\a}{@}
+\renewcommand{\a}{@}
 
 % Obfuscate @ sign to help avoid spam
 \usepackage{auto-pst-pdf,pst-text}
@@ -63,8 +63,8 @@ citecolor=webgreen]{hyperref}
 
 \newcommand{\seqnum}[1]{\href{http://oeis.org/#1}{\underline{#1}}}
 
-%\newcommand{\updated}[1]{{\color{red}#1}}
-\newcommand{\updated}[1]{#1}
+\newcommand{\updated}[1]{{\color{red}#1}}
+\renewcommand{\updated}[1]{#1}
 
 \title{Minimal Elements for the Prime Numbers}
 
@@ -685,7 +685,7 @@ checked for primality/minimal subwords at each step anyway.
 \subsection{Implementation}
 
 An implementation of the above algorithm was written in C using the GMP library~\cite{gmp} by the first author~\cite{code}.
-\updated{Independently, the second author~\cite{devillers} wrote an implementation in C using the MIRACL library~\cite{miracl} using the same ideas and derived the same results (with a less extensive search for primes in the simple families, but with results for bases $b\leq50$).}
+\updated{Independently, the second author~\cite{devillers} wrote an implementation in C++ using the MIRACL library~\cite{miracl} using the same ideas and derived the same results (with a less extensive search for primes in the simple families, but with results for bases $b\leq50$).}
 
 Note that when exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
 characters to the left of $L_1$; in our implementation we alternate between adding characters
