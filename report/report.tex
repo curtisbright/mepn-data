@@ -92,7 +92,7 @@ Canada \\
 \maketitle
 
 \begin{abstract}
-We say a string of symbols $s$ is {\it minimal} for a language $L$
+We say a string of symbols $s$ is \textit{minimal} for a language $L$
 if $s$ is a member of $L$, and it is not possible to obtain another 
 member of $L$ by striking out one or more symbols from $s$.  Although
 the set $M(L)$ of minimal strings is necessarily finite, determining
@@ -116,14 +116,14 @@ rigorously proven.
 
 Another problem on the digits of primes was introduced by the
 third author \cite{Sh00}.  To describe it, we need some definitions.
-We say that a string $x$ is a {\it subword} of a string $y$, and 
+We say that a string $x$ is a \textit{subword} of a string $y$, and 
 we write $x \subw y$, if 
 one can strike out zero or more symbols of $y$ to get $x$.
 For example, {\tt string} is a subword of
 {\tt Meistersinger}.  
 (In the literature, this concept is sometimes called a ``scattered
 subword'' or ``substring'' or ``subsequence''.)
-A {\it language} is a set of strings.  A string $s$ is {\it minimal}
+A \textit{language} is a set of strings.  A string $s$ is \textit{minimal}
 for $L$ if  (a) $s \in L$ and (b) if $x \in L$ and $x \subw s$, then
 $x = s$.    The set of all minimal strings of $L$ is denoted $M(L)$.
 
@@ -132,7 +132,7 @@ technique for determining $M(L_b)$ in the
 case where $L_b$ consists of the representations, in base $b$, of the
 the prime numbers $\lbrace 2, 3, 5, \dotsc \rbrace$.  We obtain
 a complete characterization of $M(L_b)$ for bases
-$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $23$, $24$, $30$.   For the remaining
+$2 \leq b \leq 16$ and $b = 18$, $20$, $22$, $23$, $24$, and $30$.   For the remaining
 bases $b = 17$, $19$, $21$, and $25\leq b\leq 29$,
 we obtain results that allow us to ``almost'' completely characterize this set.
 
@@ -141,7 +141,7 @@ For example, we were able to determine the minimal set for primes of the form $4
 represented in base 10 (and similarly for those of the form $4n+3$).
 This successfully completes the sequences 
 \seqnum{A111055} and \seqnum{A111056} in the 
-{\it Encyclopedia of Integer Sequences}~\cite{oeis},
+\textit{Encyclopedia of Integer Sequences}~\cite{oeis},
 which had been incomplete
 since their introduction to the Encyclopedia in 2005.
 
@@ -154,7 +154,8 @@ and explicitly compute the minimal set for all $2\leq b\leq 30$.
 In what follows, if $x$ is a string of symbols over the alphabet
 $\Sigma_b \coloneqq \lbrace \0, \1, \dotsc, b-1 \rbrace$ we let 
 $[x]_b$ denote the evaluation of $x$ in base $b$ (starting with the
-most significant digit).  This is extended to languages as follows:
+most significant digit), and $[\epsilon]_b\coloneqq0$ where $\epsilon$
+is the empty string.  This is extended to languages as follows:
 $[L]_b \coloneqq \set{ [x]_b }{ x \in L }$.
 We use the convention that $\A \coloneqq 10$, $\B \coloneqq 11$, and so forth,
 to conveniently represent strings of symbols in base $b > 10$.
@@ -182,7 +183,7 @@ the following classical theorem due to Higman \cite{Hi52} and
 Haines \cite{Ha69}.
 
 \begin{theorem}
-For every language $L$, there are only finitely many minimal strings.
+For every language\/ $L$, there are only finitely many minimal strings.
 \end{theorem}
 
 Indeed, we have $\supe(L) = \supe(M(L))$
@@ -264,11 +265,11 @@ considerations has a long history (e.g., \cite[Chap.~XII]{Dick}),
 we could not find these kinds of results in the literature.
 
 \begin{lemma}\label{lemone}
-Let $x$, $z\in \Sigma^*_b$, and let $L\subseteq\Sigma^*_b$.
-Then 
-$N$ divides all numbers of the form $[xL^*z]_b$
-if and only if 
-$N$ divides $[xz]_b$ and all numbers of the form $[xLz]_b$.
+Let\/ $x$, $z\in \Sigma^*_b$, and let\/ $L\subseteq\Sigma^*_b$.
+Then \/
+$N$ divides all numbers of the form\/ $[xL^*z]_b$
+if and only if \/
+$N$ divides\/ $[xz]_b$ and all numbers of the form\/ $[xLz]_b$.
 \end{lemma}
 \begin{proof}%($\Rightarrow$)
 Let $y=y_1\dotsm y_n\in L^*$, where $y_1$, $\dotsc$, $y_n\in L$.  
@@ -291,8 +292,8 @@ In practice, our algorithm employs this lemma with
 $L\coloneqq\{y_1,\dotsc,y_n\}\subseteq\Sigma_b$, and all numbers of the form
 $[xL^*z]_b$ are shown to be composite with the following corollary.
 \begin{corollary}\label{corone}
-If $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
- then all numbers of the form $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
+If\/ $1<\gcd([xz]_b,[xy_1z]_b,\dotsc,[xy_nz]_b)<[xz]_b$
+ then all numbers of the form\/ $[x\{y_1,\dotsc,y_n\}^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
 By Lemma~\ref{lemone}, we know
@@ -312,11 +313,11 @@ Since $1 < 7 < 49$, each such number is composite.
 We also generalize this to the following corollary in the case where 
 a single divisor does not divide each number in the family.
 \begin{corollary}\label{cortwo}
-Let $L \coloneqq \lbrace y_1, y_2, \ldots, y_n \rbrace$.
+Let\/ $L \coloneqq \lbrace y_1, y_2, \ldots, y_n \rbrace$.
 If \[N_0\coloneqq\gcd \paren[\big]{ \{ [xz]_b \} \union [xL^2 z]_b} \]
 and
 \[ N_1\coloneqq \gcd \paren[\big]{[xLz]_b \union [xL^3z]_b} \]
-lie strictly between $1$ and $[xz]_b$, then all numbers of the form 
+lie strictly between\/ $1$ and\/ $[xz]_b$, then all numbers of the form\/ 
 $[xL^*z]_b$ are composite.
 \end{corollary}
 \begin{proof}
@@ -365,11 +366,11 @@ of family we need to consider ($x_1L_1^*\dotsm x_mL_m^*$, where we allow the cas
 is formulated in Lemma~\ref{lemtwo}.
 
 \begin{lemma}\label{lemtwo}
-Let $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and $L_1$, $\dotsc$, 
-$L_m\subseteq\Sigma^*_b$.  Then
-$N$ divides all numbers of the form $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$
-if and only if
-$N$ divides $[x_1\dotsm x_m]_b$ and all numbers of the form 
+Let\/ $x_1$, $\dotsc$, $x_m\in \Sigma^*_b$, and\/ $L_1$, $\dotsc$, 
+$L_m\subseteq\Sigma^*_b$.  Then\/
+$N$ divides all numbers of the form\/ $[x_1L_1^*x_2L_2^*\dotsm x_mL_m^*]_b$
+if and only if\/
+$N$ divides\/ $[x_1\dotsm x_m]_b$ and all numbers of the form\/ 
 $[x_1L_1x_2x_3\dotsm x_m]_b$, $\dotsc$, $[x_1\dotsm x_{m-1}x_mL_m]_b$.
 \end{lemma}
 \begin{proof}
@@ -441,10 +442,10 @@ prime is via algebraic factorizations, such as a difference-of-squares
 factorization.
 
 \begin{lemma}\label{lemsquares}
-Let $x$, $y$, $z\in\Sigma^*_b$, and let $g\coloneqq\gcd([y]_b,b-1)$, 
-$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
-If\/ $b$, $X$, and $Y$ are all squares and 
-$\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form
+Let\/ $x$, $z\in\Sigma^*_b$, $y\in\Sigma_b$, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
+$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and\/ $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
+If\/ $b$, $X$, and\/ $Y$ are all squares and\/ 
+$\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, then all numbers of the form\/
  $[xy^*z]_b$ are composite.
 \end{lemma}
 \begin{proof}
@@ -470,9 +471,9 @@ the form $[\4\4^*\1]_b$ is prime.
 It is also possible to combine Lemma~\ref{lemtwo} with Corollary~\ref{cortwo} 
 to construct a test which also applies to bases which are not squares.
 \begin{corollary}
-Using the same setup as in Lemma~\ref{lemtwo}, if\/ $b^{\abs{z}}X$ and $Y$ 
-are squares, $\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, and
-$1<\gcd([xyz]_b,[xy^3z]_b)<[xz]_b$, then all numbers of the form $[xy^*z]_b$ 
+Using the same setup as in Lemma~\ref{lemtwo}, if\/ $b^{\abs{z}}X$ and\/ $Y$ 
+are squares, $\sqrt{b^{\lvert z\rvert}X}-\sqrt{Y}>(b-1)/g$, and\/
+$1<\gcd([xyz]_b,[xy^3z]_b)<[xz]_b$, then all numbers of the form\/ $[xy^*z]_b$ 
 are composite.
 \end{corollary}
 \begin{proof}
@@ -495,11 +496,11 @@ $[\1\9\9^*\9]_b$ are composite.
 Finally, we present a variant of Lemma~\ref{lemsquares} which applies to a 
 difference-of-cubes factorization.
 \begin{lemma}\label{lemcubes}
-Let $x$, $y$, $z\in\Sigma^*_b$, and let $g\coloneqq\gcd([y]_b,b-1)$, 
-$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
-If\/ $b$, $X$, and $Y$ are all cubes and 
+Let\/ $x$, $z\in\Sigma^*_b$, $y\in\Sigma_b$, and let\/ $g\coloneqq\gcd([y]_b,b-1)$, 
+$X\coloneqq([y]_b+(b-1)[x]_b)/g$, and\/ $Y\coloneqq(b^{\lvert{z}\rvert}[y]_b-(b-1)[z]_b)/g$.
+If\/ $b$, $X$, and\/ $Y$ are all cubes and\/ 
 $\sqrt[3]{b^{\lvert z\rvert}X}-\sqrt[3]{Y}>(b-1)/g$, then all numbers of 
-the form
+the form\/
  $[xy^*z]_b$ are composite.
 \end{lemma}
 \begin{proof}
@@ -566,8 +567,8 @@ $L_1\coloneqq\{y_1,\dotsc,y_n\}$, but it is straightforward to generalize these 
 to also apply to $L_i$ for any $1\leq i\leq m$.
 
 \begin{lemma}\label{lemexplore}
-Every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
-$x_1x_2L_2^*\dotsm x_mL_m^*$ or $x_1y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$ for some $1\leq i\leq n$.
+Every minimal prime of the form\/ $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form\/
+$x_1x_2L_2^*\dotsm x_mL_m^*$ or\/ $x_1y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$ for some\/ $1\leq i\leq n$.
 \end{lemma}
 \begin{proof}
 Follows from the fact that $L_1^*=\{\epsilon\}\cup\bigcup_{i=1}^n y_iL_1^*$.
@@ -580,9 +581,9 @@ by exploring $\{\0,\1\}^*$ on the right.
 \end{example}
 
 \begin{lemma}\label{lemsplit1}
-If $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some $k\geq1$) then every minimal prime of the form
+If\/ $x_1y_i^kx_2\dotsm x_m$ contains a prime proper subword (for some\/ $k\geq1$) then every minimal prime of the form\/
 $x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(y_i(L_1-\{y_i\})^*)^jx_2L_2^*\dotsm x_mL_m^*\]
-for some $0\leq j<k$.
+for some\/ $0\leq j<k$.
 \end{lemma}
 \begin{proof}
 If $w\in x_1L_1^*\dotsm x_mL_m^*$ then $w\in x_1yx_2L_2^*\dotsm x_mL_m^*$ for some $y\in L_1^*$.
@@ -601,8 +602,8 @@ Lemma~\ref{lemsplit1} is especially useful when it can be applied with $k=1$, si
 is replaced by a single strictly simpler family, in contrast to the other lemmas we will describe.
 
 \begin{lemma}\label{lemsplit2}
-If $x_1y_iy_jx_2\dotsm x_m$ and $x_1y_iy_jx_2\dotsm x_m$ contain prime proper subwords (where $i\neq j$) then 
-every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ is of the form
+If\/ $x_1y_iy_jx_2\dotsm x_m$ and\/ $x_1y_jy_ix_2\dotsm x_m$ contain prime proper subwords (where\/ $i\neq j$) then 
+every minimal prime of the form\/ $x_1L_1^*\dotsm x_mL_m^*$ is of the form
 \[x_1(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* \qquad\text{or}\qquad x_1(L_1-\{y_j\})^*x_2L_2^*\dotsm x_mL_m^* . \]
 \end{lemma}
 \begin{proof}
@@ -618,7 +619,7 @@ $\4\4\4^*\1\1$ and $\4\4\6^*\1\1$ in base 8.
 \end{example}
 
 \begin{lemma}\label{lemsplit2b}
-If $x_1y_iy_jx_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$) then every minimal prime of the form
+If\/ $x_1y_iy_jx_2\dotsm x_m$ contains a prime proper subword (where\/ $i\neq j$) then every minimal prime of the form\/
 $x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(L_1-\{y_j\})^*x_2L_2^*\dotsm x_mL_m^* . \]
 \end{lemma}
 \begin{proof}
@@ -637,7 +638,7 @@ It follows that the family $\9\0\{\0,\1,\9\}^*\1$ splits into the family $\9\0\{
 \end{example}
 
 \begin{lemma}\label{lemsplit2c}
-If $x_1y_ix_2y_{2,j}x_3\dotsm x_m$ contains a prime proper subword (where $y_{2,j}\in L_2$) then every minimal prime of the form
+If\/ $x_1y_ix_2y_{2,j}x_3\dotsm x_m$ contains a prime proper subword (where\/ $y_{2,j}\in L_2$) then every minimal prime of the form\/
 $x_1L_1^*\dotsm x_mL_m^*$ is of the form
 \[x_1(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* \qquad\text{or}\qquad x_1L_1x_2(L_2-\{y_{2,j}\})^*x_3L_3^*\dotsm x_mL_m^* . \]
 \end{lemma}
@@ -684,8 +685,7 @@ checked for primality/minimal subwords at each step anyway.
 \subsection{Implementation}
 
 An implementation of the above algorithm was written in C using the GMP library~\cite{gmp} by the first author~\cite{code}.
-Independently, the second author wrote an implementation using the same ideas and derived the same results (except for
-a less extensive search for primes in the simple families).
+Independently, the second author~\cite{devillers} wrote an implementation in C using the MIRACL library~\cite{miracl} using the same ideas and derived the same results (with a less extensive search for primes in the simple families, but with results for bases $b\leq50$).
 
 Note that when exploring the families in line~(a), one should not always apply Lemma~\ref{lemexplore} directly as stated by adding
 characters to the left of $L_1$; in our implementation we alternate between adding characters
@@ -702,7 +702,7 @@ a prime is eventually discovered.
 
 The numbers in simple families are of the form $(ab^n+c)/d$ for some fixed $a$, $b$, $c$, $d$ where $d\mid ab^n+c$ for all $n$.
 Except in the special case $c=\pm1$ and $d=1$, when $n$ is large the known primality tests for such a number are too inefficient to run.
-In this case one must resort to a pseudoprimality test such as a Miller--Rabin test, unless a divisor of the number can be found.
+In this case one must resort to a probable primality test such as a Miller--Rabin test, unless a divisor of the number can be found.
 Since we are testing many numbers in an exponential sequence, it is possible to use a sieving process to find divisors
 rather than using trial division.
 
@@ -782,19 +782,19 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 14 & 240 & 86 & 0 & - \\ 
 15 & 100 & 107 & 0 & - \\ 
 16 & 483 & 3545 & 0 & - \\ 
-17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 865000 \\ 
+17\mathrlap{^*} & \geq1279 & \geq111334 & 1 & 878000 \\ 
 18 & 50 & 33 & 0 & - \\ 
-19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 617000 \\ 
+19\mathrlap{^*} & \geq3462 & \geq110986 & 1 & 625000 \\ 
 20 & 651 & 449 & 0 & - \\ 
-21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 369000 \\ 
+21\mathrlap{^*} & \geq2599 & \geq47336 & 2 & 379000 \\ 
 22 & 1242 & 764 & 0 & - \\ 
 23\mathrlap{^*} & 6021 & 800874 & 0 & - \\ 
 24 & 306 & 100 & 0 & - \\ 
-25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 248000 \\ 
-26 & \geq5662 & \geq8773 & 2 & 356000 \\ 
-27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 298000 \\ 
-28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 453000 \\
-29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 188000 \\
+25\mathrlap{^*} & \geq17597 & \geq136967 & 12 & 254000 \\ 
+26 & \geq5662 & \geq8773 & 2 & 366000 \\ 
+27\mathrlap{^*} & \geq17210 & \geq109006 & 5 & 306000 \\ 
+28\mathrlap{^*} & \geq5783 & \geq94538 & 1 & 461000 \\
+29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 202000 \\
 30 & 220 & 1024 & 0 & -
 \end{array}\]
 \begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
@@ -893,15 +893,15 @@ to apply when the minimal set consists of primes, but actually apply to general 
 
 When run on the primes of the form $4n+1$ represented in base 10, our implementation successfully computes the minimal set
 consisting of 146 elements, the largest of which contains 79 digits.  The 
-{\it Encyclopedia of Integer Sequences}~\cite{oeis}
+\textit{Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111055}.  Prior to our work, the longest 11 elements were missing
 from this listing.
 
 When run on the primes of the form $4n+3$ represented in base 10, our implementation successfully computes the minimal set
 consisting of 113 elements, the largest of which contains 19153 digits.  Because of its size
-this number is not easily proven prime, but Francois Morain successfully produced a primality certificate for it~\cite{mora}.
+this number is not easily proven prime, but Fran\c{c}ois Morain successfully produced a primality certificate for it~\cite{mora}.
 The second-largest number has 50 digits, so the remaining elements
-are easily proven prime.  The {\it Encyclopedia of Integer Sequences}~\cite{oeis}
+are easily proven prime.  The \textit{Encyclopedia of Integer Sequences}~\cite{oeis}
 contains the elements for this minimal set in entry \seqnum{A111056}.  Prior to our work, the longest 10 elements were missing
 from this listing.
 
@@ -916,8 +916,8 @@ We now describe some additional strategies which we found sufficient to solve al
 %We now describe some additional strategies which we used in base~29 to find $57{,}252$ minimal primes
 %and 45 unsolved families (with no primes with less than $10{,}000$ digits).
 \begin{lemma}
-If every number of the form $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
-every minimal prime of the form $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form
+If every number of the form\/ $x_1(L_1-y_i)^*x_2L_2^*\dotsm x_mL_m^*$ is composite, then
+every minimal prime of the form\/ $x_1L_1^*\dotsm x_mL_m^*$ must also be of the form\/
 $x_1L_1^*y_iL_1^*x_2L_2^*\dotsm x_mL_m^*$.
 \end{lemma}
 \begin{proof}
@@ -932,7 +932,7 @@ so every minimal prime of the form $\mathtt{F}\{\0,\9,\mathtt{F},\mathtt{P}\}^*\
 $\mathtt{F}\{\0,\9,\mathtt{F},\mathtt{P}\}^*\mathtt{P}\{\0,\9,\mathtt{F},\mathtt{P}\}^*\mathtt{F}$.
 \end{example}
 \begin{lemma}
-If $x_1y_iy_jy_ix_2\dotsm x_m$ contains a prime proper subword (where $i\neq j$) then every minimal prime of the form
+If\/ $x_1y_iy_jy_ix_2\dotsm x_m$ contains a prime proper subword (where\/ $i\neq j$) then every minimal prime of the form\/
 $x_1L_1^*\dotsm x_mL_m^*$ is of the form \[x_1(L_1-\{y_i\})^*(L_1-\{y_j\})^*(L_1-\{y_i\})^*x_2L_2^*\dotsm x_mL_m^* . \]
 \end{lemma}
 \begin{proof}
@@ -956,7 +956,7 @@ but for some families divisors exist which will not be found using those tests. 
 this is the case; in particular when every member of a family is divisible by some small prime.  For a language $L$ we use the
 notation $[L]_b\bmod N$ to denote the finite set of residues $\set{[x]_b\bmod N}{x\in L}$.
 \begin{lemma}\label{lemextdiv}
-If\/ $1<\gcd(n,N)$ for every $n\in[L]_b\bmod N$ and $p\notin[L]_b$ for every prime $p$ which divides $N$, then all numbers of the form $[L]_b$ are composite.
+If\/ $1<\gcd(k,N)$ for every\/ $k\in[L]_b\bmod N$ and\/ $p\notin[L]_b$ for every prime\/ $p$ which divides\/ $N$, then all numbers of the form\/ $[L]_b$ are composite.
 \end{lemma}
 \begin{proof}
 Let $x$ be an arbitrary member of $L$.  Then $\gcd([x]_b,N)=\gcd([x]_b\bmod N,N)>1$ by assumption, so $[x]_b$ cannot be prime unless $[x]_b=\gcd([x]_b,N)$.  But in that case $[x]_b$ would be a prime which divides $N$, and so $[x]_b\notin[L]_b$ by the second assumption, in contradiction to $x\in L$.
@@ -967,11 +967,11 @@ To make use of this lemma, we need to be able to compute $[x_1L_1^*\dotsm x_mL_m
 [L\{y_1,\dotsc,y_n\}]_b \bmod N &= \bigcup_{i=1}^n[Ly_i]_b\bmod N \\
 [L\{y_1,\dotsc,y_n\}^*]_b \bmod N &= \bigcup_{i=0}^\infty[L\{y_1,\dotsc,y_n\}^i]_b\bmod N
 \end{align*}
-In the final case, the union may be taken to be finite over $i<k$ where $k$ is chosen such that $\bigcup_{i=0}^k[L\{y_1,\dotsc,y_n\}^i]_b\bmod N=\bigcup_{i=0}^{k-1}[L\{y_1,\dotsc,y_n\}^i]_b\bmod N$.
+In the final case, the union may be taken to be finite over $i<l$ where $l$ is chosen such that $\bigcup_{i=0}^l[L\{y_1,\dotsc,y_n\}^i]_b\bmod N=\bigcup_{i=0}^{l-1}[L\{y_1,\dotsc,y_n\}^i]_b\bmod N$.
 Using these relations, we can compute $[x_1L_1^*\dotsm x_mL_m^*]_b\bmod N$ progressively, working left to right and starting from $[\emptyset]_b\bmod N = \{0\}$.  To solve base~29 it was sufficient to use $N=2\cdot3\cdot5$.
 \begin{example}
 Let $b\coloneqq29$ and $N\coloneqq30$. %, and $L\coloneqq\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$.
-Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $n$ is in this set then $\gcd(n,N)\in\{2,5,6,15\}$ and $\gcd(n,N)>1$.  Since $2$, $3$, $5\notin[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
+Then $[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b\bmod N=\{4,5,6,14,15,16,25\}$, so if $k$ is in this set then $\gcd(k,N)\in\{2,5,6,15\}$ and $\gcd(k,N)>1$.  Since $2$, $3$, $5\notin[\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}]_b$, by Lemma~\ref{lemextdiv} all numbers of the form $\mathtt{L}\1^*\6\1^*\mathtt{LK}^*\mathtt{K}$ are composite.
 \end{example}
 
 %The next result will allow to progress in the exploration of the repetitions of a language, %RD
@@ -1001,19 +1001,19 @@ Here, in contrast with the primes, we have
 
 \begin{theorem}
 The following decision problem is recursively solvable:  given
-a base $b$ and a DFA $M$ accepting a language $L$ of
+a base\/ $b$ and a DFA\/ $M$ accepting a language\/ $L$ of
 strings in a base-$b$ canonical representation,
-does $M$ accept the base-$b$ representation of a composite 
+does\/ $M$ accept the base-$b$ representation of a composite 
 number?
 \end{theorem}
 
 This follows immediately from
 
 \begin{theorem}
-Suppose $L$ is a regular language, accepted by a 
-deterministic finite automaton $M$ of $n$ states.  Then
-if $M$ accepts a composite number expressed in base $b$, it must
-accept one whose base-$b$ representation has at most
+Suppose\/ $L$ is a regular language, accepted by a 
+deterministic finite automaton\/ $M$ of\/ $n$ states.  Then
+if\/ $M$ accepts a composite number expressed in base\/ $b$, it must
+accept one whose base-$b$ representation has at most\/
 $n(b^{2n} + 1)$ digits.
 \end{theorem}
 
@@ -1037,7 +1037,7 @@ Write $S_b \coloneqq \set{(n)_b}{\text{$n \geq 4$ is composite}}$.
 For our purposes, the following theorem gives a better bound.
 
 \begin{theorem}
-Every minimal element of $S_b$ is of length at most $b+2$.
+Every minimal element of\/ $S_b$ is of length at most\/ $b+2$.
 \label{devi}
 \end{theorem}
 
@@ -1134,11 +1134,14 @@ $\lbrace \1, \2, \4, \8 \rbrace$.  But this seems beyond current capabilities.
 \bibitem{Choi}  S. L. G. Choi.
 \newblock Covering the set of integers by congruence 
 classes of distinct moduli.
-\newblock {\it Math. Comp.} {\bf 25} (1971), 885--895.
+\newblock \textit{Math. Comp.} {\bf 25} (1971), 885--895.
 
-\bibitem{Dick}  
-L. E. Dickson.
-\newblock {\it History of the Theory of Numbers}.
+\bibitem{devillers}  R. Devillers.
+\newblock Results in searching for minimal primes wrt subword order,
+\url{github.com/RaymondDevillers/primes}.
+
+\bibitem{Dick}  L. E. Dickson.
+\newblock \textit{History of the Theory of Numbers}.
 \newblock Volume I:  Divisibility and Primality.
 \newblock Chelsea Publishing Company, New York, 1952.
 
@@ -1148,25 +1151,25 @@ L. E. Dickson.
 
 \bibitem{GHK07}  H. Gruber, M. Holzer, and M. Kutrib.
 \newblock The size of Higman-Haines sets.
-\newblock {\it Theoret. Comput. Sci.} {\bf 387} (2007), 167--176.
+\newblock \textit{Theoret. Comput. Sci.} {\bf 387} (2007), 167--176.
 
 \bibitem{GHK09}  H. Gruber, M. Holzer, and M. Kutrib.
 \newblock More on the size of Higman-Haines sets:  effective constructions.
-\newblock {\it Fundam. Inform.} {\bf 91} (2009), 105--121.
+\newblock \textit{Fundam. Inform.} {\bf 91} (2009), 105--121.
 
 \bibitem{Ha69}  L. H. Haines.
 \newblock On free monoids partially ordered by embedding.
-\newblock {\it J. Combinatorial Theory} {\bf 6} (1969), 94--98.
+\newblock \textit{J. Combinatorial Theory} {\bf 6} (1969), 94--98.
 
 \bibitem{Hi52}  G. Higman.
 \newblock Ordering by divisibility in abstract algebras.
-\newblock {\it Proc. London Math. Soc.} (3) {\bf 2} (1952), 326--336.
+\newblock \textit{Proc. London Math. Soc.} (3) {\bf 2} (1952), 326--336.
 
 \bibitem{HU79}  J. E. Hopcroft and J. D. Ullman.
-\newblock {\it Introduction to Automata Theory, Languages, and Computation},
+\newblock \textit{Introduction to Automata Theory, Languages, and Computation},
 Addison-Wesley, 1979.
 
-\bibitem{lifc} H. Lifchitz and R. Lifchitz.
+\bibitem{lifc}  H. Lifchitz and R. Lifchitz.
 \newblock PRP Records,
 \url{www.primenumbers.net/prptop/prptop.php}
 
@@ -1178,25 +1181,29 @@ Addison-Wesley, 1979.
 \newblock Some primes proven by my programs, \newline
 \url{www.lix.polytechnique.fr/Labo/Francois.Morain/Primes/myprimes.html}.
 
-\bibitem{oeis} OEIS Foundation Inc.
+\bibitem{oeis}  OEIS Foundation Inc.
 \newblock The On-Line Encyclopedia of Integer Sequences,
 \url{oeis.org}.
 
 \bibitem{llr}  J. Penn\'e.
-\newblock LLR Version 3.8.9,
+\newblock LLR Version 3.8.15,
 \url{jpenne.free.fr/index2.html}.
 
 \bibitem{srsieve}  G. Reynolds.
 \newblock Sierpinski/Riesel Sieve Version 0.6.17, \newline
 \url{sites.google.com/site/geoffreywalterreynolds/programs/srsieve}.
 
+\bibitem{miracl}  M. Scott.
+\newblock Multiprecision Integer and Rational Arithmetic Cryptographic Library,
+\url{www.certivox.com/miracl}.
+
 \bibitem{Sh00}  J. Shallit.
 \newblock Minimal primes.
-\newblock {\it J. Recreational Math.} {\bf 30} (2) (2001), 113--117.
+\newblock \textit{J. Recreational Math.} {\bf 30} (2) (2001), 113--117.
 
 \bibitem{WD}  H. C. Williams and H. Dubner.
 \newblock The primality of $R_{1031}$.
-\newblock {\it Math. Comput.} {\bf 47} (1986), 703--711.
+\newblock \textit{Math. Comput.} {\bf 47} (1986), 703--711.
 
 \end{thebibliography}
 
