@@ -711,9 +711,9 @@ To do this, we made use of Geoffrey Reynolds'
 This program uses the baby-step giant-step
 algorithm to find all primes $p$ which divide $ab^n+c$ where $p$ and $n$ lie in a specified range.  Since this program cannot
 handle the general case $(ab^n+c)/d$ when $d>1$ we only used it to sieve the sequence $ab^n+c$ for primes $p\nmid d$, and initialized the list of candidates to not include $n$ for which there is some prime $p\mid d$ for which $p\mid(ab^n+c)/d$.
-The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$).
+The program had to be modified slightly to remove a check which would prevent it from running in the case when $a$, $b$, and $c$ were all odd (since then $2\mid ab^n+c$, but $2$ may not divide $(ab^n+c)/d$).
 
-Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a pseudoprimality test.
+Once the numbers with small divisors had been removed, it remained to test the remaining numbers using a probable primality test.
 For this we used the software {\tt LLR} by Jean Penn\'e~\cite{llr}.
 Although undocumented, it is possible to run this program on numbers of the form $(ab^n+c)/d$ when $d\neq1$, so this program required no modifications.
 A script was also written which allowed one to run {\tt srsieve} while 
@@ -797,7 +797,7 @@ b & \lvert M(L_b)\rvert & \max\limits_{x\in M(L_b)}\lvert x\rvert & \parbox{5em}
 29\mathrlap{^*} & \geq57283 & \geq174240 & 14 & 202000 \\
 30 & 220 & 1024 & 0 & -
 \end{array}\]
-\begin{center}$^*$Data based on results of pseudoprimality tests.\end{center}
+\begin{center}$^*$Data based on results of probable primality tests.\end{center}
 \caption{Summary of results for the prime numbers for each base $b$.}
 \label{resultsfig}
 \end{figure}
